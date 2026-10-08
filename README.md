@@ -2,8 +2,9 @@
 
 Durum çubuğundaki tek bir öğeyle sık kullandığın terminal komutlarına iki tıkla ulaş.
 
-`Cmd Deck` → komut grubu → komut → terminalde çalışır. Gruplar `settings.json` içinde durduğu için
-projeye commit'leyip ekibinle paylaşabilirsin.
+`Cmd Deck` → komut grubu → komut → terminalde çalışır. Gruplar `cmd-deck-groups.json`
+dosyasında düzenlenir, `.vscode/settings.json` içine uygulanır; dosyayı commit'leyip
+ekibinle paylaşabilirsin.
 
 ## Kurulum
 
@@ -22,7 +23,7 @@ Geliştirirken VSCode'da bu klasörü açıp <kbd>F5</kbd> ile Extension Develop
 |---|---|
 | Komut çalıştır | Durum çubuğundaki **grup ikonuna** tıkla → komut (grup seviyesi atlanır) |
 | Tüm gruplardan seç | Durum çubuğundaki `Cmd` düğmesine tıkla → grup → komut |
-| Dışa/içe aktarma, ikon kataloğu vb. | `Cmd` düğmesine tıkla → listeyi kaydır → **diğer menüler** ayracının altından seç |
+| Komut listesini düzenle | `Cmd Deck: Komut Listesini Düzenle` → JSON dosyası açılır, düzenle |
 | Grup seviyesine inmeden ara | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `Cmd Deck: Tüm Komutlarda Ara` |
 | Son komutu tekrarla | `Cmd Deck: Son Komutu Tekrar Çalıştır` |
 | Windows uyumluluğunu denetle | `Cmd Deck: Platform Uyumluluğunu Kontrol Et` |
@@ -119,12 +120,12 @@ $(server-environment) Node.js       12 komut
 —— diğer ——
 $(search) Tüm Komutlarda Ara
 $(debug-rerun) Son Komutu Tekrar Çalıştır
-$(json) Komutları Dışa Aktar
-$(sync) Komutları İçe Aktar
+$(json) Komut Listesini Düzenle
+$(sync) Komut Dosyasını Uygula
 $(check) Platform Uyumluluğunu Kontrol Et
 $(list-selection) Durum Çubuğu Düğmelerini Seç
 $(paintcan) İkon Kataloğu
-$(refresh) Komut Listesini Yenile
+$(refresh) Dosyayı Ayarlardan Yenile
 ```
 
 Yeni bir komut eklemek istersen `src/menu.ts` içindeki `MENU_ACTIONS` listesine bir satır ekle —
@@ -182,25 +183,65 @@ renk desteklemiyor). Öncelik: grubun kendi `color`'ı → yoksa `cmdDeck.status
 
 ## Komut ekleme / silme / düzenleme
 
-Arayüzden tek tek düzenleme yok; komutlar `cmdDeck.groups` ayarında durur. Toplu taşıma için:
+Komutlar `cmdDeck.groups` ayarında durur, ama elle düzenlemek için düzenleme
+dosyası kullanılır: **VSCode'da açılır, şemayla doğrulanır, sonra ayarlara uygulanır.**
+
+```
+Cmd Deck: Komut Listesini Düzenle     →  cmd-deck-groups.json açılır (yoksa ayarlardan yazılır)
+   ... düzenle, Ctrl+S ...
+Cmd Deck: Komut Dosyasını Uygula      →  özet gösterir, onaylar, settings.json'a yazar
+```
 
 | Komut | Ne yapar |
 |---|---|
-| `Cmd Deck: Komutları Dışa Aktar` | **Seçim sunar:** panoya kopyalar **ya da** konum seçip dosyaya kaydeder (varsayılan `cmd-deck-groups.json`) |
-| `Cmd Deck: Komutları İçe Aktar` | Panodan ya da bir `*.json` dosyasından okur, uygulamadan önce **neyi değiştireceğini özetler** ve onay ister |
+| `Cmd Deck: Komut Listesini Düzenle` | Dosyayı açar. **Soru sormaz.** Dosya yoksa mevcut ayarlardan oluşturulur; varsa **üzerine yazılmaz** (kaydedilmemiş düzenlemen bozulmasın) |
+| `Cmd Deck: Komut Dosyasını Uygula` | Dosyayı okur, **ne değişeceğini özetler**, onay ister, sonra hedefi seçip yazar |
+| `Cmd Deck: Dosyayı Ayarlardan Yenile` | Dosyayı ayarlardaki güncel liste ile **üzerine yazar** — düzenlemeyi sıfırlamanın yolu |
 
-Dışa aktarımda "Dosyaya kaydet" seçilirse kaydedilen dosya için **Aç** düğmesi çıkar; içe
-aktarımda dosya seçtikten sonra aynı dosya tekrar kullanılabilir — yani liste dosyadan
-paylaşılıp her projede geri alınabilir.
+Dosya yolu hatırlanır (proje bazlı). Varsayılanı proje kökünde `cmd-deck-groups.json`;
+proje açık değilse ev dizini. Hatırlanan yol yoksa **Komut Dosyasını Uygula** bir kez
+dosya seçtirir — böylece başkasının gönderdiği listeyi de alabilirsin.
 
-İçe aktarımda iki mod var:
+Dosyada **yorum serbest** (JSONC), otomatik tamamlama ve şema doğrulaması çalışır:
+`schemas/cmd-deck-groups.json` hem `name`/`command` zorunluluğunu hem de yazım
+hatalarını (`descrition` gibi) kırmızı gösterir. Bilinmeyen alan reddedilir.
+
+Dosyayı elle düzenlediğin için dışa aktarım **normalize edilmiş** hâli değil ham
+listeyi yazar; `description: ""`, `confirm: false` gibi gereksiz alanlar sızmaz.
+Buna karşılık `settings.json` uygulama sonrası normalize edilmiş hâli alır — o
+dosya elle tutulan değil, üretilen bir dosyadır.
+
+### Uygulama (import)
+
+İki mod var:
 
 - **Grupları birleştir** — aynı isimli komut güncellenir, yeniler eklenir. Gelen listede olmayanlar **silinmez**.
 - **Listeyi değiştir** — mevcut liste tamamen gelen liste olur. Gelen listede olmayan komutlar **silinir** (yani silme işlemi bu yolla yapılır).
 
-Yazmadan önce seçilen hedefe göre özet gösterilir (`A: 3 komut, 1 yeni, 1 güncellenecek, 2 silinecek`), sonra **bu proje** (`.vscode/settings.json`) veya **kullanıcı** (global) hedefi sorulur.
+Yazmadan önce özet gösterilir, sonra **bu proje** (`.vscode/settings.json`) veya
+**kullanıcı** (global) hedefi sorulur.
 
-Aktarım biçimi `cmdDeck.groups` ile birebir aynıdır ve platform belirteçlerini (`{venv}`, `{rm}` …) olduğu gibi korur.
+Özet **yazılacak sonucu** tarif eder, gelen dosyada ne eksik olduğunu değil. Bu
+yüzden `Grupları birleştir` modunda `silinecek` **hiç görünmez** — birleştirme
+zaten silmiyor. Örnekler:
+
+```
+Grupları birleştir   →   • Git: 18 komut, 1 yeni
+Listeyi değiştir     →   • Git: 17 komut, 1 silinecek
+```
+
+Gerçekten hiçbir şey değişmiyorsa özet hiç gösterilmez, doğrudan "hiçbir şey
+yazılmadı" bildirimi çıkar ve dosyaya dokunulmaz.
+
+Listede gerçekten hiçbir şey değişmiyorsa dosyaya hiç dokunulmaz — "hiçbir şey yazılmadı"
+bildirimi çıkar. (Özet normalize edilmiş alanları karşılaştırdığı için, yalnızca
+biçimsel farkları bu adım yakalamaz.)
+
+Dosya biçimi `cmdDeck.groups` ile birebir aynıdır ve platform belirteçlerini
+(`{venv}`, `{rm}` …) olduğu gibi korur. Panoya kopyalama yolu kaldırıldı: listeyi
+paylaşmak için ya dosyayı commit'le (ekip arkadaşın `Komut Dosyasını Uygula` ile
+kendi ayarlarına alsın) ya da uyguladıktan sonra `.vscode/settings.json`'u commit'le.
+İkincisi daha uzun ve gürültülü; ilki daha temiz.
 
 ## Platform belirteçleri
 
@@ -233,7 +274,7 @@ Bilinmeyen belirteçler (`{herhangi}`) olduğu gibi bırakılır.
 
 ```bash
 npm run typecheck      # tsc --noEmit
-npm test               # 169 birim testi (vitest)
+npm test               # 179 birim testi (vitest)
 npm run test:integration   # gerçek VSCode içinde smoke test
 npm run sync-defaults  # examples/default-groups.json → package.json
 npm run icon           # media/icon.png üret

@@ -13,8 +13,12 @@ export interface ImportPlan {
  * Belirteçler ({venv}, {venvpy}, {rm}, {python}) olduğu gibi korunur,
  * platforma göre çözümleme çalıştırma anında olur.
  */
+export function serializeJson(value: unknown): string {
+  return JSON.stringify(value, null, 2);
+}
+
 export function serializeGroups(groups: readonly DeckGroup[]): string {
-  return JSON.stringify(groups, null, 2);
+  return serializeJson(groups);
 }
 
 /** Geçersiz JSON veya geçerli ama boş liste → undefined. */

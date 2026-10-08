@@ -44,7 +44,7 @@
       },
       {
         "command": "cmd-deck.reload",
-        "title": "Komut Listesini Yenile",
+        "title": "Dosyayı Ayarlardan Yenile",
         "category": "Cmd Deck",
         "icon": "$(refresh)"
       },
@@ -56,13 +56,13 @@
       },
       {
         "command": "cmd-deck.export",
-        "title": "Komutları Dışa Aktar",
+        "title": "Komut Listesini Düzenle",
         "category": "Cmd Deck",
         "icon": "$(json)"
       },
       {
         "command": "cmd-deck.import",
-        "title": "Komutları İçe Aktar",
+        "title": "Komut Dosyasını Uygula",
         "category": "Cmd Deck",
         "icon": "$(sync)"
       },
@@ -508,6 +508,14 @@
         }
       ]
     },
+    "jsonValidation": [
+      {
+        "fileMatch": [
+          "cmd-deck-groups.json"
+        ],
+        "url": "./schemas/cmd-deck-groups.json"
+      }
+    ],
     "configuration": {
       "title": "Cmd Deck",
       "properties": {

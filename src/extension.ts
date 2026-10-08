@@ -5,7 +5,7 @@ import { DeckGroup } from './normalize';
 import { checkPlatform, maybeShowPlatformNotice } from './platform';
 import { pickAnyCommand, pickCommand, pickCommandsInGroup } from './picker';
 import { runCommand } from './runner';
-import { exportCommands, importCommands, pickStatusBarItems } from './settings';
+import { applyGroupFile, editGroupFile, pickStatusBarItems, reloadGroupFile } from './settings';
 import { createStatusBar, StatusBarHandle } from './statusBar';
 import { rankGroups, readLast, readUsage, recordRun, resolveLast } from './usage';
 import { DeckCommand as Command } from './normalize';
@@ -97,11 +97,7 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmd-deck.reload', () => {
-      void vscode.window.showInformationMessage(
-        'cmd-deck: ayarlar her açılışta yeniden okunur.'
-      );
-    })
+    vscode.commands.registerCommand('cmd-deck.reload', () => reloadGroupFile(context))
   );
 
   context.subscriptions.push(
@@ -109,11 +105,11 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmd-deck.export', () => exportCommands())
+    vscode.commands.registerCommand('cmd-deck.export', () => editGroupFile(context))
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmd-deck.import', () => importCommands())
+    vscode.commands.registerCommand('cmd-deck.import', () => applyGroupFile(context))
   );
 
   context.subscriptions.push(

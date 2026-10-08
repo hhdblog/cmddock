@@ -2,7 +2,7 @@ import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
-import { CONFIG_SECTION, GROUPS_KEY, getGroups } from './config';
+import { CONFIG_SECTION, GROUPS_KEY, getGroups, readRawGroups } from './config';
 import { countCommands } from './normalize';
 import { hiddenGroupNames, visibleGroupNames } from './plan';
 import {
@@ -10,61 +10,54 @@ import {
   parseGroups,
   planImport,
   serializeGroups,
+  serializeJson,
 } from './transfer';
 
 const WRITE_LABEL = 'Yaz';
 
-type Source = 'clipboard' | 'file' | undefined;
+const DEFAULT_FILE_NAME = 'cmd-deck-groups.json';
 
-async function pickSource(): Promise<Source> {
-  const picked = await vscode.window.showQuickPick(
-    [
-      {
-        label: '$(json) Panodan oku',
-        description: 'Panoya kopyaladığın JSON',
-      },
-      {
-        label: '$(file-directory) Dosyadan seç',
-        description: '*.json dosyası seç',
-      },
-    ],
-    { placeHolder: 'Nereden içe aktarılacak?' }
-  );
+/**
+ * Düzenleme dosyasının yolu. Proje bazlı tutuluyor (workspaceState) çünkü dosya
+ * genelde proje kökünde; globalState'de tutulsaydı başka projeye de taşınırdı.
+ */
+const FILE_PATH_KEY = 'cmdDeck.groupFilePath';
 
-  if (!picked) {
-    return undefined;
-  }
-  return picked.label.includes('Dosyadan') ? 'file' : 'clipboard';
+async function recallPath(context: vscode.ExtensionContext): Promise<string | undefined> {
+  const value = context.workspaceState.get<string>(FILE_PATH_KEY);
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
-async function readSource(source: Exclude<Source, undefined>): Promise<string | undefined> {
-  if (source === 'clipboard') {
-    const text = await vscode.env.clipboard.readText();
-    if (text.trim().length === 0) {
-      void vscode.window.showWarningMessage('cmd-deck: pano boş.');
-      return undefined;
-    }
-    return text;
-  }
+async function rememberPath(
+  context: vscode.ExtensionContext,
+  target: string
+): Promise<void> {
+  await context.workspaceState.update(FILE_PATH_KEY, target);
+}
 
-  const files = await vscode.window.showOpenDialog({
-    canSelectMany: false,
-    filters: { JSON: ['json'] },
-    openLabel: 'Aktar',
-  });
-
-  const file = files?.[0];
-  if (!file) {
-    return undefined;
-  }
-
+async function exists(target: string): Promise<boolean> {
   try {
-    return await fs.readFile(file.fsPath, 'utf8');
+    await fs.access(target);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function writeFile(target: string, text: string): Promise<boolean> {
+  try {
+    await fs.writeFile(target, text, 'utf8');
+    return true;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    void vscode.window.showErrorMessage(`cmd-deck: dosya okunamadı — ${message}`);
-    return undefined;
+    void vscode.window.showErrorMessage(`cmd-deck: dosyaya yazılamadı — ${message}`);
+    return false;
   }
+}
+
+async function openFile(target: string): Promise<void> {
+  const document = await vscode.workspace.openTextDocument(vscode.Uri.file(target));
+  await vscode.window.showTextDocument(document);
 }
 
 async function pickMode(commandCount: number): Promise<ImportMode | undefined> {
@@ -119,85 +112,163 @@ function targetName(target: vscode.ConfigurationTarget): string {
   return target === vscode.ConfigurationTarget.Workspace ? 'bu proje' : 'kullanıcı ayarları';
 }
 
-const DEFAULT_FILE_NAME = 'cmd-deck-groups.json';
-
-function defaultSaveUri(): vscode.Uri {
+function defaultFilePath(): string {
   const folder = vscode.workspace.workspaceFolders?.[0]?.uri;
   const base = folder?.scheme === 'file' ? folder : vscode.Uri.file(os.homedir());
-  return vscode.Uri.joinPath(base, DEFAULT_FILE_NAME);
+  return vscode.Uri.joinPath(base, DEFAULT_FILE_NAME).fsPath;
 }
 
-async function saveToFile(text: string, commandCount: number): Promise<void> {
-  const uri = await vscode.window.showSaveDialog({
-    defaultUri: defaultSaveUri(),
-    filters: { JSON: ['json'] },
-    saveLabel: 'Kaydet',
-    title: 'Komut listesini kaydet',
-  });
+/**
+ * Kaydedilecek ham liste.
+ *
+ * Ham ayar değeri tercih edilir: `getGroups()` her komuta varsayılan alanları
+ * doldurur, elle düzenlenen dosyada ise o alanlar çoğunlukla yoktur. Ham değer
+ * geçerli değilse (ayar boş, sadece manifest varsayılanı) normalize edilmiş
+ * hâle düşülür ki dosya hiçbir zaman boş yazılmasın.
+ */
+function exportPayload(): string {
+  const raw = readRawGroups();
+  return Array.isArray(raw) && raw.length > 0 ? serializeJson(raw) : serializeGroups(getGroups());
+}
 
-  if (!uri) {
+/**
+ * Komut listesinin düzenlendiği dosyayı açar; dosya yoksa mevcut ayarlardan yazar.
+ *
+ * Soru sormaz. Dosya varsa **üzerine yazılmaz** — kullanıcının kaydedilmemiş
+ * düzenlemesi bozulur. Üzerine yazmak isteyen için ayrı bir komut var
+ * (`cmd-deck.reload`).
+ */
+export async function editGroupFile(context: vscode.ExtensionContext): Promise<void> {
+  if (getGroups().length === 0) {
+    void vscode.window.showWarningMessage('cmd-deck: düzenlenecek komut yok.');
     return;
   }
 
-  try {
-    await fs.writeFile(uri.fsPath, text, 'utf8');
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    void vscode.window.showErrorMessage(`cmd-deck: dosyaya yazılamadı — ${message}`);
+  const target = (await recallPath(context)) ?? defaultFilePath();
+
+  if (!(await exists(target))) {
+    if (!(await writeFile(target, exportPayload()))) {
+      return;
+    }
+    await rememberPath(context, target);
+  }
+
+  await openFile(target);
+}
+
+/** Düzenleme dosyasını ayarlardaki güncel liste ile üzerine yazar. */
+export async function reloadGroupFile(context: vscode.ExtensionContext): Promise<void> {
+  const target = await recallPath(context);
+
+  if (!target) {
+    void vscode.window.showInformationMessage(
+      'cmd-deck: önce "Komut Listesini Düzenle" ile dosyayı oluştur.'
+    );
     return;
   }
 
-  const open = await vscode.window.showInformationMessage(
-    `cmd-deck: ${commandCount} komut kaydedildi — ${path.basename(uri.fsPath)}`,
-    'Aç'
-  );
-
-  if (open === 'Aç') {
-    const document = await vscode.workspace.openTextDocument(uri);
-    await vscode.window.showTextDocument(document);
-  }
-}
-
-export async function exportCommands(): Promise<void> {
   const groups = getGroups();
-
   if (groups.length === 0) {
-    void vscode.window.showWarningMessage('cmd-deck: aktarılacak komut yok.');
+    void vscode.window.showWarningMessage('cmd-deck: ayarlarda komut yok.');
     return;
   }
 
-  const text = serializeGroups(groups);
-  const total = countCommands(groups);
-
-  const how = await vscode.window.showQuickPick(
-    [
-      {
-        label: 'Panoya kopyala',
-        description: 'settings.json içindeki "cmdDeck.groups" değerine yapıştırılabilir',
-        toFile: false,
-      },
-      {
-        label: 'Dosyaya kaydet',
-        description: 'daha sonra içe aktarmak için (varsayılan: cmd-deck-groups.json)',
-        toFile: true,
-      },
-    ],
-    { placeHolder: 'Nasıl dışa aktarılsın?' }
-  );
-
-  if (!how) {
+  if (!(await writeFile(target, serializeGroups(groups)))) {
     return;
   }
 
-  if (how.toFile) {
-    await saveToFile(text, total);
-    return;
-  }
-
-  await vscode.env.clipboard.writeText(text);
+  await rememberPath(context, target);
+  await openFile(target);
 
   void vscode.window.showInformationMessage(
-    `cmd-deck: ${groups.length} grup, ${total} komut panoya kopyalandı.`
+    `cmd-deck: ${path.basename(target)} ayarlardaki listeyle yenilendi.`
+  );
+}
+
+/** Dosyada olmayan tek yol: başka birinin gönderdiği listeyi almak isteyenler. */
+async function pickFile(): Promise<string | undefined> {
+  const files = await vscode.window.showOpenDialog({
+    canSelectMany: false,
+    filters: { JSON: ['json'] },
+    openLabel: 'Aktar',
+  });
+
+  return files?.[0]?.fsPath;
+}
+
+export async function applyGroupFile(context: vscode.ExtensionContext): Promise<void> {
+  const source = (await recallPath(context)) ?? (await pickFile());
+  if (!source) {
+    return;
+  }
+
+  let text: string;
+  try {
+    text = await fs.readFile(source, 'utf8');
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    void vscode.window.showErrorMessage(`cmd-deck: dosya okunamadı — ${message}`);
+    return;
+  }
+
+  const incoming = parseGroups(text);
+  if (!incoming) {
+    void vscode.window.showErrorMessage(
+      'cmd-deck: içerik okunamadı. Beklenen biçim cmd-deck-groups.json dosyasındaki komut dizisi.'
+    );
+    return;
+  }
+
+  const current = getGroups();
+  const mode = await pickMode(countCommands(current));
+  if (!mode) {
+    return;
+  }
+
+  const plan = planImport(current, incoming, mode);
+  if (plan.result.length === 0) {
+    void vscode.window.showErrorMessage('cmd-deck: uygulanacak geçerli grup kalmadı.');
+    return;
+  }
+
+  // Özet normalize edilmiş alanları karşılaştırdığı için, gerçekten hiçbir şey
+  // değişmiyorsa ayarlar dosyasını yeniden biçimlendirmenin anlamı yok.
+  if (serializeGroups(current) === serializeGroups(plan.result)) {
+    void vscode.window.showInformationMessage(
+      'cmd-deck: dosyadaki liste ayarlarla aynı, hiçbir şey yazılmadı.'
+    );
+    return;
+  }
+
+  const body = [
+    `${countCommands(plan.result)} komut yazılacak:`,
+    ...plan.summary,
+  ].join('\n');
+
+  const confirmation = await vscode.window.showWarningMessage(
+    body,
+    { modal: true },
+    WRITE_LABEL
+  );
+  if (confirmation !== WRITE_LABEL) {
+    return;
+  }
+
+  const destination = await pickTarget();
+  if (!destination) {
+    return;
+  }
+
+  await vscode.workspace
+    .getConfiguration(CONFIG_SECTION)
+    .update(GROUPS_KEY, plan.result, destination);
+
+  // Dosya hatırlansın: düzenlemeye döndüğünde aynı dosya açılsın.
+  await rememberPath(context, source);
+
+  void vscode.window.showInformationMessage(
+    `cmd-deck: ${plan.result.length} grup, ${countCommands(plan.result)} komut ` +
+      `${targetName(destination)} yazıldı.`
   );
 }
 
@@ -276,65 +347,5 @@ export async function pickStatusBarItems(): Promise<void> {
   void vscode.window.showInformationMessage(
     `cmd-deck: durum çubuğunda ${picked.length} düğme açık ` +
       `(${newHidden.length} grup gizlendi) — kullanıcı ayarlarına yazıldı.`
-  );
-}
-
-export async function importCommands(): Promise<void> {
-  const source = await pickSource();
-  if (!source) {
-    return;
-  }
-
-  const text = await readSource(source);
-  if (text === undefined) {
-    return;
-  }
-
-  const incoming = parseGroups(text);
-  if (!incoming) {
-    void vscode.window.showErrorMessage(
-      'cmd-deck: içerik okunamadı. Beklenen biçim "cmdDeck.groups" değerindeki JSON dizisi.'
-    );
-    return;
-  }
-
-  const current = getGroups();
-  const mode = await pickMode(countCommands(current));
-  if (!mode) {
-    return;
-  }
-
-  const plan = planImport(current, incoming, mode);
-  if (plan.result.length === 0) {
-    void vscode.window.showErrorMessage('cmd-deck: içe aktarılacak geçerli grup kalmadı.');
-    return;
-  }
-
-  const body = [
-    `${countCommands(plan.result)} komut yazılacak:`,
-    ...plan.summary,
-  ].join('\n');
-
-  const confirmation = await vscode.window.showWarningMessage(
-    body,
-    { modal: true },
-    WRITE_LABEL
-  );
-  if (confirmation !== WRITE_LABEL) {
-    return;
-  }
-
-  const target = await pickTarget();
-  if (!target) {
-    return;
-  }
-
-  await vscode.workspace
-    .getConfiguration(CONFIG_SECTION)
-    .update(GROUPS_KEY, plan.result, target);
-
-  void vscode.window.showInformationMessage(
-    `cmd-deck: ${plan.result.length} grup, ${countCommands(plan.result)} komut ` +
-      `${targetName(target)} yazıldı.`
   );
 }

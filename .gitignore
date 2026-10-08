@@ -4,3 +4,7 @@ dist/
 .DS_Store
 out/
 .vscode-test/
+
+# Cmd Deck düzenleme dosyası (Komut Listesini Düzenle üretir).
+# Kök dizine sabitleniyor: schemas/cmd-deck-groups.json yoksayılmasın.
+/cmd-deck-groups.json

@@ -9,9 +9,18 @@ export const GROUPS_KEY = 'groups';
  * configurationDefaults (Python / Flutter / Node.js) boş çalışma alanında da buradan gelir.
  */
 export function getGroups(scope?: vscode.Uri): DeckGroup[] {
-  const raw = vscode.workspace
-    .getConfiguration(CONFIG_SECTION, scope)
-    .get<unknown>(GROUPS_KEY);
+  return normalizeGroups(readRawGroups(scope));
+}
 
-  return normalizeGroups(raw);
+/**
+ * Normalizasyondan geçmemiş ham ayar değeri.
+ *
+ * Dışa aktarımda kullanılır: `getGroups()` her komuta `description`, `confirm`,
+ * `clear` gibi varsayılan alanları doldurur, ham değer ise kullanıcının gerçekten
+ * yazdığı JSON'dur. Dışa aktarılan dosya elle düzenlendiği için sadeleştirilmiş
+ * olmalı — normalize edilmiş hâli yazarsak dosya `description: ""` gibi
+ * gereksiz anahtarlarla şişer.
+ */
+export function readRawGroups(scope?: vscode.Uri): unknown {
+  return vscode.workspace.getConfiguration(CONFIG_SECTION, scope).get(GROUPS_KEY);
 }
