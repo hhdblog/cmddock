@@ -13,6 +13,7 @@ import {
   queueQuickPick,
   resetConfiguration,
   setConfiguration,
+  setOpenDocument,
   setWorkspaceFolders,
   Uri,
   writes,
@@ -310,7 +311,7 @@ describe('addLibraryGroup', () => {
     queueQuickPick({ target: ConfigurationTarget.Workspace });
     queueMessage('Yaz');
 
-    await addLibraryGroup();
+    await addLibraryGroup(context());
 
     expect(writes).toHaveLength(1);
     const written = writes[0].value as { name: string; commands: unknown[] }[];
@@ -323,7 +324,7 @@ describe('addLibraryGroup', () => {
     queueQuickPick({ target: ConfigurationTarget.Workspace });
     queueMessage('Yaz');
 
-    await addLibraryGroup();
+    await addLibraryGroup(context());
 
     const written = writes[0].value as { name: string; commands: { name: string }[] }[];
     expect(written[0].commands.map((c) => c.name)).toEqual(['durum']);
@@ -337,7 +338,7 @@ describe('addLibraryGroup', () => {
     queueQuickPick({ target: ConfigurationTarget.Workspace });
     queueMessage('Yaz');
 
-    await addLibraryGroup();
+    await addLibraryGroup(context());
 
     const offered = (quickPickCalls[0].items as { label: string }[]).map((item) => item.label);
     expect(offered.join(' ')).not.toContain('Docker');
@@ -352,7 +353,7 @@ describe('addLibraryGroup', () => {
     queueQuickPick({ target: ConfigurationTarget.Workspace });
     queueMessage('Yaz');
 
-    await addLibraryGroup();
+    await addLibraryGroup(context());
 
     const written = (writes[0].value as { name: string }[]).map((g) => g.name);
     expect(written).toEqual(['Git', 'Docker', 'Go']);
@@ -366,7 +367,7 @@ describe('addLibraryGroup', () => {
       })),
     });
 
-    await addLibraryGroup();
+    await addLibraryGroup(context());
 
     expect(messages.at(-1)?.text).toContain('hepsi zaten ekli');
     expect(writes).toHaveLength(0);
@@ -375,7 +376,7 @@ describe('addLibraryGroup', () => {
   it('seçimden vazgeçilirse yazmaz', async () => {
     queueQuickPick(undefined);
 
-    await addLibraryGroup();
+    await addLibraryGroup(context());
 
     expect(writes).toHaveLength(0);
   });
@@ -384,7 +385,7 @@ describe('addLibraryGroup', () => {
     libraryPick('Docker');
     queueQuickPick(undefined);
 
-    await addLibraryGroup();
+    await addLibraryGroup(context());
 
     expect(writes).toHaveLength(0);
   });
@@ -394,7 +395,7 @@ describe('addLibraryGroup', () => {
     queueQuickPick({ target: ConfigurationTarget.Workspace });
     queueMessage(undefined);
 
-    await addLibraryGroup();
+    await addLibraryGroup(context());
 
     expect(writes).toHaveLength(0);
   });
@@ -404,7 +405,7 @@ describe('addLibraryGroup', () => {
     queueQuickPick({ target: ConfigurationTarget.Workspace });
     queueMessage('Yaz');
 
-    await addLibraryGroup();
+    await addLibraryGroup(context());
 
     expect(JSON.stringify(writes[0].value)).not.toContain('"confirm": false');
   });
@@ -414,7 +415,7 @@ describe('addLibraryGroup', () => {
     queueQuickPick({ target: ConfigurationTarget.Workspace });
     queueMessage('Yaz');
 
-    await addLibraryGroup();
+    await addLibraryGroup(context());
 
     const written = writes[0].value as { commands: { name: string; confirm?: string }[] }[];
     const flushall = written[1].commands.find((c) => c.name === 'flushall');
@@ -426,7 +427,7 @@ describe('addLibraryGroup', () => {
     queueQuickPick({ target: ConfigurationTarget.Workspace });
     queueMessage('Yaz');
 
-    await addLibraryGroup();
+    await addLibraryGroup(context());
 
     const written = writes[0].value as { commands: { name: string; argsPrompt?: string }[] }[];
     const calistir = written[1].commands.find((c) => c.name === 'çalıştır');
@@ -438,7 +439,7 @@ describe('addLibraryGroup', () => {
     queueQuickPick({ target: ConfigurationTarget.Global });
     queueMessage('Yaz');
 
-    await addLibraryGroup();
+    await addLibraryGroup(context());
 
     expect(writes[0].target).toBe(ConfigurationTarget.Global);
   });
@@ -457,3 +458,93 @@ function queuePickByLabel(name: string): void {
     group,
   });
 }
+
+describe('kütüphane ekledikten sonra düzenleme dosyası senkronlanır', () => {
+  beforeEach(() => {
+    setConfiguration('cmdDeck', { groups: ONE_GROUP });
+  });
+
+  /** Dosyayı oluşturur, yolu hatırlatır ve ayarlarla aynı içerikle doldurur. */
+  async function inSyncFile() {
+    const ctx = context();
+    await editGroupFile(ctx as never);
+    return ctx;
+  }
+
+  it('dosya yoksa dokunmaz', async () => {
+    const ctx = context();
+    queuePickByLabel('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await addLibraryGroup(ctx as never);
+
+    expect(() => read()).toThrow();
+  });
+
+  it('dosya ayarlarla aynıysa yeni grubu da içine alır', async () => {
+    const ctx = await inSyncFile();
+    queuePickByLabel('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await addLibraryGroup(ctx as never);
+
+    const written = JSON.parse(read()) as { name: string }[];
+    expect(written.map((g) => g.name)).toEqual(['Git', 'Docker']);
+  });
+
+  it('senkronlama da normalize dolguları yazmaz', async () => {
+    const ctx = await inSyncFile();
+    queuePickByLabel('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await addLibraryGroup(ctx as never);
+
+    expect(read()).not.toContain('"confirm": false');
+  });
+
+  /**
+   * Dosyada uygulanmamış düzenleme varsa senkronlama onu ezerdi — kullanıcının
+   * işi kaybolurdu. Dosya olduğu gibi bırakılır ve uyarı verilir.
+   */
+  it('dosyada uygulanmamış düzenleme varsa dokunmaz ve uyarır', async () => {
+    const ctx = await inSyncFile();
+    writeFileSync(groupFile(), JSON.stringify(ONE_GROUP), 'utf8');
+    setConfiguration('cmdDeck', {
+      groups: [...ONE_GROUP, { name: 'Docker', commands: [{ name: 'x', command: 'y' }] }],
+    });
+    queuePickByLabel('Go');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await addLibraryGroup(ctx as never);
+
+    expect(read()).not.toContain('Go');
+    expect(messages.some((message) => message.text.includes('aynı değil'))).toBe(true);
+  });
+
+  it('dosyada kaydedilmemiş düzenleme varsa dokunmaz', async () => {
+    const ctx = await inSyncFile();
+    setOpenDocument(groupFile(), true);
+    queuePickByLabel('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await addLibraryGroup(ctx as never);
+
+    expect(read()).not.toContain('Docker');
+  });
+
+  it('onaylanmazsa dosyaya da dokunmaz', async () => {
+    const ctx = await inSyncFile();
+    queuePickByLabel('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage(undefined);
+
+    await addLibraryGroup(ctx as never);
+
+    expect(read()).not.toContain('Docker');
+  });
+});

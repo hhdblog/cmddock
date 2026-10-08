@@ -125,7 +125,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('cmd-deck.addGroup', async () => {
-      await addLibraryGroup();
+      await addLibraryGroup(context);
       // Yeni grubun durum çubuğu düğmesi anında görünsün.
       statusBar.refresh();
     })

@@ -118,6 +118,7 @@ export function resetConfiguration(): void {
   openedDocuments.length = 0;
   quickPickCalls.length = 0;
   workspaceFolders = [];
+  openDocuments.length = 0;
 }
 
 /** getConfiguration().update() çağrıları — ne yazıldı, nereye. */
@@ -184,6 +185,13 @@ const quickPickQueue: unknown[] = [];
 const messageQueue: unknown[] = [];
 const fileDialogQueue: (UriLike | undefined)[] = [];
 
+/** `vscode.workspace.textDocuments` — açık editör belgeleri. */
+export const openDocuments: { uri: UriLike; isDirty: boolean }[] = [];
+
+export function setOpenDocument(fsPath: string, isDirty: boolean): void {
+  openDocuments.push({ uri: Uri.file(fsPath), isDirty });
+}
+
 export interface RecordedMessage {
   readonly kind: 'info' | 'warning' | 'error';
   readonly text: string;
@@ -213,6 +221,10 @@ export function queueOpenDialog(...responses: (UriLike | undefined)[]): void {
 /* ------------------------------------------------------------------ */
 
 export const workspace = {
+  get textDocuments() {
+    return openDocuments;
+  },
+
   get workspaceFolders() {
     return workspaceFolders.length > 0 ? workspaceFolders : undefined;
   },

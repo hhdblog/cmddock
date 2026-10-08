@@ -367,13 +367,46 @@ interface LibraryPick extends vscode.QuickPickItem {
 }
 
 /**
+ * Düzenleme dosyasının ayarlarla aynı olduğunu doğrular.
+ *
+ * Kütüphaneden grup eklenince dosya geride kalıyordu; dosya bayatken
+ * `Komut Dosyasını Uygula` → `Listeyi değiştir` denirse dosyada olmayan yeni
+ * grup da sessizce siliniyordu. Senkronlamak bu sorunu bitiriyor, ama dosyada
+ * kullanıcının **uygulanmamış** düzenlemesi varsa onu ezmek de veri kaybı.
+ * O yüzden üç durumu ayırt ediyoruz: dosya yok (senkronlanacak şey yok),
+ * dosyada kaydedilmemiş düzenleme var, dosyanın içeriği ayarlardan farklı.
+ */
+async function isFileInSync(target: string): Promise<boolean> {
+  const open = vscode.workspace.textDocuments.find(
+    (document) => document.uri.fsPath === target
+  );
+  if (open?.isDirty) {
+    return false;
+  }
+
+  let text: string;
+  try {
+    text = await fs.readFile(target, 'utf8');
+  } catch {
+    return true;
+  }
+
+  const fromFile = parseGroups(text);
+  if (!fromFile) {
+    return false;
+  }
+
+  return serializeGroups(fromFile) === serializeGroups(getGroups());
+}
+
+/**
  * Kütüphaneden grup ekler.
  *
  * Yalnızca ekler, silmez: mevcut komutlara dokunmaz. Ad çakışması olamaz —
  * zaten ekli olan gruplar listede hiç gösterilmez. Silme zaten
  * `Komut Dosyasını Uygula` → `Listeyi değiştir` yolunda.
  */
-export async function addLibraryGroup(): Promise<void> {
+export async function addLibraryGroup(context: vscode.ExtensionContext): Promise<void> {
   const existing = new Set(getGroups().map((group) => group.name));
   const available = LIBRARY_GROUPS.filter((group) => !existing.has(group.name));
 
@@ -432,11 +465,36 @@ export async function addLibraryGroup(): Promise<void> {
     return;
   }
 
+  // Senkron kararı yazmadan ÖNCE veriliyor: karşılaştırma yeni grup eklenmeden önceki
+  // ayarlarla dosyanın aynı olup olmadığını görmeli. Yazdıktan sonra yeniden
+  // sorulursa ayarlar değişmiş olacağı için "aynı" görünmezdi.
+  const fileTarget = await syncTargetPath(context);
+  const fileSafe = fileTarget === undefined || (await isFileInSync(fileTarget));
+
   await vscode.workspace
     .getConfiguration(CONFIG_SECTION)
     .update(GROUPS_KEY, slimGroups([...current, ...incoming]), destination);
 
+  if (fileTarget && fileSafe) {
+    await writeFile(fileTarget, serializeJson(slimGroups(getGroups())));
+  } else if (fileTarget) {
+    void vscode.window.showWarningMessage(
+      'cmd-deck: düzenleme dosyası ayarlarla aynı değil (kaydedilmemiş ya da ' +
+        'uygulanmamış düzenleme var) — dosyaya dokunulmadı. Yeni grup dosyada ' +
+        'yok; "Komut Listesini Düzenle" ile açıp ekle.'
+    );
+  }
+
   void vscode.window.showInformationMessage(
     `cmd-deck: "${chosen.name}" eklendi — ${added} komut, ${targetName(destination)}.`
   );
+}
+
+/** Senkronlanacak dosya: yoksa undefined. */
+async function syncTargetPath(context: vscode.ExtensionContext): Promise<string | undefined> {
+  const target = await recallPath(context);
+  if (!target || !(await exists(target))) {
+    return undefined;
+  }
+  return target;
 }
