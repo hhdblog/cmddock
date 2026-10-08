@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { DeckCommand, DeckGroup, PickedCommand } from './normalize';
+import { MENU_ACTIONS, MENU_SEPARATOR } from './menu';
+import { DeckCommand, DeckGroup } from './normalize';
 
 interface GroupItem extends vscode.QuickPickItem {
   readonly group: DeckGroup;
@@ -10,6 +11,25 @@ interface CommandItem extends vscode.QuickPickItem {
   readonly command: DeckCommand;
 }
 
+interface ActionItem extends vscode.QuickPickItem {
+  readonly actionId: string;
+}
+
+interface SeparatorItem extends vscode.QuickPickItem {
+  readonly kind: vscode.QuickPickItemKind.Separator;
+}
+
+/**
+ * Cmd menüsünün satır tipleri. Ayraç kendi tipiyle ayrı ki daraltma
+ * ('actionId' in picked) düzgün çalışsın.
+ */
+type MasterItem = GroupItem | ActionItem | SeparatorItem;
+
+/** Cmd düğmesinden gelen seçim: ya bir komut, ya da listedeki bir yardımcı menü. */
+export type PickResult =
+  | { readonly kind: 'command'; readonly group: DeckGroup; readonly command: DeckCommand }
+  | { readonly kind: 'action'; readonly id: string };
+
 /**
  * İki kademeli menü: grup → komut.
  * Her iki çağrı da `showQuickPick` ile yapılır, ayrı `createQuickPick` örneği
@@ -17,7 +37,7 @@ interface CommandItem extends vscode.QuickPickItem {
  */
 export async function pickCommand(
   groups: readonly DeckGroup[]
-): Promise<PickedCommand | undefined> {
+): Promise<PickResult | undefined> {
   if (groups.length === 0) {
     void vscode.window.showWarningMessage(
       'cmd-deck: komut grubu yok. "cmdDeck.groups" ayarına grup ekle.'
@@ -25,20 +45,40 @@ export async function pickCommand(
     return undefined;
   }
 
-  const groupItems: GroupItem[] = groups.map((group) => ({
-    label: `${group.icon} ${group.name}`,
-    description: `${group.commands.length} komut`,
-    group,
-  }));
+  const groupItems: MasterItem[] = [
+    ...groups.map((group): GroupItem => ({
+      label: `${group.icon} ${group.name}`,
+      description: `${group.commands.length} komut`,
+      group,
+    })),
+    { kind: vscode.QuickPickItemKind.Separator, label: MENU_SEPARATOR } as const,
+    ...MENU_ACTIONS.map(
+      (action): ActionItem => ({
+        label: `${action.icon} ${action.label}`,
+        description: action.description,
+        actionId: action.id,
+      })
+    ),
+  ];
 
-  const pickedGroup = await vscode.window.showQuickPick(groupItems, {
-    placeHolder: 'Komut grubu',
+  const picked = await vscode.window.showQuickPick(groupItems, {
+    placeHolder: 'Komut grubu veya diğer menüler',
     matchOnDescription: true,
   });
 
-  if (!pickedGroup) {
+  if (!picked) {
     return undefined;
   }
+
+  if ('actionId' in picked && picked.actionId) {
+    return { kind: 'action', id: picked.actionId };
+  }
+
+  if (!('group' in picked)) {
+    return undefined;
+  }
+
+  const pickedGroup = picked;
 
   return pickCommandsInGroup(pickedGroup.group);
 }
@@ -46,7 +86,7 @@ export async function pickCommand(
 /** Grup seviyesini atlayıp doğrudan o grubun komutlarını listeler. */
 export async function pickCommandsInGroup(
   group: DeckGroup
-): Promise<PickedCommand | undefined> {
+): Promise<PickResult | undefined> {
   const commandItems: CommandItem[] = group.commands.map((command) => ({
     label: `${command.icon} ${command.name}`,
     description: command.description || command.command,
@@ -65,7 +105,11 @@ export async function pickCommandsInGroup(
     return undefined;
   }
 
-  return { group: pickedCommand.group, command: pickedCommand.command };
+  return {
+    kind: 'command',
+    group: pickedCommand.group,
+    command: pickedCommand.command,
+  };
 }
 
 /**
@@ -74,7 +118,7 @@ export async function pickCommandsInGroup(
  */
 export async function pickAnyCommand(
   groups: readonly DeckGroup[]
-): Promise<PickedCommand | undefined> {
+): Promise<PickResult | undefined> {
   if (groups.length === 0) {
     void vscode.window.showWarningMessage(
       'cmd-deck: komut grubu yok. "cmdDeck.groups" ayarına grup ekle.'
@@ -98,5 +142,5 @@ export async function pickAnyCommand(
     matchOnDetail: true,
   });
 
-  return picked ? { group: picked.group, command: picked.command } : undefined;
+  return picked ? { kind: 'command', group: picked.group, command: picked.command } : undefined;
 }

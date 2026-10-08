@@ -109,6 +109,7 @@ cmd-deck/
 │   ├── icons.ts          # doğrulanmış kodikon kataloğu (~120 ad, 10 kategori)
 │   ├── iconCatalog.ts    # katalog penceresi: canlı ikon + panoya kopyalama
 │   ├── plan.ts           # SAF: durum çubuğu öğelerinin planı (düğme, metin, ad, kimlik, öncelik, renk)
+│   ├── menu.ts           # SAF: Cmd menüsünün "diğer menüler" listesi
 │   ├── settings.ts       # pano/dosya seçimi + cmdDeck.groups ayarına yazma
 │   ├── picker.ts         # iki kademeli QuickPick (grup → komut)
 │   ├── runner.ts         # confirm, argsPrompt, executeTask + ShellExecution
@@ -440,6 +441,24 @@ Test sırasında iki tuzak: test başlığındaki `JSON'a` kesme işareti tek t�
 (bilinmeyen tema rengi sessizce renksiz kalıyor — kabul edildi, test düzeltildi).
 
 Doğrulama: `typecheck` ✔ · birim **113/113** ✔ · entegrasyon 7/7 ✔ · paket 33.03 KB ✔
+
+## 7.8 Cmd menüsüne "diğer menüler" ayracı
+
+İstek: `Cmd` düğmesi grup listesinden sonra bir ayraçla diğer komutları da göstersin.
+
+| Konu | Karar |
+|---|---|
+| Kaynak | `src/menu.ts` → `MENU_ACTIONS`, saf liste (`id`, `label`, `description`, `icon`) |
+| Çalıştırma | Seçilen satırın `id`'si doğrudan `vscode.commands.executeCommand(id)` ile çalışıyor — ayrı mantık yok |
+| Tip | `PickResult = {kind:'command', group, command} \| {kind:'action', id}`; `picker.ts` artık komut ya da eylem döndürüyor |
+| Ayraç tipi | `QuickPickItemKind.Separator` ayrı bir arayüz (`SeparatorItem`) olarak tanımlandı — union daraltması `in` kontrolüyle çalışsın diye |
+| Listede olanlar | search, runLast, export, import, checkPlatform, iconCatalog, reload |
+| Grup/ikon ekranları | Değişmedi: grup düğmesi direkt o grubu açar, arama düzleştirilmiş listede çalışır |
+
+Test sırasında: `debug-rerun` ve `paintcan` gerçek kodikon ama katalogda yoktu, katalog
+genişletildi (birim testi ikisinin de katalogda olduğunu doğruluyor).
+
+Doğrulama: `typecheck` ✔ · birim **118/118** ✔ (5 yeni) · entegrasyon 7/7 ✔ · paket 34.25 KB ✔
 
 ## 8. Doğrulama (Definition of Done)
 

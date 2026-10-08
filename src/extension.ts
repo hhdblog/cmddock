@@ -1,13 +1,15 @@
 import * as vscode from 'vscode';
 import { getGroups } from './config';
 import { showIconCatalog } from './iconCatalog';
-import { DeckGroup, PickedCommand } from './normalize';
+import { DeckGroup } from './normalize';
 import { checkPlatform, maybeShowPlatformNotice } from './platform';
 import { pickAnyCommand, pickCommand, pickCommandsInGroup } from './picker';
 import { runCommand } from './runner';
 import { exportCommands, importCommands } from './settings';
 import { createStatusBar, StatusBarHandle } from './statusBar';
 import { rankGroups, readLast, readUsage, recordRun, resolveLast } from './usage';
+import { DeckCommand as Command } from './normalize';
+import { PickResult } from './picker';
 
 function ranked(context: vscode.ExtensionContext): DeckGroup[] {
   return rankGroups(getGroups(), readUsage(context.workspaceState));
@@ -17,12 +19,30 @@ function ranked(context: vscode.ExtensionContext): DeckGroup[] {
 async function launch(
   context: vscode.ExtensionContext,
   statusBar: StatusBarHandle,
-  picked: PickedCommand
+  picked: { group: DeckGroup; command: Command }
 ): Promise<void> {
   if (await runCommand(picked.group, picked.command)) {
     await recordRun(context.workspaceState, picked.group, picked.command);
     statusBar.refresh();
   }
+}
+
+/** Cmd menüsünde "diğer menüler" satırı seçilince ilgili komutu çalıştırır. */
+async function handle(
+  context: vscode.ExtensionContext,
+  statusBar: StatusBarHandle,
+  picked: PickResult | undefined
+): Promise<void> {
+  if (!picked) {
+    return;
+  }
+
+  if (picked.kind === 'action') {
+    await vscode.commands.executeCommand(picked.id);
+    return;
+  }
+
+  await launch(context, statusBar, picked);
 }
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -41,28 +61,19 @@ export function activate(context: vscode.ExtensionContext): void {
         return;
       }
 
-      const picked = await pickCommandsInGroup(group);
-      if (picked) {
-        await launch(context, statusBar, picked);
-      }
+      await handle(context, statusBar, await pickCommandsInGroup(group));
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('cmd-deck.open', async () => {
-      const picked = await pickCommand(ranked(context));
-      if (picked) {
-        await launch(context, statusBar, picked);
-      }
+      await handle(context, statusBar, await pickCommand(ranked(context)));
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('cmd-deck.search', async () => {
-      const picked = await pickAnyCommand(ranked(context));
-      if (picked) {
-        await launch(context, statusBar, picked);
-      }
+      await handle(context, statusBar, await pickAnyCommand(ranked(context)));
     })
   );
 

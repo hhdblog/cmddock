@@ -22,6 +22,7 @@ Geliştirirken VSCode'da bu klasörü açıp <kbd>F5</kbd> ile Extension Develop
 |---|---|
 | Komut çalıştır | Durum çubuğundaki **grup ikonuna** tıkla → komut (grup seviyesi atlanır) |
 | Tüm gruplardan seç | Durum çubuğundaki `Cmd` düğmesine tıkla → grup → komut |
+| Dışa/içe aktarma, ikon kataloğu vb. | `Cmd` düğmesine tıkla → listeyi kaydır → **diğer menüler** ayracının altından seç |
 | Grup seviyesine inmeden ara | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `Cmd Deck: Tüm Komutlarda Ara` |
 | Son komutu tekrarla | `Cmd Deck: Son Komutu Tekrar Çalıştır` |
 | Windows uyumluluğunu denetle | `Cmd Deck: Platform Uyumluluğunu Kontrol Et` |
@@ -90,6 +91,27 @@ ikonları canlı çizer; seçtiğin ad panoya kopyalanır — sonra `statusBar.i
 
 Grup ve komut `icon` alanlarında düz ad da kabul edilir: `"icon": "git-branch"` yazan yazı
 olarak görünmez, `$(git-branch)` biçimine çevrilir.
+
+### Cmd menüsündeki "diğer menüler"
+
+`Cmd` düğmesi önce grupları listeler, sonra bir ayraçla yardımcı menüleri gösterir:
+
+```
+$(snake) Python                     12 komut
+$(device-mobile) Flutter            12 komut
+$(server-environment) Node.js       12 komut
+—— diğer ——
+$(search) Tüm Komutlarda Ara
+$(debug-rerun) Son Komutu Tekrar Çalıştır
+$(json) Komutları Dışa Aktar
+$(sync) Komutları İçe Aktar
+$(check) Platform Uyumluluğunu Kontrol Et
+$(paintcan) İkon Kataloğu
+$(refresh) Komut Listesini Yenile
+```
+
+Yeni bir komut eklemek istersen `src/menu.ts` içindeki `MENU_ACTIONS` listesine bir satır ekle —
+`id` alanı doğrudan çalıştırılacak komut kimliği. Aynı komutlar Komut Paleti'nde de duruyor.
 
 ## Komutlarını tanımlama
 
@@ -191,7 +213,7 @@ Bilinmeyen belirteçler (`{herhangi}`) olduğu gibi bırakılır.
 
 ```bash
 npm run typecheck      # tsc --noEmit
-npm test               # 113 birim testi (vitest)
+npm test               # 118 birim testi (vitest)
 npm run test:integration   # gerçek VSCode içinde smoke test
 npm run sync-defaults  # examples/default-groups.json → package.json
 npm run icon           # media/icon.png üret

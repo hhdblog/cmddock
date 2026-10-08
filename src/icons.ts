@@ -31,6 +31,7 @@ export const ICON_CATALOG: readonly CatalogGroup[] = [
       { name: 'clock', hint: 'zaman / son çalışma' },
       { name: 'history', hint: 'geçmiş' },
       { name: 'link', hint: 'bağlantı' },
+      { name: 'paintcan', hint: 'renk / ikon' },
     ],
   },
   {
@@ -129,6 +130,7 @@ export const ICON_CATALOG: readonly CatalogGroup[] = [
       { name: 'watch', hint: 'izle / watch' },
       { name: 'run-all', hint: 'tümünü çalıştır' },
       { name: 'run-below', hint: 'tek komut' },
+      { name: 'debug-rerun', hint: 'tekrar çalıştır' },
     ],
   },
   {
