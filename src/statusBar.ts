@@ -148,11 +148,10 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
         return;
       }
 
-      if (!entry.visible) {
-        // Gizli başlatılan düğme: metin/renk dokunulmadan bırakılıyor.
-        return;
-      }
-
+      // Sınırın ötesindeki düğmeler de burada boyanır. Metin atanmazsa
+      // kullanıcı sağ tık → "Hide Status Bar Items" → Show ile açtığında
+      // içi boş, görünmez bir düğmeyle karşılaşır. Görünürlük build() aşamasında
+      // kararlaştırıldığı için show()/hide() bu döngüde çağrılmaz.
       item.text = empty && entry.kind === 'master' ? `${entry.text}!` : entry.text;
       // Grup düğmesinin kendi rengi varsa o, yoksa genel renk geçerli.
       item.color = applyColor(entry.color) ?? color;
@@ -164,7 +163,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
               `**Cmd Deck** — ${groups.length} grup, ${countCommands(groups)} komut`,
               ...omittedNote(plan, groups.length),
               last
-                ? `Son: ${resolveLastLabel(groups, last.group, last.name)}`
+                ? `Son: ${resolveLastLabel(groups, last.group, last.name) ?? 'artık ayarlarda yok'}`
                 : 'Son: henüz çalıştırılmadı',
               `${totalRuns(usage)} çalıştırma`,
               '',
@@ -175,8 +174,6 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
             : entry.tooltipLines;
 
       item.tooltip = new vscode.MarkdownString(lines.join('\n\n'));
-
-      // show() burada çağrılmıyor: görünürlük build aşamasında kararlaştırılıyor.
     });
   };
 
