@@ -47,6 +47,9 @@ export class ThemeColor {
 }
 
 export class MarkdownString {
+  /** VSCode'da varsayılan false: $(ikon) düz metin görünür. */
+  supportThemeIcons = false;
+
   constructor(public readonly value: string) {}
 }
 

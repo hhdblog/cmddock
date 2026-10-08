@@ -173,7 +173,13 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
             ? ['Cmd Deck — "cmdDeck.groups" boş, komut yok']
             : entry.tooltipLines;
 
-      item.tooltip = new vscode.MarkdownString(lines.join('\n\n'));
+      const tooltip = new vscode.MarkdownString(lines.join('\n\n'));
+      // Kodikonlar ($(source-control)) MarkdownString'da varsayılan olarak düz
+      // metin görünür; bu bayrak açılmazsa tooltip'ta "Git" yerine ham
+      // "$(source-control) Git" yazıyordu. İkon metnin dışında olduğu için de
+      // kalın yazıyla bozulmuyor.
+      tooltip.supportThemeIcons = true;
+      item.tooltip = tooltip;
     });
   };
 

@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
+  MarkdownString,
   MemoryMemento,
   resetConfiguration,
   resetStatusBarItems,
@@ -349,5 +350,41 @@ describe('statusBar', () => {
 
       expect(handle.items.every((item) => item.visible)).toBe(true);
     });
+  });
+});
+describe('tooltip ikonları', () => {
+  const PYTHON_GROUP = {
+    name: 'Git',
+    icon: '$(source-control)',
+    color: '#F14E32',
+    commands: [{ name: 'durum', command: 'git status' }],
+  };
+
+  it('tooltip kodikonları çizdirir', () => {
+    setConfiguration('cmdDeck', { groups: [PYTHON_GROUP] });
+    setConfiguration('cmdDeck.statusBar', { showMaster: false });
+
+    const handle = activate(createContext());
+
+    // MarkdownString.supportThemeIcons varsayılan false; açılmazsa tooltip'ta
+    // "$(source-control)" ham metin olarak görünüyor.
+    expect((handle.items[0].tooltip as MarkdownString).supportThemeIcons).toBe(true);
+  });
+
+  it('tooltip metninde ham ikon söz dizimi kalır (VSCode çizer)', () => {
+    setConfiguration('cmdDeck', { groups: [PYTHON_GROUP] });
+    setConfiguration('cmdDeck.statusBar', { showMaster: false });
+
+    const handle = activate(createContext());
+
+    expect(tooltipOf(handle.items[0])).toContain('$(source-control)');
+  });
+
+  it('master tooltip de kodikon çizdirir', () => {
+    setConfiguration('cmdDeck', { groups: [PYTHON_GROUP] });
+
+    const handle = activate(createContext());
+
+    expect((handle.items[0].tooltip as MarkdownString).supportThemeIcons).toBe(true);
   });
 });
