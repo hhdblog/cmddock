@@ -25,6 +25,7 @@ Geliştirirken VSCode'da bu klasörü açıp <kbd>F5</kbd> ile Extension Develop
 | Tüm gruplardan seç | Durum çubuğundaki `Cmd` düğmesine tıkla → grup → komut |
 | Komut listesini düzenle | `Cmd Deck: Komut Listesini Düzenle` → JSON dosyası açılır, düzenle |
 | Hazır grup ekle (Docker, Go, k8s…) | `Cmd Deck: Hazır Grup Ekle` → kütüphaneden seç |
+| Grup sil | `Cmd Deck: Grup Kaldır` → gruplardan seç |
 | Grup seviyesine inmeden ara | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `Cmd Deck: Tüm Komutlarda Ara` |
 | Son komutu tekrarla | `Cmd Deck: Son Komutu Tekrar Çalıştır` |
 | Windows uyumluluğunu denetle | `Cmd Deck: Platform Uyumluluğunu Kontrol Et` |
@@ -128,6 +129,7 @@ $(debug-rerun)   Son Komutu Tekrar Çalıştır
 $(json)          Komut Listesini Düzenle
 $(sync)          Komut Dosyasını Uygula
 $(new-folder)    Hazır Grup Ekle
+$(trash)         Grup Kaldır
 $(refresh)       Dosyayı Ayarlardan Yenile
 
 —— görünüm ——

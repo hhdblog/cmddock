@@ -70,6 +70,13 @@ export const MENU_ACTIONS: readonly MenuAction[] = [
     section: 'edit',
   },
   {
+    id: 'cmd-deck.removeGroup',
+    label: 'Grup Kaldır',
+    description: 'komut grubunu ve içindeki tüm komutları siler',
+    icon: '$(trash)',
+    section: 'edit',
+  },
+  {
     id: 'cmd-deck.reload',
     label: 'Dosyayı Ayarlardan Yenile',
     description: 'dosyayı ayarlardaki liste ile üzerine yazar',

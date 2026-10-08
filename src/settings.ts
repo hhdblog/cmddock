@@ -3,7 +3,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { CONFIG_SECTION, GROUPS_KEY, getGroups, readRawGroups } from './config';
-import { countCommands, normalizeGroups } from './normalize';
+import { countCommands, DeckGroup, normalizeGroups } from './normalize';
 import { LIBRARY_GROUPS, LibraryGroup } from './library';
 import { hiddenGroupNames, visibleGroupNames } from './plan';
 import {
@@ -465,36 +465,143 @@ export async function addLibraryGroup(context: vscode.ExtensionContext): Promise
     return;
   }
 
-  // Senkron kararı yazmadan ÖNCE veriliyor: karşılaştırma yeni grup eklenmeden önceki
-  // ayarlarla dosyanın aynı olup olmadığını görmeli. Yazdıktan sonra yeniden
-  // sorulursa ayarlar değişmiş olacağı için "aynı" görünmezdi.
-  const fileTarget = await syncTargetPath(context);
-  const fileSafe = fileTarget === undefined || (await isFileInSync(fileTarget));
+  // Karar yazmadan ÖNCE veriliyor; yazdıktan sonra sorulursa dosya "farklı"
+  // görünür ve senkron hiç olmazdı.
+  const plan = await planFileSync(context);
 
   await vscode.workspace
     .getConfiguration(CONFIG_SECTION)
     .update(GROUPS_KEY, slimGroups([...current, ...incoming]), destination);
 
-  if (fileTarget && fileSafe) {
-    await writeFile(fileTarget, serializeJson(slimGroups(getGroups())));
-  } else if (fileTarget) {
-    void vscode.window.showWarningMessage(
-      'cmd-deck: düzenleme dosyası ayarlarla aynı değil (kaydedilmemiş ya da ' +
-        'uygulanmamış düzenleme var) — dosyaya dokunulmadı. Yeni grup dosyada ' +
-        'yok; "Komut Listesini Düzenle" ile açıp ekle.'
-    );
-  }
+  await applyFileSync(
+    plan,
+    'cmd-deck: düzenleme dosyası ayarlarla aynı değil (kaydedilmemiş ya da ' +
+      'uygulanmamış düzenleme var) — dosyaya dokunulmadı. Yeni grup dosyada yok; ' +
+      '"Komut Listesini Düzenle" ile açıp ekle.'
+  );
 
   void vscode.window.showInformationMessage(
     `cmd-deck: "${chosen.name}" eklendi — ${added} komut, ${targetName(destination)}.`
   );
 }
 
-/** Senkronlanacak dosya: yoksa undefined. */
-async function syncTargetPath(context: vscode.ExtensionContext): Promise<string | undefined> {
+/**
+ * Ayar yazıldıktan sonra düzenleme dosyasına ne olacağının planı.
+ *
+ * Karar **yazmadan önce** verilmeli: yazdıktan sonra sorulursa ayarlar
+ * değişmiş olduğu için dosya "farklı" görünür ve senkron hiç gerçekleşmez.
+ */
+interface FileSyncPlan {
+  readonly target?: string;
+  /** Dosya ayarlarla aynı mı; false ise dokunulmayacak. */
+  readonly inSync: boolean;
+}
+
+async function planFileSync(context: vscode.ExtensionContext): Promise<FileSyncPlan> {
   const target = await recallPath(context);
   if (!target || !(await exists(target))) {
-    return undefined;
+    return { inSync: true };
   }
-  return target;
+  return { target, inSync: await isFileInSync(target) };
+}
+
+/**
+ * Planı uygular. Senkronlanamıyorsa `skipped` uyarısını gösterir — çağıran
+ * ne yapılması gerektiğini bilmeli.
+ */
+async function applyFileSync(plan: FileSyncPlan, skipped: string): Promise<boolean> {
+  if (!plan.target) {
+    return true;
+  }
+
+  if (!plan.inSync) {
+    void vscode.window.showWarningMessage(skipped);
+    return false;
+  }
+
+  await writeFile(plan.target, serializeJson(slimGroups(getGroups())));
+  return true;
+}
+
+interface GroupPick extends vscode.QuickPickItem {
+  readonly group: DeckGroup;
+}
+
+/**
+ * Bir grubu hedefli siler.
+ *
+ * Alternatifi dosyadan elle silip "Listeyi değiştir" uygulamak; o yol tüm
+ * listeyi gelen dosyayla değiştirdiği için dosya bayattaysa (ör. kütüphaneden
+ * eklenmiş ama dosyaya geçmemiş grup) istemediğin gruplar da gidiyordu.
+ * Burada yalnızca seçilen grubu çıkarıyoruz.
+ */
+export async function removeGroup(context: vscode.ExtensionContext): Promise<void> {
+  const current = getGroups();
+
+  if (current.length === 0) {
+    void vscode.window.showWarningMessage('cmd-deck: silinecek grup yok.');
+    return;
+  }
+
+  const picked = (await vscode.window.showQuickPick(
+    current.map(
+      (group): GroupPick => ({
+        label: `${group.icon} ${group.name}`,
+        description: `${group.commands.length} komut`,
+        group,
+      })
+    ),
+    { placeHolder: 'Silinecek grubu seç', matchOnDescription: true }
+  )) as GroupPick | undefined;
+
+  if (!picked) {
+    return;
+  }
+
+  const doomed = picked.group;
+  const remaining = current.filter((group) => group.name !== doomed.name);
+
+  // Hedef sorusu boşa gitmesin diye bu kontrol ondan önce: sorup reddetmek
+  // kullanıcıya anlamsız bir adım attırıyor.
+  if (remaining.length === 0) {
+    void vscode.window.showWarningMessage(
+      'cmd-deck: tek grup varken silinemez — komut çalıştıracak bir şey kalmaz. ' +
+        'Önce "Hazır Grup Ekle" ile başka bir grup ekle.'
+    );
+    return;
+  }
+
+  const destination = await pickTarget();
+  if (!destination) {
+    return;
+  }
+
+  const confirmation = await vscode.window.showWarningMessage(
+    `"${doomed.name}" grubu silinecek: ${doomed.commands.length} komut, ikonu ve rengi de gider. ` +
+      `${targetName(destination)} yazılacak. Bu geri alınamaz.`,
+    { modal: true },
+    WRITE_LABEL
+  );
+
+  if (confirmation !== WRITE_LABEL) {
+    return;
+  }
+
+  const plan = await planFileSync(context);
+
+  await vscode.workspace
+    .getConfiguration(CONFIG_SECTION)
+    .update(GROUPS_KEY, slimGroups(remaining), destination);
+
+  const synced = await applyFileSync(
+    plan,
+    `cmd-deck: "${doomed.name}" ayarlardan silindi ama düzenleme dosyasında hâlâ var. ` +
+      'Dosyadan da silmezsen sonraki "Komut Dosyasını Uygula" adımında geri gelir.'
+  );
+
+  void vscode.window.showInformationMessage(
+    `cmd-deck: "${doomed.name}" silindi — ${doomed.commands.length} komut, ` +
+      `${targetName(destination)}.` +
+      (synced ? '' : ' Düzenleme dosyası güncellenmedi.')
+  );
 }

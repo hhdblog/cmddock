@@ -62,8 +62,15 @@ Listede gerçekten hiçbir şey değişmiyorsa özet hiç gösterilmez, dosyaya 
 
 ## Silmek
 
-Komutu ya da grubu silmenin tek yolu dosyadan silip **\`Listeyi değiştir\`** ile
-uygulamak. \`Grupları birleştir\` silmez, onaylansa bile eski komut kalır.
+Komutu silmek: dosyadan sil, **\`Listeyi değiştir\`** ile uygula.
+\`Grupları birleştir\` silmez, onaylansa bile eski komut kalır.
+
+Grubu silmek için **\`Cmd Deck: Grup Kaldır\`** daha güvenli. \`Listeyi değiştir\`
+tüm listeyi gelen dosyayla değiştirdiği için, dosya bayattaysa (ör. kütüphaneden
+eklenmiş ama dosyaya geçmemiş bir grup) istemediğin gruplar da gider.
+\`Grup Kaldır\` yalnızca seçtiğin grubu çıkarır.
+
+Son grup kaldırılamaz — çalıştırılacak komut kalmaz.
 
 ## Gruplar arası işaretler
 

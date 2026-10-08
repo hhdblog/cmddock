@@ -12,6 +12,7 @@ import {
   editGroupFile,
   pickStatusBarItems,
   reloadGroupFile,
+  removeGroup,
 } from './settings';
 import { createStatusBar, StatusBarHandle } from './statusBar';
 import { rankGroups, readLast, readUsage, recordRun, resolveLast } from './usage';
@@ -127,6 +128,13 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand('cmd-deck.addGroup', async () => {
       await addLibraryGroup(context);
       // Yeni grubun durum çubuğu düğmesi anında görünsün.
+      statusBar.refresh();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('cmd-deck.removeGroup', async () => {
+      await removeGroup(context);
       statusBar.refresh();
     })
   );

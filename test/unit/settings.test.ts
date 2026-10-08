@@ -19,7 +19,14 @@ import {
   writes,
 } from '../stubs/vscode';
 import { LIBRARY_GROUPS } from '../../src/library';
-import { addLibraryGroup, applyGroupFile, editGroupFile, reloadGroupFile } from '../../src/settings';
+import { normalizeGroups } from '../../src/normalize';
+import {
+  addLibraryGroup,
+  applyGroupFile,
+  editGroupFile,
+  reloadGroupFile,
+  removeGroup,
+} from '../../src/settings';
 
 /** Gerçek dosya sistemi kullanır; geçici klasör test sonunda silinir. */
 let dir: string;
@@ -546,5 +553,130 @@ describe('kütüphane ekledikten sonra düzenleme dosyası senkronlanır', () =>
     await addLibraryGroup(ctx as never);
 
     expect(read()).not.toContain('Docker');
+  });
+});
+
+describe('removeGroup', () => {
+  beforeEach(() => {
+    setConfiguration('cmdDeck', {
+      groups: [...ONE_GROUP, { name: 'Docker', commands: [{ name: 'x', command: 'y' }] }],
+    });
+  });
+
+  function pick(name: string) {
+    const group = normalizeGroups([
+      { name, commands: [{ name: 'x', command: 'y' }] },
+    ])[0];
+    queueQuickPick({ label: `${group!.icon} ${group!.name}`, description: '1 komut', group });
+  }
+
+  it('seçilen grubu listeden çıkarır', async () => {
+    pick('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await removeGroup(context() as never);
+
+    const written = (writes[0].value as { name: string }[]).map((g) => g.name);
+    expect(written).toEqual(['Git']);
+  });
+
+  it('yalnızca seçilen grubu siler, diğerlerine dokunmaz', async () => {
+    pick('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await removeGroup(context() as never);
+
+    expect(writes).toHaveLength(1);
+    expect(JSON.stringify(writes[0].value)).toContain('git status');
+  });
+
+  it('onay metni kaç komutun gittiğini söyler', async () => {
+    pick('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await removeGroup(context() as never);
+
+    const modal = messages.find((m) => m.text.includes('silinecek'));
+    expect(modal?.text).toContain('1 komut');
+    expect(modal?.text).toContain('geri alınamaz');
+  });
+
+  it('onaylanmazsa yazmaz', async () => {
+    pick('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage(undefined);
+
+    await removeGroup(context() as never);
+
+    expect(writes).toHaveLength(0);
+  });
+
+  it('seçimden vazgeçilirse yazmaz', async () => {
+    queueQuickPick(undefined);
+
+    await removeGroup(context() as never);
+
+    expect(writes).toHaveLength(0);
+  });
+
+  it('grup yoksa uyarır', async () => {
+    setConfiguration('cmdDeck', { groups: [] });
+
+    await removeGroup(context() as never);
+
+    expect(writes).toHaveLength(0);
+    expect(messages.at(-1)?.kind).toBe('warning');
+  });
+
+  it('son grubu silmeyi reddeder', async () => {
+    setConfiguration('cmdDeck', { groups: ONE_GROUP });
+    const group = normalizeGroups(ONE_GROUP)[0];
+    queueQuickPick({ label: `${group!.icon} ${group!.name}`, description: '1 komut', group });
+
+    await removeGroup(context() as never);
+
+    expect(writes).toHaveLength(0);
+    expect(messages.at(-1)?.text).toContain('tek grup');
+  });
+
+  it('dosya senkronsa silinen grubu dosyadan da çıkarır', async () => {
+    const ctx = context();
+    await editGroupFile(ctx as never);
+    pick('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await removeGroup(ctx as never);
+
+    const fromFile = JSON.parse(read()) as { name: string }[];
+    expect(fromFile.map((g) => g.name)).toEqual(['Git']);
+  });
+
+  it('dosyada uygulanmamış düzenleme varsa uyarır — geri gelmesin diye', async () => {
+    const ctx = context();
+    await editGroupFile(ctx as never);
+    // Dosyada Docker silinmiş ama ayarlarda hâlâ var: kullanıcının uygulanmamış işi
+    writeFileSync(groupFile(), JSON.stringify(ONE_GROUP), 'utf8');
+    pick('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await removeGroup(ctx as never);
+
+    expect(messages.some((m) => m.text.includes('hâlâ var'))).toBe(true);
+    expect(messages.some((m) => m.text.includes('geri gelir'))).toBe(true);
+  });
+
+  it('seçilen hedefe yazar', async () => {
+    pick('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Global });
+    queueMessage('Yaz');
+
+    await removeGroup(context() as never);
+
+    expect(writes[0].target).toBe(ConfigurationTarget.Global);
   });
 });
