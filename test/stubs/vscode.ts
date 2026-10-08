@@ -116,6 +116,7 @@ export function resetConfiguration(): void {
   fileDialogQueue.length = 0;
   messages.length = 0;
   openedDocuments.length = 0;
+  quickPickCalls.length = 0;
   workspaceFolders = [];
 }
 
@@ -191,6 +192,9 @@ export const messages: RecordedMessage[] = [];
 
 export const openedDocuments: UriLike[] = [];
 
+/** showQuickPick'e sunulan öğeler; "menüde ne vardı" sorusunu yanıtlamak için. */
+export const quickPickCalls: { items?: unknown; options?: unknown }[] = [];
+
 /** showQuickPick'in sırayla döndüreceği yanıtlar. */
 export function queueQuickPick(...responses: unknown[]): void {
   quickPickQueue.push(...responses);
@@ -250,7 +254,8 @@ export const window = {
     return item;
   },
 
-  showQuickPick(items?: unknown, _options?: unknown): Promise<unknown> {
+  showQuickPick(items?: unknown, options?: unknown): Promise<unknown> {
+    quickPickCalls.push({ items, options });
     return Promise.resolve(quickPickQueue.length > 0 ? quickPickQueue.shift() : undefined);
   },
 

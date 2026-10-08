@@ -24,6 +24,7 @@ Geliştirirken VSCode'da bu klasörü açıp <kbd>F5</kbd> ile Extension Develop
 | Komut çalıştır | Durum çubuğundaki **grup ikonuna** tıkla → komut (grup seviyesi atlanır) |
 | Tüm gruplardan seç | Durum çubuğundaki `Cmd` düğmesine tıkla → grup → komut |
 | Komut listesini düzenle | `Cmd Deck: Komut Listesini Düzenle` → JSON dosyası açılır, düzenle |
+| Hazır grup ekle (Docker, Go, k8s…) | `Cmd Deck: Hazır Grup Ekle` → kütüphaneden seç |
 | Grup seviyesine inmeden ara | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `Cmd Deck: Tüm Komutlarda Ara` |
 | Son komutu tekrarla | `Cmd Deck: Son Komutu Tekrar Çalıştır` |
 | Windows uyumluluğunu denetle | `Cmd Deck: Platform Uyumluluğunu Kontrol Et` |
@@ -123,6 +124,7 @@ $(debug-rerun) Son Komutu Tekrar Çalıştır
 $(json) Komut Listesini Düzenle
 $(sync) Komut Dosyasını Uygula
 $(check) Platform Uyumluluğunu Kontrol Et
+$(new-folder) Hazır Grup Ekle
 $(list-selection) Durum Çubuğu Düğmelerini Seç
 $(paintcan) İkon Kataloğu
 $(refresh) Dosyayı Ayarlardan Yenile
@@ -130,6 +132,33 @@ $(refresh) Dosyayı Ayarlardan Yenile
 
 Yeni bir komut eklemek istersen `src/menu.ts` içindeki `MENU_ACTIONS` listesine bir satır ekle —
 `id` alanı doğrudan çalıştırılacak komut kimliği. Aynı komutlar Komut Paleti'nde de duruyor.
+
+## Hazır grup kütüphanesi
+
+Kurulumla gelen 5 grubun dışında **10 hazır grup** daha var; hepsi tek komutla
+eklenir:
+
+`Cmd Deck: Hazır Grup Ekle` → kütüphaneden seç → hedefi sorar → yazar.
+
+| Grup | Komut | | Grup | Komut |
+|---|---|---|---|---|
+| `$(package)` Docker | 9 | | `$(vm)` Kubernetes | 10 |
+| `$(source-control)` GitHub CLI | 12 | | `$(symbol-interface)` Java (Maven/Gradle) | 8 |
+| `$(database)` PostgreSQL | 7 | | `$(server)` Redis | 6 |
+| `$(server-environment)` Go | 10 | | `$(device-mobile)` Android | 6 |
+| `$(gear)` Rust | 10 | | `$(rocket)` Vercel | 5 |
+
+Kurulumda gelenler `configurationDefaults` içinde olduğu için **herkese** gelir;
+onu büyütmek istemeyenin menüsünü şişirmemek için bunlar kütüphanede duruyor.
+Zaten eklediğin gruplar listede çıkmaz.
+
+Yalnızca **ekler**, silmez — mevcut komutlarına dokunmaz. Silmek için
+`Komut Dosyasını Uygula` → `Listeyi değiştir`.
+
+Kütüphane `src/library.ts` içinde; yeni grup eklemek için oraya bir giriş
+yazmak yeterli. `test/unit/library.test.ts` ikonların katalogda olduğunu,
+grup içi adların benzersizliğini ve **yıkıcı komutların onay istediğini**
+otomatik denetler.
 
 ## Komutlarını tanımlama
 

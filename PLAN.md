@@ -542,7 +542,7 @@ Doğrulama: `typecheck` ✔ · birim **139/139** ✔ · entegrasyon 7/7 ✔ · p
 
 ## 7.12 Hazır grup kütüphanesi
 
-**Plan aşamasında — henüz uygulanmadı.** 2026-10-09.
+**Uygulandı.** 2026-10-09 · 83 komut, 10 grup.
 
 ### Neden kütüphane, neden varsayılan listeye ekleme değil
 
@@ -729,23 +729,29 @@ MySQL yok (Postgres ile aynı kalıp), Make yok (proje-özel), Helm yok (kubectl
 
 ### Uygulama adımları
 
-- [ ] `src/library.ts` — 10 grup, tipler, `normalizeLibrary()`
-- [ ] `test/unit/library.test.ts` — `defaults.test.ts` deseni:
-      ikon katalogda mı, grup/komut adları benzersiz mi, `argsPrompt`'lu
-      komutlarda `argsPrompt` var mı, yıkıcı komutlarda `confirm` var mı,
-      renkler 6 haneli hex mi, her grupta 5–15 komut mu
-- [ ] `package.json` — `cmd-deck.addGroup` komutu
-- [ ] `src/menu.ts` — "Hazır Grup Ekle" satırı
-- [ ] `src/settings.ts` — `addLibraryGroup(context)`: kütüphane seçici + hedef + yazma
-- [ ] `src/extension.ts` — komut kaydı + `statusBar.refresh()`
-- [ ] `README.md` — yeni komut, kütüphane açıklaması
+- [x] `src/library.ts` — 10 grup, tipler, `normalizeLibrary()`
+- [x] `test/unit/library.test.ts` — 22 test: ikon katalogda mı, grup/komut adları
+      benzersiz mi, yıkıcı komutlar `confirm` istiyor mu, geri alınamaz komutlar
+      uyarıyor mu, renkler 6 haneli hex mi, her grupta 5–15 komut mu
+- [x] `package.json` — `cmd-deck.addGroup` komutu
+- [x] `src/menu.ts` — "Hazır Grup Ekle" satırı
+- [x] `src/settings.ts` — `addLibraryGroup()`: kütüphane seçici + hedef + yazma
+- [x] `src/extension.ts` — komut kaydı + `statusBar.refresh()`
+- [x] `README.md` — yeni komut, kütüphane açıklaması
+
+Guard'lar yazılırken iki hatayı yakaladı: `mvn clean install` "yıkıcı" diye
+onay istemiyordu (`cargo clean` öyle, `clean` kelimesine bakarak karar yanıltıcı —
+açık listeye çevrildi), ve uzun süreli komut listesi `psql -l`'yi de kabuk
+sayıyordu (`psql -U postgres` öyle).
 
 ### DoD'ya eklenecekler
 
-- [ ] `Hazır Grup Ekle` ile eklenen grup menüde ve durum çubuğunda görünür
-- [ ] Zaten ekli olan grup ikinci kez eklenemez (tekrar listede çıkmaz)
-- [ ] Eklenen gruplar **mevcut komutları silmez**
-- [ ] Her iyonik grup için uçtan uca elle deneme (en az 1 grup)
+- [x] `Hazır Grup Ekle` ile eklenen grup listeye eklenir (birim testi)
+- [x] Zaten ekli olan grup seçicide çıkmaz (birim testi + mutasyonla doğrulandı)
+- [x] Eklenen gruplar **mevcut komutları silmez** (birim testi)
+- [x] Eklenen komutlar `confirm` / `argsPrompt` alanlarını korur (birim testi)
+- [x] Ayarlara normalize dolguları yazılmaz (birim testi)
+- [ ] Uçtan uca elle deneme: eklenen grubun menüde ve durum çubuğunda görünmesi
 
 ## 8. Doğrulama (Definition of Done)
 

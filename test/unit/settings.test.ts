@@ -9,6 +9,7 @@ import {
   openedDocuments,
   queueMessage,
   queueOpenDialog,
+  quickPickCalls,
   queueQuickPick,
   resetConfiguration,
   setConfiguration,
@@ -16,7 +17,8 @@ import {
   Uri,
   writes,
 } from '../stubs/vscode';
-import { applyGroupFile, editGroupFile, reloadGroupFile } from '../../src/settings';
+import { LIBRARY_GROUPS } from '../../src/library';
+import { addLibraryGroup, applyGroupFile, editGroupFile, reloadGroupFile } from '../../src/settings';
 
 /** Gerçek dosya sistemi kullanır; geçici klasör test sonunda silinir. */
 let dir: string;
@@ -294,3 +296,164 @@ describe('applyGroupFile', () => {
     expect(stored.get('yeni')?.confirm).toBe('Emin mi?');
   });
 });
+describe('addLibraryGroup', () => {
+  beforeEach(() => {
+    setConfiguration('cmdDeck', { groups: ONE_GROUP });
+  });
+
+  function libraryPick(name: string) {
+    return queuePickByLabel(name);
+  }
+
+  it('kütüphaneden grup seçer ve listeye ekler', async () => {
+    libraryPick('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await addLibraryGroup();
+
+    expect(writes).toHaveLength(1);
+    const written = writes[0].value as { name: string; commands: unknown[] }[];
+    expect(written.map((g) => g.name)).toEqual(['Git', 'Docker']);
+    expect(written[1].commands.length).toBe(9);
+  });
+
+  it('mevcut komutlara dokunmaz', async () => {
+    libraryPick('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await addLibraryGroup();
+
+    const written = writes[0].value as { name: string; commands: { name: string }[] }[];
+    expect(written[0].commands.map((c) => c.name)).toEqual(['durum']);
+  });
+
+  it('zaten ekili olan grubu seçicide göstermez', async () => {
+    setConfiguration('cmdDeck', {
+      groups: [...ONE_GROUP, { name: 'Docker', commands: [{ name: 'x', command: 'y' }] }],
+    });
+    libraryPick('Go');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await addLibraryGroup();
+
+    const offered = (quickPickCalls[0].items as { label: string }[]).map((item) => item.label);
+    expect(offered.join(' ')).not.toContain('Docker');
+    expect(offered.length).toBe(LIBRARY_GROUPS.length - 1);
+  });
+
+  it('seçilen grubu mevcut grupların sonuna ekler', async () => {
+    setConfiguration('cmdDeck', {
+      groups: [...ONE_GROUP, { name: 'Docker', commands: [{ name: 'x', command: 'y' }] }],
+    });
+    libraryPick('Go');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await addLibraryGroup();
+
+    const written = (writes[0].value as { name: string }[]).map((g) => g.name);
+    expect(written).toEqual(['Git', 'Docker', 'Go']);
+  });
+
+  it('hepsi ekliyse uyarır ve yazmaz', async () => {
+    setConfiguration('cmdDeck', {
+      groups: LIBRARY_GROUPS.map((group) => ({
+        name: group.name,
+        commands: [{ name: 'x', command: 'y' }],
+      })),
+    });
+
+    await addLibraryGroup();
+
+    expect(messages.at(-1)?.text).toContain('hepsi zaten ekli');
+    expect(writes).toHaveLength(0);
+  });
+
+  it('seçimden vazgeçilirse yazmaz', async () => {
+    queueQuickPick(undefined);
+
+    await addLibraryGroup();
+
+    expect(writes).toHaveLength(0);
+  });
+
+  it('hedef seçilmezse yazmaz', async () => {
+    libraryPick('Docker');
+    queueQuickPick(undefined);
+
+    await addLibraryGroup();
+
+    expect(writes).toHaveLength(0);
+  });
+
+  it('onaylanmazsa yazmaz', async () => {
+    libraryPick('Docker');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage(undefined);
+
+    await addLibraryGroup();
+
+    expect(writes).toHaveLength(0);
+  });
+
+  it('eklenen gruba normalize dolguları yazmaz', async () => {
+    libraryPick('Redis');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await addLibraryGroup();
+
+    expect(JSON.stringify(writes[0].value)).not.toContain('"confirm": false');
+  });
+
+  it('yıkıcı komutlar confirm alanını korur', async () => {
+    libraryPick('Redis');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await addLibraryGroup();
+
+    const written = writes[0].value as { commands: { name: string; confirm?: string }[] }[];
+    const flushall = written[1].commands.find((c) => c.name === 'flushall');
+    expect(flushall?.confirm).toBeTruthy();
+  });
+
+  it('argsPrompt komutları argüman istemini korur', async () => {
+    libraryPick('Go');
+    queueQuickPick({ target: ConfigurationTarget.Workspace });
+    queueMessage('Yaz');
+
+    await addLibraryGroup();
+
+    const written = writes[0].value as { commands: { name: string; argsPrompt?: string }[] }[];
+    const calistir = written[1].commands.find((c) => c.name === 'çalıştır');
+    expect(calistir?.argsPrompt).toBeTruthy();
+  });
+
+  it('seçilen hedefe yazar', async () => {
+    libraryPick('Go');
+    queueQuickPick({ target: ConfigurationTarget.Global });
+    queueMessage('Yaz');
+
+    await addLibraryGroup();
+
+    expect(writes[0].target).toBe(ConfigurationTarget.Global);
+  });
+});
+
+/** Kütüphane seçicisinde adı geçen öğeyi döndürür (stub kuyruk sırasıyla verir). */
+function queuePickByLabel(name: string): void {
+  const group = LIBRARY_GROUPS.find((candidate) => candidate.name === name);
+  if (!group) {
+    throw new Error(`kütüphanede yok: ${name}`);
+  }
+  queueQuickPick({
+    label: `${group.icon} ${group.name}`,
+    description: group.summary,
+    detail: `${group.commands.length} komut`,
+    group,
+  });
+}

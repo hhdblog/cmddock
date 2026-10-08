@@ -3,7 +3,8 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { CONFIG_SECTION, GROUPS_KEY, getGroups, readRawGroups } from './config';
-import { countCommands } from './normalize';
+import { countCommands, normalizeGroups } from './normalize';
+import { LIBRARY_GROUPS, LibraryGroup } from './library';
 import { hiddenGroupNames, visibleGroupNames } from './plan';
 import {
   ImportMode,
@@ -354,5 +355,88 @@ export async function pickStatusBarItems(): Promise<void> {
   void vscode.window.showInformationMessage(
     `cmd-deck: durum çubuğunda ${picked.length} düğme açık ` +
       `(${newHidden.length} grup gizlendi) — kullanıcı ayarlarına yazıldı.`
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Hazır grup kütüphanesi
+ * ------------------------------------------------------------------ */
+
+interface LibraryPick extends vscode.QuickPickItem {
+  readonly group: LibraryGroup;
+}
+
+/**
+ * Kütüphaneden grup ekler.
+ *
+ * Yalnızca ekler, silmez: mevcut komutlara dokunmaz. Ad çakışması olamaz —
+ * zaten ekli olan gruplar listede hiç gösterilmez. Silme zaten
+ * `Komut Dosyasını Uygula` → `Listeyi değiştir` yolunda.
+ */
+export async function addLibraryGroup(): Promise<void> {
+  const existing = new Set(getGroups().map((group) => group.name));
+  const available = LIBRARY_GROUPS.filter((group) => !existing.has(group.name));
+
+  if (available.length === 0) {
+    void vscode.window.showInformationMessage(
+      `cmd-deck: kütüphanedeki ${LIBRARY_GROUPS.length} grubun hepsi zaten ekli.`
+    );
+    return;
+  }
+
+  const picked = (await vscode.window.showQuickPick(
+    available.map(
+      (group): LibraryPick => ({
+        label: `${group.icon} ${group.name}`,
+        description: group.summary,
+        detail: `${group.commands.length} komut`,
+        group,
+      })
+    ),
+    { placeHolder: 'Eklenecek hazır grubu seç', matchOnDescription: true }
+  )) as LibraryPick | undefined;
+
+  if (!picked) {
+    return;
+  }
+
+  const destination = await pickTarget();
+  if (!destination) {
+    return;
+  }
+
+  const chosen = picked.group;
+  const current = getGroups();
+  // Kütüphane girdisi cmdDeck.groups ile aynı şema; normalizeGroups alan
+  // eşlemesinin tamamını yapıyor, elle yazmaya gerek yok.
+  const incoming = normalizeGroups([
+    {
+      name: chosen.name,
+      icon: chosen.icon,
+      color: chosen.color,
+      commands: chosen.commands,
+    },
+  ]);
+
+  const total = countCommands(current);
+  const added = countCommands(incoming);
+
+  const confirmation = await vscode.window.showWarningMessage(
+    `"${chosen.name}" eklenecek: ${added} komut (toplam ${total} → ${total + added}), ` +
+      `${targetName(destination)} yazılacak.`,
+    { modal: true },
+    WRITE_LABEL
+  );
+
+  if (confirmation !== WRITE_LABEL) {
+    return;
+  }
+
+  await vscode.workspace
+    .getConfiguration(CONFIG_SECTION)
+    .update(GROUPS_KEY, slimGroups([...current, ...incoming]), destination);
+
+  void vscode.window.showInformationMessage(
+    `cmd-deck: "${chosen.name}" eklendi — ${added} komut, ${targetName(destination)}.`
   );
 }

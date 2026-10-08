@@ -77,6 +77,12 @@
         "title": "İkon Kataloğu",
         "category": "Cmd Deck",
         "icon": "$(paintcan)"
+      },
+      {
+        "command": "cmd-deck.addGroup",
+        "title": "Hazır Grup Ekle",
+        "category": "Cmd Deck",
+        "icon": "$(new-folder)"
       }
     ],
     "configurationDefaults": {

@@ -50,6 +50,13 @@ export const MENU_ACTIONS: readonly MenuAction[] = [
     runnable: true,
   },
   {
+    id: 'cmd-deck.addGroup',
+    label: 'Hazır Grup Ekle',
+    description: 'kütüphaneden komut grubu ekle',
+    icon: '$(new-folder)',
+    runnable: true,
+  },
+  {
     id: 'cmd-deck.statusBarItems',
     label: 'Durum Çubuğu Düğmelerini Seç',
     description: 'hangi grupların çubukta görüneceğini işaretle',
