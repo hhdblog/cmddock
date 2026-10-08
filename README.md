@@ -111,29 +111,40 @@ ikonları canlı çizer; seçtiğin ad panoya kopyalanır — sonra `statusBar.i
 Grup ve komut `icon` alanlarında düz ad da kabul edilir: `"icon": "git-branch"` yazan yazı
 olarak görünmez, `$(git-branch)` biçimine çevrilir.
 
-### Cmd menüsündeki "diğer menüler"
+### Cmd menüsü
 
-`Cmd` düğmesi önce grupları listeler, sonra bir ayraçla yardımcı menüleri gösterir:
+`Cmd` düğmesi önce grupları listeler, sonra dört bölüme ayrılmış yardımcı menüleri gösterir:
 
 ```
-$(snake) Python                     12 komut
-$(device-mobile) Flutter            12 komut
-$(server-environment) Node.js       12 komut
-—— diğer ——
-$(search) Tüm Komutlarda Ara
-$(debug-rerun) Son Komutu Tekrar Çalıştır
-$(json) Komut Listesini Düzenle
-$(sync) Komut Dosyasını Uygula
-$(check) Platform Uyumluluğunu Kontrol Et
-$(new-folder) Hazır Grup Ekle
-$(markdown) Komut Dosyası Nasıl Kullanılır
+$(snake) Python                    12 komut
+$(device-mobile) Flutter           12 komut
+$(server-environment) Node.js      12 komut
+
+—— komutlar ——
+$(search)        Tüm Komutlarda Ara
+$(debug-rerun)   Son Komutu Tekrar Çalıştır
+
+—— listeyi düzenle ——
+$(json)          Komut Listesini Düzenle
+$(sync)          Komut Dosyasını Uygula
+$(new-folder)    Hazır Grup Ekle
+$(refresh)       Dosyayı Ayarlardan Yenile
+
+—— görünüm ——
 $(list-selection) Durum Çubuğu Düğmelerini Seç
-$(paintcan) İkon Kataloğu
-$(refresh) Dosyayı Ayarlardan Yenile
+$(paintcan)      İkon Kataloğu
+
+—— denetle ve yardım ——
+$(check)         Platform Uyumluluğunu Kontrol Et
+$(markdown)      Komut Dosyası Nasıl Kullanılır
 ```
 
-Yeni bir komut eklemek istersen `src/menu.ts` içindeki `MENU_ACTIONS` listesine bir satır ekle —
-`id` alanı doğrudan çalıştırılacak komut kimliği. Aynı komutlar Komut Paleti'nde de duruyor.
+Yardımcı menü **dört bölüme ayrılır** ve sıra **kullanım sıklığına göre** kurulur:
+günlük iki komut en üstte, listeyi düzenleme ortada, nadir kullanılanlar en altta.
+Yeni komut eklemek için `src/menu.ts` içindeki `MENU_ACTIONS` listesine bir satır ekle ve
+`section` alanına bölümünü yaz (`run` / `edit` / `view` / `help`). Sıra tanım yazım
+sırasıdır, bölüm sırası `MENU_SECTIONS`. `id` doğrudan çalıştırılacak komut kimliği;
+aynı komutlar Komut Paleti'nde de duruyor.
 
 ## Hazır grup kütüphanesi
 

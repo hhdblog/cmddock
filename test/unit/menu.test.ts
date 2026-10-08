@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { MENU_ACTIONS, MENU_SEPARATOR } from '../../src/menu';
+import { MENU_ACTIONS, MENU_SECTIONS, MENU_SEPARATOR, menuRows } from '../../src/menu';
 import { CATALOG_ENTRIES } from '../../src/icons';
 
 const catalog = new Set(CATALOG_ENTRIES.map((entry) => entry.name));
@@ -64,5 +64,56 @@ describe('yardımcı menü', () => {
 
   it('ayraç etiketi boş değil', () => {
     expect(MENU_SEPARATOR.length).toBeGreaterThan(0);
+  });
+});
+
+describe('menü bölümleri', () => {
+  it('her bölüm başlığı ayracı olarak çizilir', () => {
+    const separators = menuRows().filter((row) => row.type === 'separator');
+    expect(separators).toHaveLength(MENU_SECTIONS.length);
+  });
+
+  it('her ayraçtan sonra o bölümün kalemleri gelir', () => {
+    const rows = menuRows();
+    const firstAction = rows.findIndex((row) => row.type === 'action');
+    expect(rows[firstAction - 1]).toEqual({ type: 'separator', label: expect.any(String) });
+  });
+
+  it('her kalem tanımlı bir bölümde', () => {
+    for (const action of MENU_ACTIONS) {
+      expect(MENU_SECTIONS).toContain(action.section);
+    }
+  });
+
+  it('hiçbir kalem iki bölümde birden görünmüyor', () => {
+    const ids = menuRows().filter((row) => row.type === 'action').map((row) => row.action.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(ids).toHaveLength(MENU_ACTIONS.length);
+  });
+
+  it('en çok kullanılan komutlar üstte', () => {
+    const first = MENU_ACTIONS.slice(0, 2).map((action) => action.id);
+    expect(first).toEqual(['cmd-deck.search', 'cmd-deck.runLast']);
+  });
+
+  it('günlük komutlar aynı bölümde', () => {
+    const [search, runLast] = MENU_ACTIONS;
+    expect(search?.section).toBe('run');
+    expect(runLast?.section).toBe('run');
+  });
+
+  it('düzenleme komutları bir arada', () => {
+    const edit = MENU_ACTIONS.filter((action) => action.section === 'edit').map((a) => a.id);
+    expect(edit).toContain('cmd-deck.export');
+    expect(edit).toContain('cmd-deck.import');
+    expect(edit).toContain('cmd-deck.addGroup');
+  });
+
+  it('ayraç etiketleri boş değil', () => {
+    for (const row of menuRows()) {
+      if (row.type === 'separator') {
+        expect(row.label.length).toBeGreaterThan(0);
+      }
+    }
   });
 });

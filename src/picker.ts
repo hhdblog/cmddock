@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { MENU_ACTIONS, MENU_SEPARATOR } from './menu';
+import { MENU_SEPARATOR, menuRows } from './menu';
 import { DeckCommand, DeckGroup } from './normalize';
 
 interface GroupItem extends vscode.QuickPickItem {
@@ -52,13 +52,18 @@ export async function pickCommand(
       group,
     })),
     { kind: vscode.QuickPickItemKind.Separator, label: MENU_SEPARATOR } as const,
-    ...MENU_ACTIONS.map(
-      (action): ActionItem => ({
+    // Bölüm başlığı ayracı, sonra o bölümün kalemleri.
+    ...menuRows().map((row): MasterItem => {
+      if (row.type === 'separator') {
+        return { kind: vscode.QuickPickItemKind.Separator, label: row.label } as const;
+      }
+      const { action } = row;
+      return {
         label: `${action.icon} ${action.label}`,
         description: action.description,
         actionId: action.id,
-      })
-    ),
+      };
+    }),
   ];
 
   const picked = await vscode.window.showQuickPick(groupItems, {

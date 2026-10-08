@@ -1,17 +1,37 @@
 /**
- * Cmd düğmesinin altındaki "diğer menüler" — grup listesinden sonra ayraçla gelir.
+ * Cmd düğmesinin altındaki yardımcı menü — grup listesinden sonra gelir.
  * Buradaki `id` doğrudan kayıtlı komut kimliğidir; seçilince doğrudan çalıştırılır.
+ *
+ * Sıra **kullanım sıklığına göre**, bölümler de aynı mantıkla: günlük iki komut
+ * en üstte, listeyi düzenleme ortada, nadir kullanılanlar en altta. Sekiz satır
+ * varken sıra okunmaz hale geliyordu — en çok kullanılan iki komut listenin
+ * ortasına gömülüydü.
  */
+
+export type MenuSection = 'run' | 'edit' | 'view' | 'help';
+
 export interface MenuAction {
   readonly id: string;
   readonly label: string;
   readonly description: string;
   readonly icon: string;
-  /** Gerçekten çalıştırılabilecek komut mu, yoksa yalnızca bilgi mi. */
-  readonly runnable: boolean;
+  /** Menüde hangi başlığın altında görüneceği. */
+  readonly section: MenuSection;
 }
 
-export const MENU_SEPARATOR = '—— diğer ——';
+/** Grup listesinden yardımcı menüye geçişi işaretleyen ayraç. */
+export const MENU_SEPARATOR = '—— komutlar ve araçlar ——';
+
+/** Bölüm başlığını veren ayraç etiketleri. */
+export const MENU_SECTION_LABELS: Readonly<Record<MenuSection, string>> = {
+  run: 'komutlar',
+  edit: 'listeyi düzenle',
+  view: 'görünüm',
+  help: 'denetle ve yardım',
+};
+
+/** Bölümlerin görüneceği sıra. */
+export const MENU_SECTIONS: readonly MenuSection[] = ['run', 'edit', 'view', 'help'];
 
 export const MENU_ACTIONS: readonly MenuAction[] = [
   {
@@ -19,69 +39,99 @@ export const MENU_ACTIONS: readonly MenuAction[] = [
     label: 'Tüm Komutlarda Ara',
     description: 'grupları düzleştirir, yazarak ararsın',
     icon: '$(search)',
-    runnable: true,
+    section: 'run',
   },
   {
     id: 'cmd-deck.runLast',
     label: 'Son Komutu Tekrar Çalıştır',
     description: 'en son çalıştığın komutu tekrar çalıştırır',
     icon: '$(debug-rerun)',
-    runnable: true,
+    section: 'run',
   },
   {
     id: 'cmd-deck.export',
     label: 'Komut Listesini Düzenle',
     description: 'komut dosyasını açar, düzenle',
     icon: '$(json)',
-    runnable: true,
+    section: 'edit',
   },
   {
     id: 'cmd-deck.import',
     label: 'Komut Dosyasını Uygula',
     description: 'dosyadaki listeyi özetleyip ayarlara yazar',
     icon: '$(sync)',
-    runnable: true,
-  },
-  {
-    id: 'cmd-deck.checkPlatform',
-    label: 'Platform Uyumluluğunu Kontrol Et',
-    description: 'macOS/Linux yollarını Windows için düzelt',
-    icon: '$(check)',
-    runnable: true,
+    section: 'edit',
   },
   {
     id: 'cmd-deck.addGroup',
     label: 'Hazır Grup Ekle',
     description: 'kütüphaneden komut grubu ekle',
     icon: '$(new-folder)',
-    runnable: true,
-  },
-  {
-    id: 'cmd-deck.usage',
-    label: 'Komut Dosyası Nasıl Kullanılır',
-    description: 'dosya formatı, alanlar, uygulama modları',
-    icon: '$(markdown)',
-    runnable: true,
-  },
-  {
-    id: 'cmd-deck.statusBarItems',
-    label: 'Durum Çubuğu Düğmelerini Seç',
-    description: 'hangi grupların çubukta görüneceğini işaretle',
-    icon: '$(list-selection)',
-    runnable: true,
-  },
-  {
-    id: 'cmd-deck.iconCatalog',
-    label: 'İkon Kataloğu',
-    description: 'kullanılabilir kodikonları gör',
-    icon: '$(paintcan)',
-    runnable: true,
+    section: 'edit',
   },
   {
     id: 'cmd-deck.reload',
     label: 'Dosyayı Ayarlardan Yenile',
     description: 'dosyayı ayarlardaki liste ile üzerine yazar',
     icon: '$(refresh)',
-    runnable: true,
+    section: 'edit',
+  },
+  {
+    id: 'cmd-deck.statusBarItems',
+    label: 'Durum Çubuğu Düğmelerini Seç',
+    description: 'hangi grupların çubukta görüneceğini işaretle',
+    icon: '$(list-selection)',
+    section: 'view',
+  },
+  {
+    id: 'cmd-deck.iconCatalog',
+    label: 'İkon Kataloğu',
+    description: 'kullanılabilir kodikonları gör',
+    icon: '$(paintcan)',
+    section: 'view',
+  },
+  {
+    id: 'cmd-deck.checkPlatform',
+    label: 'Platform Uyumluluğunu Kontrol Et',
+    description: 'macOS/Linux yollarını Windows için düzelt',
+    icon: '$(check)',
+    section: 'help',
+  },
+  {
+    id: 'cmd-deck.usage',
+    label: 'Komut Dosyası Nasıl Kullanılır',
+    description: 'dosya formatı, alanlar, uygulama modları',
+    icon: '$(markdown)',
+    section: 'help',
   },
 ];
+
+/**
+ * Menünün çizim satırı. `type` ayraç mı kalem mi ayırt ediyor; her iki üyede de
+ * bulunduğu için TypeScript daraltmayı doğru yapabiliyor.
+ */
+export type MenuRow =
+  | { readonly type: 'separator'; readonly label: string }
+  | { readonly type: 'action'; readonly action: MenuAction };
+
+/**
+ * Menüyü çizim sırasına çevirir: her bölüm için başlık ayracı, sonra o bölümün
+ * kalemleri. Bölüm sırası `MENU_SECTIONS`, iç sıra tanım yazım sırasıdır.
+ * `picker.ts` bu satırları QuickPick öğelerine çeviriyor.
+ */
+export function menuRows(): MenuRow[] {
+  const rows: MenuRow[] = [];
+
+  for (const section of MENU_SECTIONS) {
+    const actions = MENU_ACTIONS.filter((action) => action.section === section);
+    if (actions.length === 0) {
+      continue;
+    }
+    rows.push({ type: 'separator', label: `—— ${MENU_SECTION_LABELS[section]} ——` });
+    for (const action of actions) {
+      rows.push({ type: 'action', action });
+    }
+  }
+
+  return rows;
+}
