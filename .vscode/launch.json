@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configs": [
+    {
+      "name": "Cmd Deck: Run",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "preLaunchTask": "npm: build"
+    },
+    {
+      "name": "Cmd Deck: Watch (yeniden derle + yeniden başlat)",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+      "preLaunchTask": "npm: watch",
+      "console": "integratedTerminal"
+    }
+  ]
+}

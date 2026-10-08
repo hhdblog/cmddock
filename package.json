@@ -1,0 +1,370 @@
+{
+  "name": "cmd-deck",
+  "displayName": "Cmd Deck",
+  "description": "Sık kullanılan terminal komutlarını gruplayan durum çubuğu paneli.",
+  "version": "0.1.0",
+  "publisher": "cmd-deck",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "icon": "media/icon.png",
+  "keywords": [
+    "terminal",
+    "commands",
+    "status bar",
+    "task runner"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "cmd-deck.open",
+        "title": "Komutlar",
+        "category": "Cmd Deck",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "cmd-deck.search",
+        "title": "Tüm Komutlarda Ara",
+        "category": "Cmd Deck",
+        "icon": "$(search)"
+      },
+      {
+        "command": "cmd-deck.runLast",
+        "title": "Son Komutu Tekrar Çalıştır",
+        "category": "Cmd Deck",
+        "icon": "$(debug-rerun)"
+      },
+      {
+        "command": "cmd-deck.reload",
+        "title": "Komut Listesini Yenile",
+        "category": "Cmd Deck",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "cmd-deck.checkPlatform",
+        "title": "Platform Uyumluluğunu Kontrol Et",
+        "category": "Cmd Deck",
+        "icon": "$(check)"
+      }
+    ],
+    "configurationDefaults": {
+      "cmdDeck.groups": [
+        {
+          "name": "Python",
+          "icon": "$(symbol-variable)",
+          "commands": [
+            {
+              "name": "venv oluştur",
+              "command": "{python} -m venv .venv",
+              "description": "Sanal ortamı kur"
+            },
+            {
+              "name": "bağımlılıkları kur",
+              "command": "{venv}pip install -r requirements.txt",
+              "description": "requirements.txt'ten kur"
+            },
+            {
+              "name": "requirements üret",
+              "command": "{venv}pip freeze > requirements.txt",
+              "description": "freeze çıktısını dosyaya yaz"
+            },
+            {
+              "name": "paket kur",
+              "command": "{venv}pip install",
+              "argsPrompt": "paket adı (örn. requests==2.32.0)",
+              "description": "tek paket kur"
+            },
+            {
+              "name": "dosya çalıştır",
+              "command": "{venvpy}",
+              "argsPrompt": "dosya yolu (örn. main.py)",
+              "description": "belirtilen scripti çalıştır"
+            },
+            {
+              "name": "test",
+              "command": "{venvpy} -m pytest",
+              "description": "pytest"
+            },
+            {
+              "name": "format",
+              "command": "{venvpy} -m black .",
+              "description": "black"
+            },
+            {
+              "name": "lint",
+              "command": "{venvpy} -m ruff check .",
+              "description": "ruff"
+            },
+            {
+              "name": "tip kontrolü",
+              "command": "{venvpy} -m mypy .",
+              "description": "mypy"
+            },
+            {
+              "name": "Jupyter Lab",
+              "command": "{venv}jupyter lab",
+              "description": "notebook sunucusu (Ctrl+C ile durur)"
+            },
+            {
+              "name": "bağımlılık listesi",
+              "command": "{venv}pip list",
+              "description": "kurulu paketler"
+            },
+            {
+              "name": "güncel olmayanlar",
+              "command": "{venv}pip list --outdated",
+              "description": "outdated"
+            }
+          ]
+        },
+        {
+          "name": "Flutter",
+          "icon": "$(device-mobile)",
+          "commands": [
+            {
+              "name": "pub get",
+              "command": "flutter pub get",
+              "description": "bağımlılıkları indir"
+            },
+            {
+              "name": "çalıştır",
+              "command": "flutter run",
+              "description": "hot reload aktif, Ctrl+C ile durur"
+            },
+            {
+              "name": "build apk",
+              "command": "flutter build apk --release",
+              "clear": true,
+              "description": "APK çıktısı"
+            },
+            {
+              "name": "build web",
+              "command": "flutter build web",
+              "clear": true,
+              "description": "web çıktısı"
+            },
+            {
+              "name": "build ios",
+              "command": "flutter build ios --release",
+              "clear": true,
+              "description": "macOS + Xcode gerekir"
+            },
+            {
+              "name": "analyze",
+              "command": "flutter analyze",
+              "description": "statik analiz"
+            },
+            {
+              "name": "test",
+              "command": "flutter test",
+              "description": "testler"
+            },
+            {
+              "name": "format",
+              "command": "dart format .",
+              "description": "dart formatter"
+            },
+            {
+              "name": "cihazlar",
+              "command": "flutter devices",
+              "description": "bağlı cihazlar"
+            },
+            {
+              "name": "temizle",
+              "command": "flutter clean",
+              "confirm": "Derleme önbelleği silinecek. Devam?",
+              "description": "build klasörlerini siler"
+            },
+            {
+              "name": "upgrade",
+              "command": "flutter upgrade",
+              "description": "SDK güncelle"
+            },
+            {
+              "name": "stable kanal",
+              "command": "flutter channel stable && flutter upgrade",
+              "description": "kanala geç ve güncelle"
+            }
+          ]
+        },
+        {
+          "name": "Node.js",
+          "icon": "$(server-environment)",
+          "commands": [
+            {
+              "name": "kur",
+              "command": "npm install",
+              "description": "bağımlılıkları kur"
+            },
+            {
+              "name": "temiz kur",
+              "command": "npm ci",
+              "clear": true,
+              "description": "lock dosyasından birebir kur"
+            },
+            {
+              "name": "derle",
+              "command": "npm run build",
+              "clear": true,
+              "description": "production build"
+            },
+            {
+              "name": "başlat",
+              "command": "npm start",
+              "description": "start scripti"
+            },
+            {
+              "name": "dev",
+              "command": "npm run dev",
+              "description": "watch modu (Ctrl+C ile durur)"
+            },
+            {
+              "name": "test",
+              "command": "npm test",
+              "description": "testler"
+            },
+            {
+              "name": "typecheck",
+              "command": "npx tsc --noEmit",
+              "description": "TS tip kontrolü"
+            },
+            {
+              "name": "lint",
+              "command": "npm run lint",
+              "description": "eslint"
+            },
+            {
+              "name": "outdated",
+              "command": "npm outdated",
+              "description": "güncel olmayanlar"
+            },
+            {
+              "name": "güvenlik açığı düzelt",
+              "command": "npm audit fix",
+              "confirm": "paket sürümleri değişecek. Devam?",
+              "description": "audit fix"
+            },
+            {
+              "name": "node_modules temizle",
+              "command": "{rm} node_modules",
+              "confirm": "node_modules silinecek, yeniden kurulum gerekir. Devam?",
+              "description": "bağımlılık klasörünü sil"
+            },
+            {
+              "name": "global bağla",
+              "command": "npm link",
+              "argsPrompt": "paket adı (örn. my-lib)",
+              "description": "link"
+            }
+          ]
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Cmd Deck",
+      "properties": {
+        "cmdDeck.groups": {
+          "type": "array",
+          "default": [],
+          "description": "Durum çubuğu menüsünde gösterilecek komut grupları. Boş bırakılırsa eklentinin varsayılan grupları (Python, Flutter, Node.js) kullanılır.",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "commands"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Grup adı, menüde başlık olarak görünür."
+              },
+              "icon": {
+                "type": "string",
+                "default": "$(terminal)",
+                "description": "Codicon adı, örn. $(zap)"
+              },
+              "commands": {
+                "type": "array",
+                "description": "Grup içindeki komutlar.",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "name",
+                    "command"
+                  ],
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Komutun menüde görünen adı."
+                    },
+                    "command": {
+                      "type": "string",
+                      "description": "Çalıştırılacak shell komutu. Platform belirteçleri: {python} (python3 ↔ python), {venv} (.venv/bin/ ↔ .venv\\Scripts\\), {venvpy} (python ↔ python.exe), {rm} (rm -rf ↔ cmd /c rmdir /s /q)."
+                    },
+                    "description": {
+                      "type": "string",
+                      "default": "",
+                      "description": "Sağda görünen açıklama."
+                    },
+                    "icon": {
+                      "type": "string",
+                      "default": "$(terminal)",
+                      "description": "Codicon adı, örn. $(play)."
+                    },
+                    "confirm": {
+                      "type": [
+                        "string",
+                        "boolean"
+                      ],
+                      "default": false,
+                      "description": "true veya bir metin ise çalıştırmadan önce onay ister."
+                    },
+                    "argsPrompt": {
+                      "type": "string",
+                      "description": "Çalıştırmadan önce kullanıcıdan argüman sorulur."
+                    },
+                    "clear": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "true ise terminal temizlenerek çalıştırılır."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:integration": "node esbuild.mjs --tests && node out/test/runTest.js",
+    "icon": "node scripts/make-icon.mjs",
+    "package": "vsce package --no-dependencies",
+    "vscode:prepublish": "npm run build"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^26.6.4",
+    "@types/vscode": "~1.90.0",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "mocha": "^12.0.3",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3"
+  }
+}
