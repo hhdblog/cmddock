@@ -81,6 +81,26 @@ describe('normalizeGroup', () => {
     expect(group?.icon).toBe('$(source-control)');
   });
 
+  it('grup rengini ham string olarak koruyor (JSON serileştirmesi)', () => {
+    const group = normalizeGroup({
+      name: 'A',
+      color: '  #4B8BBE  ',
+      commands: [{ name: 'x', command: 'ls' }],
+    });
+
+    // parse edilmiş nesne degil string: boylece disa/ice aktarimda bozulmaz.
+    expect(group?.color).toBe('#4B8BBE');
+    expect(JSON.parse(JSON.stringify(group))?.color).toBe('#4B8BBE');
+  });
+
+  it('grup rengi bos veya hataliysa undefined', () => {
+    const base = { name: 'A', commands: [{ name: 'x', command: 'ls' }] };
+
+    expect(normalizeGroup(base)?.color).toBeUndefined();
+    expect(normalizeGroup({ ...base, color: '   ' })?.color).toBeUndefined();
+    expect(normalizeGroup({ ...base, color: 42 })?.color).toBeUndefined();
+  });
+
   it('komutsuz veya isimsiz grubu atlar', () => {
     expect(normalizeGroup({ name: 'Boş', commands: [] })).toBeUndefined();
     expect(normalizeGroup({ commands: [{ name: 'a', command: 'ls' }] })).toBeUndefined();

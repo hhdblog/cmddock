@@ -78,6 +78,7 @@
         {
           "name": "Python",
           "icon": "$(snake)",
+          "color": "#4B8BBE",
           "commands": [
             {
               "name": "venv oluştur",
@@ -159,6 +160,7 @@
         {
           "name": "Flutter",
           "icon": "$(device-mobile)",
+          "color": "#47C5FB",
           "commands": [
             {
               "name": "pub get",
@@ -241,6 +243,7 @@
         {
           "name": "Node.js",
           "icon": "$(server-environment)",
+          "color": "#83CD29",
           "commands": [
             {
               "name": "kur",
@@ -345,6 +348,10 @@
                 "type": "string",
                 "default": "$(terminal)",
                 "description": "Codicon adı (\"zap\") veya \"$(zap)\" biçiminde yazılabilir. Varsayılan: $(terminal)."
+              },
+              "color": {
+                "type": "string",
+                "description": "Durum çubuğundaki bu grup düğmesinin ön plan rengi. \"#4B8BBE\" gibi hex ya da \"charts.blue\" gibi tema rengi adı. Boş bırakılırsa cmdDeck.statusBar.color uygulanır."
               },
               "commands": {
                 "type": "array",

@@ -13,6 +13,8 @@ export interface DeckCommand {
 export interface DeckGroup {
   readonly name: string;
   readonly icon: string;
+  /** Durum çubuğundaki bu grup düğmesinin ön plan rengi (hex veya tema rengi adı). */
+  readonly color?: string;
   readonly commands: readonly DeckCommand[];
 }
 
@@ -83,7 +85,7 @@ export function normalizeGroup(raw: unknown): DeckGroup | undefined {
     return undefined;
   }
 
-  return { name, icon: parseIcon(r.icon), commands };
+  return { name, icon: parseIcon(r.icon), color: text(r.color).trim() || undefined, commands };
 }
 
 export function normalizeGroups(raw: unknown): DeckGroup[] {

@@ -105,6 +105,8 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
     // Öğeler yalnızca yapı değiştiğinde yeniden kurulur; her çalıştırmada
     // dispose/create yapılmasın diye imza karşılaştırması var.
     const nextSignature = JSON.stringify(
+      // İmzada yalnızca build() sırasında kullanılan alanlar var; metin, renk ve
+      // tooltip döngüde uygulandığı için gereksiz yeniden kurulum tetiklemesin.
       plan.map((entry) => [entry.kind, entry.id, entry.statusBarId, entry.name, entry.priority])
     );
     if (nextSignature !== signature) {
@@ -123,7 +125,8 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
       }
 
       item.text = empty && entry.kind === 'master' ? `${entry.text}!` : entry.text;
-      item.color = color;
+      // Grup düğmesinin kendi rengi varsa o, yoksa genel renk geçerli.
+      item.color = applyColor(entry.color) ?? color;
       item.backgroundColor = background;
 
       const lines =

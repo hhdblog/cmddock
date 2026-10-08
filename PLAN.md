@@ -108,7 +108,7 @@ cmd-deck/
 │   ├── style.ts          # SAF: parseIcon (düz ad → $(ad)) ve parseColor (hex/tema)
 │   ├── icons.ts          # doğrulanmış kodikon kataloğu (~120 ad, 10 kategori)
 │   ├── iconCatalog.ts    # katalog penceresi: canlı ikon + panoya kopyalama
-│   ├── plan.ts           # SAF: durum çubuğu öğelerinin planı (hangi düğme, metin, öncelik)
+│   ├── plan.ts           # SAF: durum çubuğu öğelerinin planı (düğme, metin, ad, kimlik, öncelik, renk)
 │   ├── settings.ts       # pano/dosya seçimi + cmdDeck.groups ayarına yazma
 │   ├── picker.ts         # iki kademeli QuickPick (grup → komut)
 │   ├── runner.ts         # confirm, argsPrompt, executeTask + ShellExecution
@@ -419,6 +419,27 @@ kalması (menüde makul görünmesi için < 40 karakter).
 
 Doğrulama: `typecheck` ✔ · birim **107/107** ✔ (18 yeni: sıralama, öncelik ve kaydırma, ayrı kimlikler, tekrarlı grup adları, menü adları, gizleme, etiket, tooltip) ·
 entegrasyon 7/7 ✔ · paket 32.82 KB ✔
+
+## 7.7 Grup bazlı renk (durum çubuğu ikonu)
+
+İstek: grup tanımında `color` alanı, durum çubuğundaki ikon o renkte görünsün.
+
+| Konu | Karar |
+|---|---|
+| Veri tipi | `DeckGroup.color` **ham string** olarak tutuluyor, `ColorSpec` değil. Parse edilmiş nesne JSON'a girip dışa/içe aktarımda bozulurdu (`{"hex":"..."}` → yeniden okununca undefined) |
+| Çözümleme | `plan.ts` içinde `parseColor(group.color)`: hex → doğrudan, `charts.blue` gibi tema adı → `ThemeColor` |
+| Öncelik | Grubun kendi `color`'ı → yoksa `cmdDeck.statusBar.color` → yoksa tema |
+| Varsayılanlar | Python `#4B8BBE`, Flutter `#47C5FB`, Node.js `#83CD29` (marka tonları, koyu çubukta okunaklı) |
+| Sınır | Renk **sadece durum çubuğunda** görünür. QuickPick'te renk gösterilemiyor (`QuickPickItem` renk desteklemiyor) — komut bazlı renk bu yüzden eklenmedi |
+
+Yeniden kurulum imzasına `text`/renk eklenmedi: bunlar `build()` yerine döngüde uygulandığı için
+imzaya girmeleri her çalıştırmada gereksiz dispose/create tetiklerdi.
+
+Test sırasında iki tuzak: test başlığındaki `JSON'a` kesme işareti tek tırnaklı string'i bozdu
+(parse hatası), ve `parseColor('kirmizi')` geçerli bir tema rengi id'si olduğu için reddedilmiyor
+(bilinmeyen tema rengi sessizce renksiz kalıyor — kabul edildi, test düzeltildi).
+
+Doğrulama: `typecheck` ✔ · birim **113/113** ✔ · entegrasyon 7/7 ✔ · paket 33.03 KB ✔
 
 ## 8. Doğrulama (Definition of Done)
 

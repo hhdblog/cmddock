@@ -44,6 +44,12 @@ describe('varsayılan komut listesi', () => {
     }
   });
 
+  it('varsayılan grupların rengi geçerli hex', () => {
+    for (const group of groups) {
+      expect(group.color).toMatch(/^#[0-9a-fA-F]{6}$/);
+    }
+  });
+
   it('her grupta en az bir komut yıkıcı işaretli', () => {
     for (const group of groups) {
       expect(

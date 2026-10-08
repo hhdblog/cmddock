@@ -155,6 +155,39 @@ describe('planItems', () => {
     expect(ids).toContain('cmd-deck.group.A#2');
   });
 
+  it('grup rengini düğmeye taşır', () => {
+    const colored = normalizeGroups([
+      { name: 'Renkli', color: '#4B8BBE', commands: [{ name: 'x', command: 'ls' }] },
+      { name: 'Temalı', color: 'charts.red', commands: [{ name: 'y', command: 'pwd' }] },
+      { name: 'Rengi yok', commands: [{ name: 'z', command: 'id' }] },
+      { name: 'Bozuk renk', color: 'rgb(1,2,3)', commands: [{ name: 'w', command: 'ls' }] },
+    ]);
+    const plan = planItems(colored, base);
+
+    expect(plan.find((e) => e.id === 'Renkli')?.color).toEqual({ hex: '#4B8BBE' });
+    expect(plan.find((e) => e.id === 'Temalı')?.color).toEqual({ theme: 'charts.red' });
+    expect(plan.find((e) => e.id === 'Rengi yok')?.color).toBeUndefined();
+    expect(plan.find((e) => e.id === 'Bozuk renk')?.color).toBeUndefined();
+  });
+
+  it('tek kelime tema rengi kabul edilir', () => {
+    // VSCode tema renkleri id ile verilir (charts.red, foreground, ...); bilinmeyen
+    // id sessizce renksiz kalir, bu yuzden reddedilmiyor.
+    const themed = normalizeGroups([
+      { name: 'A', color: 'foreground', commands: [{ name: 'x', command: 'ls' }] },
+    ]);
+    expect(planItems(themed, base).find((e) => e.id === 'A')?.color).toEqual({
+      theme: 'foreground',
+    });
+  });
+
+  it('cmd düğmesinde grup rengi uygulanmaz', () => {
+    const colored = normalizeGroups([
+      { name: 'A', color: '#4B8BBE', commands: [{ name: 'x', command: 'ls' }] },
+    ]);
+    expect(planItems(colored, base).find((e) => e.kind === 'master')?.color).toBeUndefined();
+  });
+
   it('menüde görünecek adlar ayrı ayrı', () => {
     // name set edilmezse menüde tüm öğeler "Cmd Deck (extension)" görünür.
     const names = planItems(groups, base).map((entry) => entry.name);

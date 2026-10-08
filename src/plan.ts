@@ -1,5 +1,5 @@
 import { DeckGroup, countCommands } from './normalize';
-import { parseIcon } from './style';
+import { ColorSpec, parseColor, parseIcon } from './style';
 
 export const MASTER_ID = 'cmd-deck';
 export const MASTER_STATUS_BAR_ID_PREFIX = 'cmd-deck';
@@ -49,6 +49,8 @@ export interface StatusBarPlanItem {
    */
   readonly name: string;
   readonly text: string;
+  /** Bu düğmenin ön plan rengi; yoksa genel cmdDeck.statusBar.color uygulanır. */
+  readonly color?: ColorSpec;
   readonly tooltipLines: string[];
   readonly priority: number;
 }
@@ -120,6 +122,7 @@ export function planItems(
       kind: 'group',
       id: group.name,
       name: `${ENTRY_NAME_PREFIX}: ${group.name}`,
+      color: parseColor(group.color),
       statusBarId: `${MASTER_STATUS_BAR_ID_PREFIX}.group.${uniqueName(group.name)}`,
       text,
       tooltipLines: lines,

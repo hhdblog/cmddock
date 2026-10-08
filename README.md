@@ -100,6 +100,7 @@ olarak görünmez, `$(git-branch)` biçimine çevrilir.
   {
     "name": "Git",
     "icon": "$(source-control)",
+    "color": "#8BC34A",
     "commands": [
       { "name": "status", "command": "git status", "description": "Çalışma ağacı" },
       { "name": "commit", "command": "git commit -m", "argsPrompt": "mesaj" },
@@ -114,7 +115,8 @@ olarak görünmez, `$(git-branch)` biçimine çevrilir.
 | `name` | evet | Menüde görünen ad |
 | `command` | evet | Çalıştırılacak shell komutu |
 | `description` | hayır | Sağda gri metin olarak görünür |
-| `icon` | hayır | Codicon, varsayılan `$(terminal)` |
+| `icon` | hayır | Kodikon, varsayılan `$(terminal)`. Düz ad da olur (`zap`) |
+| `color` | hayır | Durum çubuğundaki **bu grubun** rengi: `#4B8BBE` ya da `charts.blue`. Boşsa `cmdDeck.statusBar.color` uygulanır |
 | `confirm` | hayır | `true` veya metin → çalıştırmadan önce onay |
 | `argsPrompt` | hayır | Çalıştırmadan önce girdi ister |
 | `clear` | hayır | `true` → terminal temizlenerek çalışır |
@@ -127,11 +129,14 @@ Kendi ayarını yazarsan hazır grupların yerini alır — silmek istersen `"cm
 tek kaynak `examples/default-groups.json`; `npm run sync-defaults` bunu `package.json`'a yazar,
 birim testi de ikisinin eşit kaldığını denetler.
 
-| Grup | İkon |
-|---|---|
-| Python | `$(snake)` |
-| Flutter | `$(device-mobile)` |
-| Node.js | `$(server-environment)` |
+| Grup | İkon | Renk |
+|---|---|---|
+| Python | `$(snake)` | `#4B8BBE` |
+| Flutter | `$(device-mobile)` | `#47C5FB` |
+| Node.js | `$(server-environment)` | `#83CD29` |
+
+Grup `color` alanı yalnızca durum çubuğu ikonunu boyar (menüde renk gösterilemez, `QuickPickItem`
+renk desteklemiyor). Öncelik: grubun kendi `color`'ı → yoksa `cmdDeck.statusBar.color`.
 
 ## Komut ekleme / silme / düzenleme
 
@@ -186,7 +191,7 @@ Bilinmeyen belirteçler (`{herhangi}`) olduğu gibi bırakılır.
 
 ```bash
 npm run typecheck      # tsc --noEmit
-npm test               # 107 birim testi (vitest)
+npm test               # 113 birim testi (vitest)
 npm run test:integration   # gerçek VSCode içinde smoke test
 npm run sync-defaults  # examples/default-groups.json → package.json
 npm run icon           # media/icon.png üret
