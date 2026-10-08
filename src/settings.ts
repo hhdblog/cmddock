@@ -129,7 +129,9 @@ function defaultFilePath(): string {
  */
 function exportPayload(): string {
   const raw = readRawGroups();
-  return Array.isArray(raw) && raw.length > 0 ? serializeJson(raw) : serializeGroups(getGroups());
+  return Array.isArray(raw) && raw.length > 0
+    ? serializeJson(raw)
+    : serializeJson(slimGroups(getGroups()));
 }
 
 /**
@@ -174,7 +176,9 @@ export async function reloadGroupFile(context: vscode.ExtensionContext): Promise
     return;
   }
 
-  if (!(await writeFile(target, serializeGroups(groups)))) {
+  // Dosya elle düzenlendiği için normalize dolguları yazılmaz; aynı ayıklama
+  // ayarlara yazarken de geçerli.
+  if (!(await writeFile(target, serializeJson(slimGroups(groups))))) {
     return;
   }
 
