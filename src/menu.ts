@@ -50,6 +50,13 @@ export const MENU_ACTIONS: readonly MenuAction[] = [
     runnable: true,
   },
   {
+    id: 'cmd-deck.statusBarItems',
+    label: 'Durum Çubuğu Düğmelerini Seç',
+    description: 'hangi grupların çubukta görüneceğini işaretle',
+    icon: '$(list-selection)',
+    runnable: true,
+  },
+  {
     id: 'cmd-deck.iconCatalog',
     label: 'İkon Kataloğu',
     description: 'kullanılabilir kodikonları gör',

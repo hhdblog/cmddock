@@ -5,7 +5,7 @@ import { DeckGroup } from './normalize';
 import { checkPlatform, maybeShowPlatformNotice } from './platform';
 import { pickAnyCommand, pickCommand, pickCommandsInGroup } from './picker';
 import { runCommand } from './runner';
-import { exportCommands, importCommands } from './settings';
+import { exportCommands, importCommands, pickStatusBarItems } from './settings';
 import { createStatusBar, StatusBarHandle } from './statusBar';
 import { rankGroups, readLast, readUsage, recordRun, resolveLast } from './usage';
 import { DeckCommand as Command } from './normalize';
@@ -114,6 +114,10 @@ export function activate(context: vscode.ExtensionContext): void {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('cmd-deck.import', () => importCommands())
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('cmd-deck.statusBarItems', () => pickStatusBarItems())
   );
 
   context.subscriptions.push(

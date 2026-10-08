@@ -27,9 +27,49 @@ describe('varsayılan komut listesi', () => {
     expect(defaults).toEqual(examples);
   });
 
-  it('3 grup ve 36 komut içerir', () => {
-    expect(groups.map((group) => group.name)).toEqual(['Python', 'Flutter', 'Node.js']);
-    expect(groups.every((group) => group.commands.length === 12)).toBe(true);
+  it('5 grup içerir', () => {
+    expect(groups.map((group) => group.name)).toEqual([
+      'Python',
+      'Flutter',
+      'Node.js',
+      'Git',
+      'Firebase',
+    ]);
+  });
+
+  it('her grupta 10-15 komut var', () => {
+    for (const group of groups) {
+      expect(group.commands.length, group.name).toBeGreaterThanOrEqual(10);
+      expect(group.commands.length, group.name).toBeLessThanOrEqual(15);
+    }
+  });
+
+  it('toplam komut sayısı', () => {
+    expect(groups.reduce((sum, group) => sum + group.commands.length, 0)).toBe(61);
+  });
+
+  it('grup adları benzersiz', () => {
+    const names = groups.map((group) => group.name);
+    expect(new Set(names).size).toBe(names.length);
+  });
+
+  it('komut adları grup içinde benzersiz', () => {
+    // Farklı gruplarda aynı adlar serbest (Python/Flutter/Node'da "test" gibi):
+    // kullanım anahtarı grup + komut adından oluşuyor, çakışma olmuyor.
+    for (const group of groups) {
+      const names = group.commands.map((command) => command.name);
+      expect(new Set(names).size, group.name).toBe(names.length);
+    }
+  });
+
+  it('farklı gruplarda aynı ad kullanılabiliyor', () => {
+    const names = new Set(groups.map((group) => group.name));
+    const testers = groups
+      .filter((group) => group.commands.some((command) => command.name === 'test'))
+      .map((group) => group.name);
+
+    expect(testers.length).toBeGreaterThan(1);
+    expect(names.size).toBe(groups.length);
   });
 
   it('her komutun doğrulanmış bir ikonu var', () => {
@@ -48,6 +88,17 @@ describe('varsayılan komut listesi', () => {
     for (const group of groups) {
       expect(group.color).toMatch(/^#[0-9a-fA-F]{6}$/);
     }
+  });
+
+  it('git grubunda push/pull/reset onay ister', () => {
+    const git = groups.find((group) => group.name === 'Git');
+    const confirmed = git?.commands
+      .filter((command) => command.confirm !== false)
+      .map((command) => command.name);
+
+    expect(confirmed).toEqual(
+      expect.arrayContaining(['push', 'pull', "son commit'i geri al"])
+    );
   });
 
   it('her grupta en az bir komut yıkıcı işaretli', () => {

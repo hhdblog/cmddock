@@ -108,7 +108,7 @@ cmd-deck/
 │   ├── style.ts          # SAF: parseIcon (düz ad → $(ad)) ve parseColor (hex/tema)
 │   ├── icons.ts          # doğrulanmış kodikon kataloğu (~120 ad, 10 kategori)
 │   ├── iconCatalog.ts    # katalog penceresi: canlı ikon + panoya kopyalama
-│   ├── plan.ts           # SAF: durum çubuğu öğelerinin planı (düğme, metin, ad, kimlik, öncelik, renk)
+│   ├── plan.ts           # SAF: durum çubuğu öğelerinin planı (düğme, metin, ad, kimlik, öncelik, renk, grup sınırı)
 │   ├── menu.ts           # SAF: Cmd menüsünün "diğer menüler" listesi
 │   ├── settings.ts       # pano/dosya seçimi + cmdDeck.groups ayarına yazma
 │   ├── picker.ts         # iki kademeli QuickPick (grup → komut)
@@ -460,13 +460,93 @@ genişletildi (birim testi ikisinin de katalogda olduğunu doğruluyor).
 
 Doğrulama: `typecheck` ✔ · birim **118/118** ✔ (5 yeni) · entegrasyon 7/7 ✔ · paket 34.25 KB ✔
 
+## 7.9 Durum çubuğu kalabalığı — grup düğmesi sınırı
+
+İşaret (kullanıcı): çok grup olunca durum çubuğu kalabalıklaşıyor, varsayılan hepsi açık gelmesin.
+
+Değerlendirme: bu makinede bile Pylance, Git, Live Server, Codeium, Dart durum çubuğunu
+kullanıyor; 3 grup + Cmd = 4 öğe makul, 10+ grup okunmaz hale gelir. Karar: **sayı ayarlanabilir
+sınır** (`maxGroupItems`) — "hep ilk 3'ü göster" gibi sabit bir kural değil,
+kullanıcı istediğinde 0 ya da 20 yazabiliyor.
+
+| Konu | Karar |
+|---|---|
+| Nereye uygulanır | Gizleme **önce**, sonra sınır: `hiddenGroups` elenip kalanlar `slice(0, max)`. Böylece "ilk 3 grup" kuralı gizlemelerden bağımsız |
+| Sıra kaynağı | Aylardaki grup sırası (kullanım değil) — öngörülebilir; kullanım sıralaması zaten komut içinde var |
+| Kayıp gruplar | `Cmd` düğmesi ve `Tüm Komutlarda Ara` erişimi sürüyor; `Cmd` tooltip'inde "N grup düğmesi gizli (3/7 gösteriliyor)" yazıyor — kayıp gibi görünmesin diye |
+| Bozuk değer | `NaN`/`Infinity`/ondalık normalize ediliyor (3'e düşüyor), `slice(0, -5)` sessizce boş döndürmesin diye |
+| **Sınır ötesindekiler** | Düğmeleri **yine oluşturulur**, sadece gizli başlatılır — sağ tık menüsünde görünsün diye. Kullanıcı sağ tıkla açarsa **korunur** |
+| Görünürlük ne zaman uygulanır | Yalnızca `build()` (yapı/imza değiştiğinde). Her `refresh()`'te `show()` çağırmak, kullanıcının sağ tık tercihini ezip gizliyordu |
+| `hiddenGroups` | Düğmesi hiç oluşturulmaz — ayar "kalıcı kaldır" demek, "geçici gizle" değil |
+| `0` değeri | Artık **sınırsız**: tüm gruplar görünür. Hiç grup düğmesi istenmiyorsa `showGroups: false` (daha net bir yol) |
+| Negatif değer | Sınırsız sayılır — `raw > 0` kontrolü sayesinde `slice(0, -5)` sessizce boş dönmüyor |
+
+Doğrulama: `typecheck` ✔ · birim **133/133** ✔ (gizli başlatılanlar planda, öncelik sırası, sınırsız 0, negatif, showGroups false, bozuk değer, ondalık, hiddenGroups oluşturulmaz) ·
+entegrasyon 7/7 ✔ · paket 35.3 KB ✔
+
+## 7.10 Varsayılan listeye 2 grup daha: Git ve Firebase
+
+İstek: varsayılan gruplara 2 tane daha ekle. Hangi ikisi olduğu **tahmin edilmedi, veriye bakıldı**
+(`~/PROJELER`, `~/Development`, `~/CMD`, `~/StudioProjects`, `~/Desktop` altında 4 seviye taranmış):
+
+| Bulgu | Sonuç |
+|---|---|
+| 27 `.git` dizini | Git günlük ihtiyaç ve **hiçbir varsayılan grupta yok** → eklendi |
+| 4 `firebase.json` (hepsi `FLUTTERS/` altında) + `firebase` CLI kurulu | Flutter backend işi var, Node grubu kapsamıyor → eklendi |
+| `pubspec.yaml` 59, `package.json` 49, `requirements.txt` 9 | Mevcut üç grup doğru seçim |
+| Dockerfile / Cargo.toml / go.mod / composer.json: **0** | Başlangıçta önerilen Docker grubu **eklenmedi** — kanıt yok |
+
+**Git (15 komut):** durum, fark, log, hepsini ekle, commit (mesaj), push, pull, fetch --all --prune,
+dallar, dala geç, yeni dal, stash, stash pop, `reset --soft HEAD~1`, klonla.
+`push`, `pull` ve `reset` **onaylı** — kaza ile uzak depoya gönderilmesin diye.
+
+**Firebase (10 komut):** giriş/çıkış, projeleri listele, projeye bağlan, hosting/functions/
+firestore:rules deploy (üçü de onaylı), emülatörler, fonksiyon logları, `firebase init` (onaylı).
+
+Grup düğmesi sınırı 5 olduğu için beş grup tam sığarken altıncı grup eklenirse çubuk dolmaz,
+`Cmd`'den erişilir — kullanıcı isteğinin doğal sonucu.
+
+Test sırasında: komut adları gruplar arasında **tekrarlanabiliyor** (`test`, `format`, `lint`,
+`başlat`) — bu kasıtlı ve güvenli, kullanım anahtarı `grup + komut adı` içeriyor. Test önce
+"tüm komut adları benzersiz" diye yazılmıştı ve kırmızıya düştü; kural "grup içinde benzersiz"
+olarak düzeltildi ve ayrıca izin verildiğini doğrulayan test eklendi.
+
+Doğrulama: `typecheck` ✔ · birim **130/130** ✔ · entegrasyon 7/7 ✔ · paket 37.12 KB ✔
+
+## 7.11 Gizli başlatılan gruplar sağ tık listesinde görünmüyordu
+
+Kullanıcı raporu: sınırın ötesindeki grupların düğmeleri oluşturulup gizli başlatıldı ama
+**sağ tık → Hide Status Bar Items listesinde çıkmıyor**.
+
+Sebep: VSCode'un durum çubuğu sağ tık menüsü, durum çubuğunda **gerçekten çizilen** öğeleri
+listeliyor. `item.hide()` ile gizlenen bir öğe hiç çizilmediği için listede de yer almıyor.
+(Bundle minify ve yerelleştirilmiş olduğu için bu satır koddan doğrulanamadı; davranış kullanıcının
+gözlemiyle teyit edildi ve önceki "ayrı id ver" düzeltmesinin de çalıştığını göstermişti.)
+
+Çözüm: **kendi seçim arayüzümüz.** `Cmd Deck: Durum Çubuğu Düğmelerini Seç`
+(`canPickMany` QuickPick): görünür düğmeler işaretli başlar, kullanıcı seçip onaylayınca
+`hiddenGroups` **kullanıcı ayarlarına** yazılır ve `maxGroupItems: 0` ile sınır kaldırılır —
+böylece "5 grubu da aç" seçimi gerçekten kalıcı ve sınırsız olur (aksi halde sınır seçimi yine
+kırpardı).
+
+| Alternatif | Neden seçilmedi |
+|---|---|
+| Hepsi görünür bırak | Kullanıcının ilk isteğiydi: başlangıçta 3 |
+| Gizli bırakıp rehbere yaz | Kullanıcı "listede olmalı" dedi, rehber yetmiyor |
+| `keybindings`/`when` ifadeleri | Durum çubuğu görünürlüğünü ayarlarla kontrol edemiyor |
+
+Saf yardımcılar `plan.ts`: `visibleGroupNames` (şu an ne görünüyor) ve `hiddenGroupNames`
+(seçime göre ne yazılmalı) — 6 test.
+
+Doğrulama: `typecheck` ✔ · birim **139/139** ✔ · entegrasyon 7/7 ✔ · paket 39.21 KB ✔
+
 ## 8. Doğrulama (Definition of Done)
 
 - [x] `tsc --noEmit` ve `esbuild --bundle` hatasız
 - [x] `vsce package` `.vsix` üretir
 - [x] `code --install-extension` sonrası durum çubuğu öğesi görünür (kullanıcı doğruladı)
 - [x] Tıkla → grup → komut → terminalde çalışır (kullanıcı doğruladı)
-- [x] Kurulumda 3 grup / 36 komut okunuyor (entegrasyon testi)
+- [x] Kurulumda 5 grup / 61 komut okunuyor (entegrasyon testi)
 - [x] `confirm` olan komut onaysız çalışmaz (entegrasyon testi)
 - [x] `argsPrompt` girdisi tırnaklı yolları koruyarak argümanlara bölünür (birim testleri)
 - [x] Çalıştırılan komut sonraki açılışta üste çıkar (birim testleri)

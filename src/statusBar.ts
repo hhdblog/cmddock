@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { getGroups } from './config';
 import { DeckGroup, countCommands } from './normalize';
-import { MASTER_ID, MASTER_PRIORITY, planItems, StatusBarPlanItem } from './plan';
+import { DEFAULT_MAX_GROUP_ITEMS, MASTER_ID, MASTER_PRIORITY, planItems, StatusBarPlanItem } from './plan';
 import { ColorSpec, parseColor, parseIcon } from './style';
 import { countOf, readLast, readUsage, UsageMap } from './usage';
 
@@ -33,6 +33,13 @@ function applyColor(value: ColorSpec): string | vscode.ThemeColor | undefined {
 function masterPriority(): number {
   const value = setting('priority');
   return typeof value === 'number' && Number.isFinite(value) ? value : MASTER_PRIORITY;
+}
+
+function maxGroupItems(): number {
+  const value = setting('maxGroupItems');
+  return typeof value === 'number' && Number.isFinite(value)
+    ? value
+    : DEFAULT_MAX_GROUP_ITEMS;
 }
 
 function hiddenGroups(): readonly string[] {
@@ -96,6 +103,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
       showGroups: setting('showGroups') !== false,
       showMaster: setting('showMaster') !== false,
       hiddenGroups: hiddenGroups(),
+      maxGroupItems: maxGroupItems(),
       masterIcon: parseIcon(setting('icon'), DEFAULT_ICON),
       masterPriority: masterPriority(),
       groupLabel: setting('groupLabel') === 'always' ? (group: DeckGroup) => group.name : () => '',
@@ -107,11 +115,27 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
     const nextSignature = JSON.stringify(
       // İmzada yalnızca build() sırasında kullanılan alanlar var; metin, renk ve
       // tooltip döngüde uygulandığı için gereksiz yeniden kurulum tetiklemesin.
-      plan.map((entry) => [entry.kind, entry.id, entry.statusBarId, entry.name, entry.priority])
+      plan.map((entry) => [
+        entry.kind,
+        entry.id,
+        entry.statusBarId,
+        entry.name,
+        entry.priority,
+        entry.visible,
+      ])
     );
     if (nextSignature !== signature) {
       build(plan);
       signature = nextSignature;
+      // Görünürlük yalnızca yapı değiştiğinde uygulanıyor. Sınırın ötesindeki
+      // gruplar burada gizleniyor; kullanıcı sağ tıkla açarsa bir sonraki
+      // komut çalıştırmasında tekrar gizlenmiyor (pre tercihi bozulmasın).
+      plan.forEach((entry, index) => {
+        const item = items[index];
+        if (!item) return;
+        if (entry.visible) item.show();
+        else item.hide();
+      });
     }
 
     const color = applyColor(parseColor(setting('color')));
@@ -124,6 +148,11 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
         return;
       }
 
+      if (!entry.visible) {
+        // Gizli başlatılan düğme: metin/renk dokunulmadan bırakılıyor.
+        return;
+      }
+
       item.text = empty && entry.kind === 'master' ? `${entry.text}!` : entry.text;
       // Grup düğmesinin kendi rengi varsa o, yoksa genel renk geçerli.
       item.color = applyColor(entry.color) ?? color;
@@ -133,6 +162,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
         entry.kind === 'master' && !empty
           ? [
               `**Cmd Deck** — ${groups.length} grup, ${countCommands(groups)} komut`,
+              ...omittedNote(plan, groups.length),
               last
                 ? `Son: ${resolveLastLabel(groups, last.group, last.name)}`
                 : 'Son: henüz çalıştırılmadı',
@@ -145,7 +175,8 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
             : entry.tooltipLines;
 
       item.tooltip = new vscode.MarkdownString(lines.join('\n\n'));
-      item.show();
+
+      // show() burada çağrılmıyor: görünürlük build aşamasında kararlaştırılıyor.
     });
   };
 
@@ -166,6 +197,19 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
     },
     refresh,
   };
+}
+
+/** Çubukta sığmayan grupları açıkça söyle, yoksa "kayıp grup" gibi görünür. */
+function omittedNote(plan: StatusBarPlanItem[], totalGroups: number): string[] {
+  const groups = plan.filter((entry) => entry.kind === 'group');
+  const shown = groups.filter((entry) => entry.visible).length;
+  const omitted = groups.length - shown;
+
+  return omitted > 0
+    ? [
+        `${omitted} grup düğmesi gizli (sağ tık → Show ile açılabilir, ${shown}/${totalGroups} görünür)`,
+      ]
+    : [];
 }
 
 function totalRuns(usage: UsageMap): number {

@@ -7,6 +7,12 @@ export const ENTRY_NAME_PREFIX = 'Cmd Deck';
 export const MASTER_LABEL = 'Cmd';
 
 /**
+ * İlk kurulumda kaç grup düğmesi gösterilsin. Kullanıcı sonradan
+ * `cmdDeck.statusBar.maxGroupItems` ile değiştirir; 0 = sınırsız.
+ */
+export const DEFAULT_MAX_GROUP_ITEMS = 3;
+
+/**
  * Varsayılan bant. VSCode durum çubuğunu TÜM eklentilerin öncelik değerlerine göre
  * sıralar (yüksek = daha sol), yani bizim düğmelerimizin araya girmemesi için
  * kullanılmayan bir bant seçilmeli. Bu makinedeki eklentiler -1, 0, 1, 100 ve 1000
@@ -22,6 +28,12 @@ export interface StatusBarOptions {
   readonly showMaster: boolean;
   /** Bu isimli gruplar hiç gösterilmez. */
   readonly hiddenGroups: readonly string[];
+  /**
+   * Durum çubuğunda en fazla kaç grup düğmesi gösterilsin. Fazlası yalnızca
+   * Cmd düğmesi ve arama üzerinden erişilebilir kalır.
+   * 0 veya negatif = sınırsız (tüm gruplar gösterilir).
+   */
+  readonly maxGroupItems?: number;
   /** "cmd" düğmesinin ikonu (cmdDeck.statusBar.icon). */
   readonly masterIcon: string;
   /** "cmd" düğmesinin önceliği; grup düğmeleri bundan 1, 2, 3... azalır. */
@@ -49,6 +61,12 @@ export interface StatusBarPlanItem {
    */
   readonly name: string;
   readonly text: string;
+  /**
+   * true ise düğme başlangıçta görünür; false ise sınır nedeniyle gizli
+   * başlatılır ama **oluşturulur** — böylece durum çubuğu sağ tık menüsünde
+   * listelenir ve kullanıcı kendi açabilir.
+   */
+  readonly visible: boolean;
   /** Bu düğmenin ön plan rengi; yoksa genel cmdDeck.statusBar.color uygulanır. */
   readonly color?: ColorSpec;
   readonly tooltipLines: string[];
@@ -64,6 +82,7 @@ function masterItem(
     kind: 'master',
     id: MASTER_ID,
     text: `${options.masterIcon} ${MASTER_LABEL}`,
+    visible: true,
     name: `${ENTRY_NAME_PREFIX}: Tüm Gruplar`,
     statusBarId: `${MASTER_STATUS_BAR_ID_PREFIX}.cmd`,
     tooltipLines: [
@@ -72,6 +91,37 @@ function masterItem(
     ],
     priority: basePriority,
   };
+}
+
+export interface VisibilityInput {
+  readonly hiddenGroups: readonly string[];
+  readonly maxGroupItems?: number;
+}
+
+/** Şu anda çubukta görünen grup adları (gizleme + sınır uygulanmış hâli). */
+export function visibleGroupNames(
+  groups: readonly DeckGroup[],
+  input: VisibilityInput
+): string[] {
+  const hidden = new Set(input.hiddenGroups);
+  const raw =
+    typeof input.maxGroupItems === 'number' && Number.isFinite(input.maxGroupItems)
+      ? Math.trunc(input.maxGroupItems)
+      : DEFAULT_MAX_GROUP_ITEMS;
+
+  return groups
+    .filter((group) => !hidden.has(group.name))
+    .filter((_, index) => raw <= 0 || index < raw)
+    .map((group) => group.name);
+}
+
+/** Kullanıcının seçimine göre `hiddenGroups` için ne yazılmalı. */
+export function hiddenGroupNames(
+  groups: readonly DeckGroup[],
+  selected: readonly string[]
+): string[] {
+  const picked = new Set(selected);
+  return groups.filter((group) => !picked.has(group.name)).map((group) => group.name);
 }
 
 /**
@@ -95,7 +145,15 @@ export function planItems(
   }
 
   const hidden = new Set(options.hiddenGroups);
-  const visible = groups.filter((group) => !hidden.has(group.name));
+  const raw =
+    typeof options.maxGroupItems === 'number' && Number.isFinite(options.maxGroupItems)
+      ? Math.trunc(options.maxGroupItems)
+      : DEFAULT_MAX_GROUP_ITEMS;
+
+  // Gizlenenler önce eleniyor; böylece "ilk N grup" kuralı hiddenGroups'tan
+  // bağımsız ve öngörülebilir kalıyor. 0 ya da negatif = sınırsız.
+  const notHidden = groups.filter((group) => !hidden.has(group.name));
+  const unlimited = raw <= 0;
 
   // Aynı isimli iki grup (ayarları elle yazarken olabilir) aynı id üretmesin.
   const nameOccurrences = new Map<string, number>();
@@ -105,7 +163,7 @@ export function planItems(
     return count === 1 ? name : `${name}#${count}`;
   };
 
-  visible.forEach((group, index) => {
+  notHidden.forEach((group, index) => {
     const icon = parseIcon(group.icon);
     const label = options.groupLabel(group);
     const text = label ? `${icon} ${label}` : icon;
@@ -123,10 +181,13 @@ export function planItems(
       id: group.name,
       name: `${ENTRY_NAME_PREFIX}: ${group.name}`,
       color: parseColor(group.color),
+      visible: unlimited || index < raw,
       statusBarId: `${MASTER_STATUS_BAR_ID_PREFIX}.group.${uniqueName(group.name)}`,
       text,
       tooltipLines: lines,
       // Grup düğmeleri cmd'in hemen sağında ve birbirinin sağında olsun diye azalan sıra.
+      // Öncelik sıralamayı korur: gizli başlatılanlar da yerini alıyor ki
+      // kullanıcı açtığında çubuktaki sırası bozulmasın.
       priority: base - 1 - index,
     });
   });

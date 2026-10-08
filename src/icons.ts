@@ -47,6 +47,8 @@ export const ICON_CATALOG: readonly CatalogGroup[] = [
       { name: 'git-compare', hint: 'karşılaştır' },
       { name: 'git-stash', hint: 'stash' },
       { name: 'tag', hint: 'etiket / sürüm' },
+      { name: 'cloud-upload', hint: 'gönder / push' },
+      { name: 'cloud-download', hint: 'çek / kur' },
     ],
   },
   {
@@ -100,6 +102,7 @@ export const ICON_CATALOG: readonly CatalogGroup[] = [
       { name: 'vm', hint: 'sanal makine / konteyner' },
       { name: 'server-environment', hint: 'ortam / Node' },
       { name: 'cloud', hint: 'bulut' },
+      { name: 'broadcast', hint: 'servis / yayın' },
       { name: 'layers', hint: 'katman' },
       { name: 'archive', hint: 'arşiv / imaj' },
       { name: 'files', hint: 'dosyalar' },
@@ -146,6 +149,8 @@ export const ICON_CATALOG: readonly CatalogGroup[] = [
   {
     title: 'Dosya / düzen',
     entries: [
+      { name: 'account', hint: 'hesap / giriş' },
+      { name: 'sign-out', hint: 'çıkış' },
       { name: 'file', hint: 'dosya' },
       { name: 'file-code', hint: 'kod dosyası' },
       { name: 'folder', hint: 'klasör' },
@@ -157,6 +162,7 @@ export const ICON_CATALOG: readonly CatalogGroup[] = [
       { name: 'save', hint: 'kaydet / içe aktar' },
       { name: 'search', hint: 'ara' },
       { name: 'filter', hint: 'süz' },
+      { name: 'list-selection', hint: 'seçim / işaretle' },
       { name: 'trash', hint: 'sil' },
       { name: 'discard', hint: 'iptal / temizle' },
       { name: 'clear-all', hint: 'hepsini temizle' },

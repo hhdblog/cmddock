@@ -4,6 +4,7 @@ import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { CONFIG_SECTION, GROUPS_KEY, getGroups } from './config';
 import { countCommands } from './normalize';
+import { hiddenGroupNames, visibleGroupNames } from './plan';
 import {
   ImportMode,
   parseGroups,
@@ -197,6 +198,84 @@ export async function exportCommands(): Promise<void> {
 
   void vscode.window.showInformationMessage(
     `cmd-deck: ${groups.length} grup, ${total} komut panoya kopyalandı.`
+  );
+}
+
+interface StatusBarItemPick extends vscode.QuickPickItem {
+  readonly isMaster?: boolean;
+  readonly groupName?: string;
+}
+
+/**
+ * Durum çubuğunda hangi düğmelerin görüneceğini seçtirir.
+ *
+ * VSCode'un kendi "Hide Status Bar Items" menüsü yalnızca **ekranda çizilen**
+ * öğeleri listelediği için, bizim gizli başlattığımız gruplar orada görünmüyor.
+ * Bu yüzden seçim kendi arayüzümüzde yapılıyor ve `hiddenGroups` + sınır ayarına yazılıyor.
+ */
+export async function pickStatusBarItems(): Promise<void> {
+  const groups = getGroups();
+
+  if (groups.length === 0) {
+    void vscode.window.showWarningMessage('cmd-deck: komut grubu yok.');
+    return;
+  }
+
+  const config = vscode.workspace.getConfiguration('cmdDeck.statusBar');
+  const masterVisible = config.get<boolean>('showMaster') !== false;
+  const hidden = config.get<unknown>('hiddenGroups');
+  const hiddenGroups = Array.isArray(hidden)
+    ? hidden.filter((item): item is string => typeof item === 'string')
+    : [];
+
+  const visible = new Set(
+    visibleGroupNames(groups, { hiddenGroups, maxGroupItems: config.get('maxGroupItems') })
+  );
+
+  const items: StatusBarItemPick[] = [
+    {
+      label: '$(terminal) Cmd — tüm gruplardan seç',
+      description: 'her zaman açık kalsın',
+      picked: masterVisible,
+      isMaster: true,
+    },
+    ...groups.map((group) => ({
+      label: `${group.icon} ${group.name}`,
+      description: `${group.commands.length} komut`,
+      picked: visible.has(group.name),
+      groupName: group.name,
+    })),
+  ];
+
+  const picked = await vscode.window.showQuickPick(items, {
+    canPickMany: true,
+    title: 'Durum çubuğunda görünecek düğmeler',
+    placeHolder: 'İşaretli olanlar görünür',
+  });
+
+  if (!picked) {
+    return;
+  }
+
+  const selectedGroups = picked
+    .map((item) => item.groupName)
+    .filter((name): name is string => typeof name === 'string');
+
+  const newHidden = hiddenGroupNames(groups, selectedGroups);
+
+  // Sınırı kaldırıyoruz: artık kullanıcının seçimi geçerli olsun, yoksa
+  // "5 grup seçtim" deyip ilk 3'ü gizli kalmaya devam ederdi.
+  await config.update('maxGroupItems', 0, vscode.ConfigurationTarget.Global);
+  await config.update('hiddenGroups', newHidden, vscode.ConfigurationTarget.Global);
+  await config.update(
+    'showMaster',
+    picked.some((item) => item.isMaster),
+    vscode.ConfigurationTarget.Global
+  );
+
+  void vscode.window.showInformationMessage(
+    `cmd-deck: durum çubuğunda ${picked.length} düğme açık ` +
+      `(${newHidden.length} grup gizlendi) — kullanıcı ayarlarına yazıldı.`
   );
 }
 

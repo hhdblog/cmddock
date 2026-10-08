@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { normalizeGroups } from '../../src/normalize';
 import {
+  DEFAULT_MAX_GROUP_ITEMS,
+  hiddenGroupNames,
   MASTER_ID,
   MASTER_PRIORITY,
   planItems,
   StatusBarOptions,
+  visibleGroupNames,
 } from '../../src/plan';
 
 const groups = normalizeGroups([
@@ -21,9 +24,58 @@ const base: StatusBarOptions = {
   groupLabel: () => '',
 };
 
+/** Testlerde çubuk kıtalması devre dışı; sınır kendi testleriyle var. */
+const unlimited: StatusBarOptions = { ...base, maxGroupItems: 99 };
+
+const fiveGroups = normalizeGroups(
+  ['Python', 'Flutter', 'Node.js', 'Git', 'Firebase'].map((name) => ({
+    name,
+    commands: [{ name: 'x', command: 'ls' }],
+  }))
+);
+
+describe('visibleGroupNames', () => {
+  it('varsayılan sınırla ilk 3 grubu döndürür', () => {
+    expect(visibleGroupNames(fiveGroups, { hiddenGroups: [] })).toEqual([
+      'Python',
+      'Flutter',
+      'Node.js',
+    ]);
+  });
+
+  it('gizlenenler listeden çıkar', () => {
+    expect(
+      visibleGroupNames(fiveGroups, { hiddenGroups: ['Python'], maxGroupItems: 0 })
+    ).toEqual(['Flutter', 'Node.js', 'Git', 'Firebase']);
+  });
+
+  it('sıfır sınırsız demek', () => {
+    expect(visibleGroupNames(fiveGroups, { hiddenGroups: [], maxGroupItems: 0 })).toHaveLength(5);
+  });
+});
+
+describe('hiddenGroupNames', () => {
+  it('seçilmeyenleri döndürür', () => {
+    expect(
+      hiddenGroupNames(fiveGroups, ['Python', 'Flutter', 'Node.js', 'Git', 'Firebase'])
+    ).toEqual([]);
+  });
+
+  it('kullanıcı 3 grup seçtiyse 2 grup gizlenir', () => {
+    expect(hiddenGroupNames(fiveGroups, ['Python', 'Flutter', 'Node.js'])).toEqual([
+      'Git',
+      'Firebase',
+    ]);
+  });
+
+  it('hepsini seçerse hiçbiri gizlenmez', () => {
+    expect(hiddenGroupNames(fiveGroups, fiveGroups.map((g) => g.name))).toEqual([]);
+  });
+});
+
 describe('planItems', () => {
   it('cmd düğmesi + her grup için bir düğme üretir', () => {
-    const plan = planItems(groups, base);
+    const plan = planItems(groups, unlimited);
 
     expect(plan).toHaveLength(4);
     expect(plan[0].kind).toBe('master');
@@ -36,7 +88,7 @@ describe('planItems', () => {
   });
 
   it('grup düğmeleri yalnızca ikon gösterir', () => {
-    const plan = planItems(groups, base);
+    const plan = planItems(groups, unlimited);
     const python = plan.find((entry) => entry.id === 'Python');
 
     expect(python?.text).toBe('$(snake)');
@@ -50,7 +102,7 @@ describe('planItems', () => {
   });
 
   it('öncelikler azalan sırada ve cmd en solda', () => {
-    const plan = planItems(groups, base);
+    const plan = planItems(groups, unlimited);
 
     expect(plan[0].priority).toBe(MASTER_PRIORITY);
     expect(plan.map((entry) => entry.priority)).toEqual([
@@ -107,7 +159,7 @@ describe('planItems', () => {
   });
 
   it('tooltip grup adı ve komut sayısını içerir', () => {
-    const plan = planItems(groups, base);
+    const plan = planItems(groups, unlimited);
     const tooltip = plan.find((entry) => entry.id === 'Python')?.tooltipLines.join('\n');
 
     expect(tooltip).toContain('Python');
@@ -132,7 +184,7 @@ describe('planItems', () => {
   it('her düğmeye ayrı durum çubuğu kimliği verir', () => {
     // id verilmezse hepsi eklenti kimliğine düşüyor ve sağ tık menüsü
     // "hepsini gizle / hepsini göster" olarak tek kalem çıkıyor.
-    const ids = planItems(groups, base).map((entry) => entry.statusBarId);
+    const ids = planItems(groups, unlimited).map((entry) => entry.statusBarId);
 
     expect(new Set(ids).size).toBe(ids.length);
     expect(ids[0]).toBe('cmd-deck.cmd');
@@ -190,7 +242,7 @@ describe('planItems', () => {
 
   it('menüde görünecek adlar ayrı ayrı', () => {
     // name set edilmezse menüde tüm öğeler "Cmd Deck (extension)" görünür.
-    const names = planItems(groups, base).map((entry) => entry.name);
+    const names = planItems(groups, unlimited).map((entry) => entry.name);
 
     expect(names).toEqual([
       'Cmd Deck: Tüm Gruplar',
@@ -201,9 +253,122 @@ describe('planItems', () => {
   });
 
   it('ad kısa ve ayırt edici kalır', () => {
-    for (const entry of planItems(groups, base)) {
+    for (const entry of planItems(groups, unlimited)) {
       expect(entry.name.length).toBeLessThan(40);
     }
+  });
+
+  it('varsayılan olarak ilk 3 grup görünür, hepsi oluşturulur', () => {
+    const many = normalizeGroups(
+      Array.from({ length: 7 }, (_, i) => ({
+        name: `G${i + 1}`,
+        commands: [{ name: 'x', command: 'ls' }],
+      }))
+    );
+    const plan = planItems(many, base);
+    const groupItems = plan.filter((entry) => entry.kind === 'group');
+
+    // Sınırın ötesindekiler de planda: sağ tık menüsünde listelensin diye.
+    expect(groupItems).toHaveLength(7);
+    expect(groupItems.filter((entry) => entry.visible).map((e) => e.id)).toEqual([
+      'G1',
+      'G2',
+      'G3',
+    ]);
+    expect(groupItems.filter((entry) => !entry.visible).map((e) => e.id)).toEqual([
+      'G4',
+      'G5',
+      'G6',
+      'G7',
+    ]);
+  });
+
+  it('sınırdaki gruplar doğru öncelik alır', () => {
+    const many = normalizeGroups(
+      Array.from({ length: 5 }, (_, i) => ({
+        name: `G${i + 1}`,
+        commands: [{ name: 'x', command: 'ls' }],
+      }))
+    );
+    const priorities = planItems(many, base).map((entry) => entry.priority);
+
+    expect(priorities).toEqual([MASTER_PRIORITY, 249, 248, 247, 246, 245]);
+  });
+
+  it('maxGroupItems artırılırsa daha çok grup gösterilir', () => {
+    const many = normalizeGroups(
+      Array.from({ length: 7 }, (_, i) => ({
+        name: `G${i + 1}`,
+        commands: [{ name: 'x', command: 'ls' }],
+      }))
+    );
+
+    expect(
+      planItems(many, { ...base, maxGroupItems: 7 }).filter((e) => e.kind === 'group')
+    ).toHaveLength(7);
+  });
+
+  it('maxGroupItems 0 ise sınırsız: tüm gruplar görünür', () => {
+    const many = normalizeGroups(
+      Array.from({ length: 7 }, (_, i) => ({
+        name: `G${i + 1}`,
+        commands: [{ name: 'x', command: 'ls' }],
+      }))
+    );
+    const groupItems = planItems(many, { ...base, maxGroupItems: 0 }).filter(
+      (entry) => entry.kind === 'group'
+    );
+
+    expect(groupItems).toHaveLength(7);
+    expect(groupItems.every((entry) => entry.visible)).toBe(true);
+  });
+
+  it('negatif değer de sınırsız sayılır', () => {
+    const many = normalizeGroups(
+      Array.from({ length: 4 }, (_, i) => ({
+        name: `G${i + 1}`,
+        commands: [{ name: 'x', command: 'ls' }],
+      }))
+    );
+
+    expect(planItems(many, { ...base, maxGroupItems: -2 })).toHaveLength(5);
+  });
+
+  it('hiç grup düğmesi isteniyorsa showGroups false kullanılır', () => {
+    expect(
+      planItems(groups, { ...base, showGroups: false }).map((e) => e.kind)
+    ).toEqual(['master']);
+  });
+
+  it('sınır bozuk değerlerde varsayılana döner', () => {
+    const many = normalizeGroups(
+      Array.from({ length: 7 }, (_, i) => ({
+        name: `G${i + 1}`,
+        commands: [{ name: 'x', command: 'ls' }],
+      }))
+    );
+
+    for (const value of [NaN, Infinity]) {
+      expect(
+        planItems(many, { ...base, maxGroupItems: value }).filter(
+          (e) => e.kind === 'group' && e.visible
+        )
+      ).toHaveLength(DEFAULT_MAX_GROUP_ITEMS);
+    }
+  });
+
+  it('sınır ondalıktan tamsayıya kırpılır', () => {
+    const visible = planItems(groups, { ...base, maxGroupItems: 2.9 }).filter(
+      (e) => e.kind === 'group' && e.visible
+    );
+    expect(visible).toHaveLength(2);
+  });
+
+  it('hiddenGroups düğmesi hiç oluşturulmaz', () => {
+    // Gizlemek için ayar kullanıldıysa menüde de görünmemeli — "Show" deyince
+    // geri gelmesin, tekrar ayardan açılır.
+    const plan = planItems(groups, { ...base, hiddenGroups: ['Python'] });
+    expect(plan.map((entry) => entry.id)).toEqual([MASTER_ID, 'Flutter', 'Node.js']);
   });
 
   it('gruplar boşsa yalnızca cmd üretilir', () => {

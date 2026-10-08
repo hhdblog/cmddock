@@ -27,6 +27,7 @@ Geliştirirken VSCode'da bu klasörü açıp <kbd>F5</kbd> ile Extension Develop
 | Son komutu tekrarla | `Cmd Deck: Son Komutu Tekrar Çalıştır` |
 | Windows uyumluluğunu denetle | `Cmd Deck: Platform Uyumluluğunu Kontrol Et` |
 | Kullanılabilir ikonları gör | `Cmd Deck: İkon Kataloğu` |
+| Durum çubuğunda hangi gruplar görünsün | `Cmd Deck: Durum Çubuğu Düğmelerini Seç` (çoklu seçim, işaretle) |
 
 Komut listesinde **en çok kullandıkların üstte** çıkar; sayı eşitse `settings.json` sırası korunur.
 Grubun kendi sırası hep ayardaki gibi kalır.
@@ -44,6 +45,7 @@ doğrudan açılır. `Cmd` düğmesi tüm grupları tek listeden açar. İkisi d
 |---|---|---|
 | `cmdDeck.statusBar.showGroups` | `true` | Her grup için ayrı düğme gösterir |
 | `cmdDeck.statusBar.showMaster` | `true` | `Cmd` düğmesini gösterir |
+| `cmdDeck.statusBar.maxGroupItems` | `3` | Çubukta **başlangıçta** kaç grup düğmesi görünür. Fazlası oluşturulur ama gizli başlar: durum çubuğunda sağ tık → `Hide Status Bar Items` → **Show** ile açabilirsin. **`0` = sınırsız** |
 | `cmdDeck.statusBar.hiddenGroups` | `[]` | Görünmeyecek grup adları: `["Python"]` |
 | `cmdDeck.statusBar.groupLabel` | `""` | `"always"` ise ikonun yanına grup adını da yazar |
 | `cmdDeck.statusBar.icon` | `terminal` | `Cmd` düğmesinin ikonu. `"zap"` veya `"$(zap)"` yazılabilir |
@@ -54,6 +56,20 @@ doğrudan açılır. `Cmd` düğmesi tüm grupları tek listeden açar. İkisi d
 Grup düğmesinin tooltip'inde grup adı, komut sayısı ve **en çok kullanılan komut**
 (`En çok: test (×5)`) görünür. Renk ayarı tüm düğmelere birden uygulanır; boş bırakılırsa
 tema kullanılır (şeffaf arka plan).
+
+**Çubuk kıtalması:** Durum çubuğu zaten Pylance, Git, Live Server gibi eklentilerle dolu oluyor;
+onlarca ikon eklemek okunmaz hale gelir. Bu yüzden **ilk kurulumda 3** grup düğmesi gösteriliyor.
+
+Bu bir sınır değil, başlangıç değeri: ilk kurulumda 3 grup görünür, beşinci gruplar **gizli**
+başlar — düğmeleri yine oluşturulur, bu yüzden durum çubuğunda **sağ tık → `Hide Status Bar Items`
+→ `Cmd Deck: Git` / `Cmd Deck: Firebase` işaretine basınca açılırlar**. Açtığın gruplar bir sonraki
+komut çalıştırmasında gizlenmez; sadece ayarı değiştirdiğinde sınırlama yeniden uygulanır.
+
+Kalıcı ayar istersen `maxGroupItems: 0` (**sınırsız**) veya `hiddenGroups` ile bazılarını tamamen
+kaldırma. Hiç grup düğmesi istemiyorsan `showGroups: false`.
+
+Sıra **ayarlardaki grup sırasına** göre; gösterilmeyen gruplar `Cmd` düğmesinden ve
+`Tüm Komutlarda Ara`'dan erişilebilir kalır, `Cmd` tooltip'inde kaç düğmenin gizli olduğunu yazar.
 
 Grup eklediğinde/çıkardığında düğmeler ayar değişikliğiyle kendiliğinden güncellenir — yeniden
 yükleme gerekmez. VSCode'un durum çubuğu sağ tık menüsünden de gizleyebilirsin.
@@ -106,6 +122,7 @@ $(debug-rerun) Son Komutu Tekrar Çalıştır
 $(json) Komutları Dışa Aktar
 $(sync) Komutları İçe Aktar
 $(check) Platform Uyumluluğunu Kontrol Et
+$(list-selection) Durum Çubuğu Düğmelerini Seç
 $(paintcan) İkon Kataloğu
 $(refresh) Komut Listesini Yenile
 ```
@@ -143,19 +160,22 @@ Yeni bir komut eklemek istersen `src/menu.ts` içindeki `MENU_ACTIONS` listesine
 | `argsPrompt` | hayır | Çalıştırmadan önce girdi ister |
 | `clear` | hayır | `true` → terminal temizlenerek çalışır |
 
-Kurulumda 3 hazır grup gelir: **Python**, **Flutter**, **Node.js** (toplam 36 komut).
+Kurulumda 5 hazır grup gelir: **Python**, **Flutter**, **Node.js**, **Git**, **Firebase**
+(toplam 61 komut).
 Kendi ayarını yazarsan hazır grupların yerini alır — silmek istersen `"cmdDeck.groups": []`.
 
-36 komutun **hepsinde** anlamlı bir ikon var (`$(beaker)` test, `$(shield)` lint,
+61 komutun **hepsinde** anlamlı bir ikon var (`$(beaker)` test, `$(shield)` lint,
 `$(cloud-download)` kurulum, `$(trash)` silme, `$(paintcan)` format…). Listeyi düzenlemek için
 tek kaynak `examples/default-groups.json`; `npm run sync-defaults` bunu `package.json`'a yazar,
 birim testi de ikisinin eşit kaldığını denetler.
 
-| Grup | İkon | Renk |
-|---|---|---|
-| Python | `$(snake)` | `#4B8BBE` |
-| Flutter | `$(device-mobile)` | `#47C5FB` |
-| Node.js | `$(server-environment)` | `#83CD29` |
+| Grup | İkon | Renk | Komut |
+|---|---|---|---|
+| Python | `$(snake)` | `#4B8BBE` | 12 |
+| Flutter | `$(device-mobile)` | `#47C5FB` | 12 |
+| Node.js | `$(server-environment)` | `#83CD29` | 12 |
+| Git | `$(source-control)` | `#F14E32` | 15 |
+| Firebase | `$(broadcast)` | `#FFCA28` | 10 |
 
 Grup `color` alanı yalnızca durum çubuğu ikonunu boyar (menüde renk gösterilemez, `QuickPickItem`
 renk desteklemiyor). Öncelik: grubun kendi `color`'ı → yoksa `cmdDeck.statusBar.color`.
@@ -213,7 +233,7 @@ Bilinmeyen belirteçler (`{herhangi}`) olduğu gibi bırakılır.
 
 ```bash
 npm run typecheck      # tsc --noEmit
-npm test               # 118 birim testi (vitest)
+npm test               # 139 birim testi (vitest)
 npm run test:integration   # gerçek VSCode içinde smoke test
 npm run sync-defaults  # examples/default-groups.json → package.json
 npm run icon           # media/icon.png üret

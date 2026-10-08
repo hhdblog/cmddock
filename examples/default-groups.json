@@ -247,5 +247,181 @@
         "description": "link"
       }
     ]
+  },
+  {
+    "name": "Git",
+    "icon": "$(source-control)",
+    "color": "#F14E32",
+    "commands": [
+      {
+        "name": "durum",
+        "command": "git status",
+        "icon": "$(source-control)",
+        "description": "çalışma ağacı"
+      },
+      {
+        "name": "fark",
+        "command": "git diff",
+        "icon": "$(git-compare)",
+        "description": "değişiklikleri göster"
+      },
+      {
+        "name": "log",
+        "command": "git log --oneline --graph -20",
+        "icon": "$(history)",
+        "description": "son 20 commit"
+      },
+      {
+        "name": "hepsini ekle",
+        "command": "git add -A",
+        "icon": "$(cloud-download)",
+        "description": "tüm değişiklikleri sahneye al"
+      },
+      {
+        "name": "commit",
+        "command": "git commit -m",
+        "icon": "$(git-commit)",
+        "argsPrompt": "commit mesajı",
+        "description": "mesajla commit"
+      },
+      {
+        "name": "push",
+        "command": "git push",
+        "icon": "$(cloud-upload)",
+        "confirm": "Değişiklikler uzak depoya gönderilecek. Devam?",
+        "description": "uzak depoya gönder"
+      },
+      {
+        "name": "pull",
+        "command": "git pull",
+        "icon": "$(cloud-download)",
+        "confirm": "Yerel değişikliklerle çakışabilir. Devam?",
+        "description": "uzaktan çek"
+      },
+      {
+        "name": "fetch",
+        "command": "git fetch --all --prune",
+        "icon": "$(sync)",
+        "description": "uzakları tazele, silinen dalları at"
+      },
+      {
+        "name": "dallar",
+        "command": "git branch -a",
+        "icon": "$(git-branch)",
+        "description": "yerel ve uzak dallar"
+      },
+      {
+        "name": "dala geç",
+        "command": "git checkout",
+        "icon": "$(git-branch)",
+        "argsPrompt": "dal veya dosya adı",
+        "description": "dal değiştir / dosyayı geri al"
+      },
+      {
+        "name": "yeni dal",
+        "command": "git checkout -b",
+        "icon": "$(git-branch)",
+        "argsPrompt": "yeni dal adı",
+        "description": "dal oluştur ve geç"
+      },
+      {
+        "name": "stash",
+        "command": "git stash",
+        "icon": "$(git-stash)",
+        "description": "değişiklikleri sakla"
+      },
+      {
+        "name": "stash geri al",
+        "command": "git stash pop",
+        "icon": "$(git-stash)",
+        "description": "saklananı geri yükle"
+      },
+      {
+        "name": "son commit'i geri al",
+        "command": "git reset --soft HEAD~1",
+        "icon": "$(debug-rerun)",
+        "confirm": "Son commit geri alınacak (dosyalar korunur). Devam?",
+        "description": "soft reset"
+      },
+      {
+        "name": "klonla",
+        "command": "git clone",
+        "icon": "$(repo)",
+        "argsPrompt": "depo adresi",
+        "description": "uzaktan klonla"
+      }
+    ]
+  },
+  {
+    "name": "Firebase",
+    "icon": "$(broadcast)",
+    "color": "#FFCA28",
+    "commands": [
+      {
+        "name": "giriş yap",
+        "command": "firebase login",
+        "icon": "$(account)",
+        "description": "tarayıcıda oturum açar"
+      },
+      {
+        "name": "çıkış yap",
+        "command": "firebase logout",
+        "icon": "$(sign-out)",
+        "description": "oturumu kapat"
+      },
+      {
+        "name": "projeleri listele",
+        "command": "firebase projects:list",
+        "icon": "$(list-ordered)",
+        "description": "hesabındaki projeler"
+      },
+      {
+        "name": "projeye bağlan",
+        "command": "firebase use --add",
+        "icon": "$(link)",
+        "argsPrompt": "proje adı",
+        "description": "klasörü projeye bağlar"
+      },
+      {
+        "name": "hosting deploy",
+        "command": "firebase deploy --only hosting",
+        "icon": "$(cloud-upload)",
+        "confirm": "Hosting canlıya yayınlanacak. Devam?",
+        "description": "statik siteyi yayınla"
+      },
+      {
+        "name": "functions deploy",
+        "command": "firebase deploy --only functions",
+        "icon": "$(rocket)",
+        "confirm": "Functions canlıya yayınlanacak. Devam?",
+        "description": "sunucu fonksiyonlarını yayınla"
+      },
+      {
+        "name": "kuralları deploy",
+        "command": "firebase deploy --only firestore:rules",
+        "icon": "$(shield)",
+        "confirm": "Firestore kuralları yayınlanacak. Devam?",
+        "description": "rules + indexes"
+      },
+      {
+        "name": "emülatörler",
+        "command": "firebase emulators:start",
+        "icon": "$(beaker)",
+        "description": "yerel emülatörler (Ctrl+C ile durur)"
+      },
+      {
+        "name": "fonksiyon logları",
+        "command": "firebase functions:log",
+        "icon": "$(history)",
+        "description": "canlı fonksiyon logları"
+      },
+      {
+        "name": "başlat",
+        "command": "firebase init",
+        "icon": "$(gear)",
+        "confirm": "Klasörde firebase.json oluşturulacak/yazılacak. Devam?",
+        "description": "yapılandırma (interaktif)"
+      }
+    ]
   }
 ]
