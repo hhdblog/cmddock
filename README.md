@@ -29,6 +29,7 @@ Geliştirirken VSCode'da bu klasörü açıp <kbd>F5</kbd> ile Extension Develop
 | Son komutu tekrarla | `Cmd Deck: Son Komutu Tekrar Çalıştır` |
 | Windows uyumluluğunu denetle | `Cmd Deck: Platform Uyumluluğunu Kontrol Et` |
 | Kullanılabilir ikonları gör | `Cmd Deck: İkon Kataloğu` |
+| Komut dosyasını nasıl kullanacağımı gör | `Cmd Deck: Komut Dosyası Nasıl Kullanılır` |
 | Durum çubuğunda hangi gruplar görünsün | `Cmd Deck: Durum Çubuğu Düğmelerini Seç` (çoklu seçim, işaretle) |
 
 Komut listesinde **en çok kullandıkların üstte** çıkar; sayı eşitse `settings.json` sırası korunur.
@@ -125,6 +126,7 @@ $(json) Komut Listesini Düzenle
 $(sync) Komut Dosyasını Uygula
 $(check) Platform Uyumluluğunu Kontrol Et
 $(new-folder) Hazır Grup Ekle
+$(markdown) Komut Dosyası Nasıl Kullanılır
 $(list-selection) Durum Çubuğu Düğmelerini Seç
 $(paintcan) İkon Kataloğu
 $(refresh) Dosyayı Ayarlardan Yenile

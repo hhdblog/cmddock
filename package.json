@@ -83,6 +83,12 @@
         "title": "Hazır Grup Ekle",
         "category": "Cmd Deck",
         "icon": "$(new-folder)"
+      },
+      {
+        "command": "cmd-deck.usage",
+        "title": "Komut Dosyası Nasıl Kullanılır",
+        "category": "Cmd Deck",
+        "icon": "$(markdown)"
       }
     ],
     "configurationDefaults": {

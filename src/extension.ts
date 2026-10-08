@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { getGroups } from './config';
 import { showIconCatalog } from './iconCatalog';
+import { showUsage } from './help';
 import { DeckGroup } from './normalize';
 import { checkPlatform, maybeShowPlatformNotice } from './platform';
 import { pickAnyCommand, pickCommand, pickCommandsInGroup } from './picker';
@@ -128,6 +129,10 @@ export function activate(context: vscode.ExtensionContext): void {
       // Yeni grubun durum çubuğu düğmesi anında görünsün.
       statusBar.refresh();
     })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('cmd-deck.usage', () => showUsage())
   );
 
   context.subscriptions.push(

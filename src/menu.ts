@@ -57,6 +57,13 @@ export const MENU_ACTIONS: readonly MenuAction[] = [
     runnable: true,
   },
   {
+    id: 'cmd-deck.usage',
+    label: 'Komut Dosyası Nasıl Kullanılır',
+    description: 'dosya formatı, alanlar, uygulama modları',
+    icon: '$(markdown)',
+    runnable: true,
+  },
+  {
     id: 'cmd-deck.statusBarItems',
     label: 'Durum Çubuğu Düğmelerini Seç',
     description: 'hangi grupların çubukta görüneceğini işaretle',
