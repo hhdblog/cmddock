@@ -1,52 +1,153 @@
 import * as vscode from 'vscode';
 import { getGroups } from './config';
-import { countCommands } from './normalize';
-import { readLast, readUsage, resolveLast } from './usage';
+import { DeckGroup, countCommands } from './normalize';
+import { MASTER_ID, MASTER_PRIORITY, planItems, StatusBarPlanItem } from './plan';
+import { ColorSpec, parseColor, parseIcon } from './style';
+import { countOf, readLast, readUsage, UsageMap } from './usage';
 
 const OPEN_COMMAND = 'cmd-deck.open';
+const OPEN_GROUP_COMMAND = 'cmd-deck.openGroup';
+const DEFAULT_ICON = 'terminal';
 
 export interface StatusBarHandle {
-  readonly item: vscode.StatusBarItem;
+  readonly items: readonly vscode.StatusBarItem[];
   refresh(): void;
 }
 
+function setting(key: string): unknown {
+  return vscode.workspace.getConfiguration('cmdDeck.statusBar').get(key);
+}
+
+function applyColor(value: ColorSpec): string | vscode.ThemeColor | undefined {
+  if (!value) {
+    return undefined;
+  }
+  return 'hex' in value ? value.hex : new vscode.ThemeColor(value.theme);
+}
+
+/**
+ * Durum çubuğu bütün eklentilerin öncelikleriyle birlikte sıralanır, bu yüzden
+ * başka bir eklenti aynı değeri kullanırsa düğmelerimizin arasına girer
+ * (Live Server 100 kullanıyordu). Değer ayardan kaydırılabilir.
+ */
+function masterPriority(): number {
+  const value = setting('priority');
+  return typeof value === 'number' && Number.isFinite(value) ? value : MASTER_PRIORITY;
+}
+
+function hiddenGroups(): readonly string[] {
+  const value = setting('hiddenGroups');
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+}
+
+/** Gruptaki en çok kullanılan komut — tooltip'te "En çok: X (×5)" olarak görünür. */
+function topCommandFactory(usage: UsageMap) {
+  return (group: DeckGroup): { name: string; count: number } | undefined => {
+    let best: { name: string; count: number } | undefined;
+    for (const command of group.commands) {
+      const count = countOf(usage, group.name, command.name);
+      if (count > 0 && (!best || count > best.count)) {
+        best = { name: command.name, count };
+      }
+    }
+    return best;
+  };
+}
+
 export function createStatusBar(context: vscode.ExtensionContext): StatusBarHandle {
-  const item = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Right,
-    100
-  );
-  item.command = OPEN_COMMAND;
+  const items: vscode.StatusBarItem[] = [];
+  let signature = '';
+
+  function build(plan: StatusBarPlanItem[]): void {
+    for (const item of items) {
+      item.dispose();
+    }
+    items.length = 0;
+
+    for (const entry of plan) {
+      // id verilmezse hepsi eklenti kimliğini alır ve sağ tık menüsü tek kalemde
+      // toplanır; ayrı id ile her düğme ayrı gizlenebilir/gösterilebilir.
+      const item = vscode.window.createStatusBarItem(
+        entry.statusBarId,
+        vscode.StatusBarAlignment.Right,
+        entry.priority
+      );
+      // Menüde ("Hide Status Bar Items") görünecek ad; set edilmezse menüde
+      // "Cmd Deck (extension)" yazar ve tüm düğmeler aynı görünür.
+      item.name = entry.name;
+      item.command =
+        entry.kind === 'group'
+          ? {
+              command: OPEN_GROUP_COMMAND,
+              title: `${entry.id} komutları`,
+              arguments: [entry.id],
+            }
+          : OPEN_COMMAND;
+      items.push(item);
+    }
+  }
 
   const refresh = (): void => {
     const groups = getGroups();
-    const total = countCommands(groups);
     const usage = readUsage(context.workspaceState);
-    const last = resolveLast(groups, readLast(context.workspaceState));
+    const last = readLast(context.workspaceState);
 
-    item.text = total > 0 ? '$(terminal) cmd' : '$(terminal) cmd!';
+    const plan = planItems(groups, {
+      showGroups: setting('showGroups') !== false,
+      showMaster: setting('showMaster') !== false,
+      hiddenGroups: hiddenGroups(),
+      masterIcon: parseIcon(setting('icon'), DEFAULT_ICON),
+      masterPriority: masterPriority(),
+      groupLabel: setting('groupLabel') === 'always' ? (group: DeckGroup) => group.name : () => '',
+      topCommand: topCommandFactory(usage),
+    });
 
-    if (total === 0) {
-      item.tooltip = 'Cmd Deck — "cmdDeck.groups" boş, komut yok';
-      return;
+    // Öğeler yalnızca yapı değiştiğinde yeniden kurulur; her çalıştırmada
+    // dispose/create yapılmasın diye imza karşılaştırması var.
+    const nextSignature = JSON.stringify(
+      plan.map((entry) => [entry.kind, entry.id, entry.statusBarId, entry.name, entry.priority])
+    );
+    if (nextSignature !== signature) {
+      build(plan);
+      signature = nextSignature;
     }
 
-    const runs = Object.values(usage).reduce((sum, record) => sum + record.count, 0);
-    const lines = [
-      `**Cmd Deck** — ${groups.length} grup, ${total} komut`,
-      last ? `Son: ${last.group} › ${last.command.name}` : 'Son: henüz çalıştırılmadı',
-      `${runs} çalıştırma`,
-      '',
-      'Tıkla: grup seç → komut çalıştır',
-    ];
+    const color = applyColor(parseColor(setting('color')));
+    const background = applyColor(parseColor(setting('background')));
+    const empty = groups.length === 0;
 
-    item.tooltip = new vscode.MarkdownString(lines.join('\n\n'));
+    plan.forEach((entry, index) => {
+      const item = items[index];
+      if (!item) {
+        return;
+      }
+
+      item.text = empty && entry.kind === 'master' ? `${entry.text}!` : entry.text;
+      item.color = color;
+      item.backgroundColor = background;
+
+      const lines =
+        entry.kind === 'master' && !empty
+          ? [
+              `**Cmd Deck** — ${groups.length} grup, ${countCommands(groups)} komut`,
+              last
+                ? `Son: ${resolveLastLabel(groups, last.group, last.name)}`
+                : 'Son: henüz çalıştırılmadı',
+              `${totalRuns(usage)} çalıştırma`,
+              '',
+              'Tıkla: grup seç → komut çalıştır',
+            ]
+          : empty
+            ? ['Cmd Deck — "cmdDeck.groups" boş, komut yok']
+            : entry.tooltipLines;
+
+      item.tooltip = new vscode.MarkdownString(lines.join('\n\n'));
+      item.show();
+    });
   };
 
   refresh();
-  item.show();
 
-  // dispose, deactivate içinde subscriptions tarafından otomatik yapılır.
-  context.subscriptions.push(item);
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (event.affectsConfiguration('cmdDeck')) {
@@ -55,6 +156,27 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
     })
   );
 
-  // Memento üzerinde değişiklik event'i yok; çağıran taraf recordRun sonrası refresh() ile bildirir.
-  return { item, refresh };
+  // dispose: deactivate içinde subscriptions üzerinden otomatik yapılır.
+  return {
+    get items() {
+      return items;
+    },
+    refresh,
+  };
 }
+
+function totalRuns(usage: UsageMap): number {
+  return Object.values(usage).reduce((sum, record) => sum + record.count, 0);
+}
+
+function resolveLastLabel(
+  groups: readonly DeckGroup[],
+  groupName: string,
+  commandName: string
+): string | null {
+  const group = groups.find((candidate) => candidate.name === groupName);
+  const command = group?.commands.find((candidate) => candidate.name === commandName);
+  return command ? `${groupName} › ${commandName}` : null;
+}
+
+export { MASTER_ID, MASTER_PRIORITY };

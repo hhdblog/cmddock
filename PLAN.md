@@ -95,7 +95,7 @@ cmd-deck/
 │   └── make-icon.mjs    # media/icon.png üretici (bağımlılıksız PNG kodlayıcı)
 ├── media/icon.png       # 128x128 uzantı ikonu
 ├── examples/
-│   └── default-groups.json  # package.json configurationDefaults kaynağı
+│   └── default-groups.json  # varsayılan listenin TEK kaynağı (npm run sync-defaults)
 ├── src/
 │   ├── extension.ts      # activate/deactivate, komut kayıtları
 │   ├── statusBar.ts      # durum çubuğu öğesi + ayar değişimi dinleyici
@@ -104,13 +104,19 @@ cmd-deck/
 │   ├── args.ts           # SAF: kullanıcı girdisi → argüman dizisi (tırnak destekli)
 │   ├── tokens.ts         # SAF: {python}/{venv}/{venvpy}/{rm} platform belirteçleri
 │   ├── platform.ts       # Windows uyarısı + panoya Windows karşılığı kopyalama
+│   ├── transfer.ts       # SAF: JSON serileştirme, birleştirme, içe aktarım planı
+│   ├── style.ts          # SAF: parseIcon (düz ad → $(ad)) ve parseColor (hex/tema)
+│   ├── icons.ts          # doğrulanmış kodikon kataloğu (~120 ad, 10 kategori)
+│   ├── iconCatalog.ts    # katalog penceresi: canlı ikon + panoya kopyalama
+│   ├── plan.ts           # SAF: durum çubuğu öğelerinin planı (hangi düğme, metin, öncelik)
+│   ├── settings.ts       # pano/dosya seçimi + cmdDeck.groups ayarına yazma
 │   ├── picker.ts         # iki kademeli QuickPick (grup → komut)
 │   ├── runner.ts         # confirm, argsPrompt, executeTask + ShellExecution
 │   └── usage.ts          # workspaceState sayaçları, sıralama, son komut çözümleme
 └── test/
     ├── runTest.ts        # @vscode/test-electron giriş noktası
     ├── stubs/vscode.ts   # birim testleri için vscode takma yolu
-    ├── unit/*.test.ts    # 48 birim testi (vitest)
+    ├── unit/*.test.ts    # 68 birim testi (vitest)
     └── suite/
         ├── index.ts      # mocha girişi (out/test/suite/*.test.js toplanır)
         └── extension.test.ts  # gerçek VSCode'da 4 smoke testi
@@ -264,7 +270,7 @@ Klasör açık değilken `cwd: undefined` bırakılırsa VSCode varsayılan olar
 kullanıcı hiçbir hata mesajı da görmüyordu. Düzeltme: `cwd` her zaman açıkça veriliyor,
 klasör yoksa `os.homedir()` (düz bir terminalin açıldığı yer). Artık 7/7 geçiyor.
 
-### 7.2 Kurulum sonrası durum çubuğu görünmüyordu
+## 7.2 Kurulum sonrası durum çubuğu görünmüyordu
 
 `activationEvents: []` bırakılmıştı (VSCode ≥1.74 `contributes.commands`'tan `onCommand`
 aktivasyonunu kendisi üretiyor diye düşünülmüştü — **bu doğru, ama yetersiz**).
@@ -277,3 +283,163 @@ açılışında etkinleşmek zorundadır, `onStartupFinished` bunun için doğru
 
 Regresyon koruması: iki test eklendi — manifestte `onStartupFinished` var mı, ve uzantı
 `activate()` çağrılmadan **kendiliğinden** etkinleşiyor mu.
+
+## 7.3 Komut yönetimi: toplu içe/dışa aktarma
+
+Soruldu: "ekleme / silme / değiştirme yapılıyor mu?" Cevap: hayır — `src/` içinde hiçbir yerde
+ayar yazımı yoktu, komutlar yalnızca `settings.json`'dan elle yönetiliyordu.
+
+Kullanıcı webview tabanlı tam düzenleyici yerine **toplu içe/dışa aktarma** istedi
+(tek tek düzenleme yerine, çok sayıda komutu tek seferde taşıma/ekleme senaryosu).
+
+| Karar | Gerekçe |
+|---|---|
+| `cmd-deck.export` → **seçim**: pano veya dosya | Kullanıcı isteği: çıktı hem panoya kopyalanabilir hem konum seçilip dosyaya kaydedilebilir (varsayılan `cmd-deck-groups.json`, kaydettikten sonra "Aç" düğmesi) |
+| `cmd-deck.import` → pano veya dosya | Pano en hızlı yol, dosya takım paylaşımı için |
+| İki mod: birleştir / değiştir | Birleştirme güvenli (silmez), değiştir ise silme işleminin kendisi — ikisi de gerekliydi |
+| Yazmadan önce modal özet | "3 komut silinecek" bilgisi olmadan ayar dosyası yazılmıyor |
+| Hedef sorusu (bu proje / kullanıcı) | Aynı listeyi paylaşırken kapsam projeye göre değişir; klasör yoksa doğrudan global |
+| Saf mantık `transfer.ts` içinde | `serialize/parse/merge/planImport/removedInGroup` vscode bağımsız → 20 birim testi |
+| Kod ikonları `$(json)` / `$(sync)` | Bundle minify olduğu için `export`/`import` kodikonları doğrulanamadı; `json` ve `sync` grep ile doğrulandı |
+
+Regresyon koruması: `manifestteki tüm komutlar kayıtlı` testi yeni komutları da kapsıyor.
+
+Doğrulama: `typecheck` ✔ · birim **68/68** ✔ (20 yeni) · entegrasyon 7/7 ✔ · paket 23.87 KB ✔
+
+## 7.4 Durum çubuğu ikonu, rengi ve ikon kataloğu
+
+İkon "daha fazla seçenek" ve renk isteği geldi. Kapsam, kullanıcının seçtiği yüzeyle sınırlı:
+**durum çubuğu düğmesi**.
+
+| Konu | Karar |
+|---|---|
+| Yeni ayarlar | `cmdDeck.statusBar.icon`, `.color`, `.background` |
+| Renk kabulü | hex (`#4EC9B0`, `#f00`) veya tema rengi adı (`charts.red`, `statusBarItem.errorBackground`); boş/geçersiz → temaya bırakılır |
+| `Cmd Deck: İkon Kataloğu` | ~120 ikon, 10 kategori, her satırda ikon canlı çizilir, seçilen ad panoya kopyalanır |
+| Grup/komut ikonu da normalleştiriliyor | `"icon": "git-branch"` → `$(git-branch)`; ham yazı menüde görünmesin diye |
+
+**Kodikon adları doğrulandı.** VSCode ikonları listeleyen API sunmuyor; ilk denemede mini bundle'da
+CSS sınıfı araması işe yaramadı, sonra ikon kayıt defterinin gerçek biçimi bulundu:
+`zap:fe("zap",60038)`. Tüm 763 kayıt taranıp aday 125 adın 18'i elendi (`add`, `box`, `smartphone`,
+`tablet`, `nodejs`, `npm`, `plus`, `issue`, `hammer`, `output-window`, `chart`, `brackets`,
+`color`, `palette`, `sparkles`, `tree-item`, `kebab-light`, `hard-drive`, `git-compare-changes`).
+Katalog yalnızca doğrulanmış adlardan kuruldu; `$(paintcan)` komut ikonu da aynı yöntemle seçildi.
+
+**Test yakaladı:** `parseIcon` ilk yazımda template literal içinde `` `$$(${fallback})` `` kullanıyordu
+ve iki dolar işareti üretiyordu (`$$(terminal)`). Birim testi `"icon": "$(terminal)"` beklediği için
+kırmızıya düştü. `$` template literal'de kaçış gerektirmez; birleştirme ile yazıldı.
+
+Doğrulama: `typecheck` ✔ · birim **81/81** ✔ (13 yeni: parseIcon, parseColor, katalog bütünlüğü) ·
+entegrasyon 7/7 ✔ · paket 26.3 KB ✔
+
+## 7.5 Varsayılan listenin ikonlarla özelleştirilmesi
+
+Yeni ikon/renk özelliğinden sonra varsayılan 36 komut da aynı dili konuşsun istendi: komutların
+tamamı `$(terminal)` geri düşüyordu.
+
+| Konu | Karar |
+|---|---|
+| Grup ikonları | Python `$(snake)`, Flutter `$(device-mobile)`, Node.js `$(server-environment)` |
+| Komut ikonları | İşlevi anlatır: `$(beaker)` test, `$(shield)` lint, `$(cloud-download)` kurulum, `$(play)` çalıştır, `$(paintcan)` format, `$(trash)` silme, `$(watch)` dev, `$(book)` Jupyter, `$(list-ordered)` liste |
+| Tek kaynak | `examples/default-groups.json` → `npm run sync-defaults` → `package.json` `configurationDefaults` |
+| Yeni test | `defaults.test.ts`: iki dosya eşit mi, 3 grup/36 komut, **her ikon katalogda mı**, belirteçler korunmuş mu, POSIX ham yol kalmamış mı |
+| Python grubunda yıkıcı komut yoktu | `pip freeze > requirements.txt` dosyayı eziyor → `confirm` eklendi (birim testi "her grupta en az bir onaylı komut" diye kovalıyor ve yakaladı) |
+
+Drift koruması: `configurationDefaults` ile `examples/default-groups.json` elle ikinci kez
+kaydırılınca kopuyordu (daha önce bu projede iki kez elle düzeltildi). Artık betik + test var.
+
+Doğrulama: `typecheck` ✔ · birim **88/88** ✔ (7 yeni) · entegrasyon 7/7 ✔ · paket 27.37 KB ✔
+
+## 7.6 Durum çubuğunda grup başına ayrı düğme
+
+Sorun: `cmd` düğmesine basınca önce grup seçiliyor — her seferinde gereksiz bir tıklama.
+İstek: her grubun kendi ikonu dursun, tıklanınca doğrudan o grubun komutları açılsın; `cmd`
+kalsın ama o da opsiyonel olsun (VSCode'un durum çubuğu sağtık menüsünde gizleme desteği var).
+
+| Konu | Karar |
+|---|---|
+| Grup düğmesi | Metin yok, yalnızca grup ikonu (`$(snake)`, `$(device-mobile)`, `$(server-environment)`) |
+| Tıklama | `cmd-deck.openGroup` + grup adı argümanı → `pickCommandsInGroup`, grup seviyesi atlanır |
+| Öncelik | `cmd` taban değer, gruplar base-1, base-2 … → `cmd` + gruplar yan yana, ayar sırasına göre (taban 250, aşağıdaki çakışma notuna bak) |
+| Görünürlük | `showGroups`, `showMaster`, `hiddenGroups: string[]`, `groupLabel: "" \| "always"` |
+| Tooltip | Grup adı + komut sayısı + `En çok: test (×5)` (en çok kullanılan komut) |
+| Yeniden kurulum | Yapı değişmedikçe öğeler yeniden oluşturulmuyor — `JSON.stringify` imza karşılaştırması, her çalıştırmada dispose/create olmuyor |
+| Saf mantık | `plan.ts` → `planItems(groups, options)`: hangi düğme, hangi metin, hangi öncelik. 13 birim testi |
+
+Renk değişikliği de artık **her** düğmeye uygulanıyor (grup düğmeleri dahil), çünkü renk
+`item`'a atanıyor — yani tek ayar tüm düğmeleri birden renklendirir.
+
+### 7.6.1 Sıralama çakışması: durum çubuğu öncelikleri
+
+Görüntüde `[⌨ cmd] [Go Live] [🐍] [📱] [⚙]` çıktı. Sebep: VSCode durum çubuğunu **tüm
+eklentilerin** `createStatusBarItem(alignment, priority)` değerlerine göre sıralar; bizim `cmd`
+öğesi 100 kullanıyordu ve Live Server da tam 100 kullanıyordu (`ms-vscode.live-server` bundle'ı
+okunarak doğrulandı). Aynı öncelik sıralamayı belirsizleştiriyor, düğmeler ayrışıyor.
+
+Kurulu eklentilerin 15.166 JS/TS dosyası taranıp `createStatusBarItem` çağrıları çıkarıldı:
+
+| Öncelik | Kullanan eklentiler |
+|---|---|
+| `1000` | rainbow-csv |
+| `100` | Live Server, Pylance, claude-code-usage |
+| `1` | Dart |
+| `0` | Dart, Codeium, Prettier (varsayılan) |
+| `-1` | Prettier |
+
+200–259 bandı **tamamen boş** çıktı → `MASTER_PRIORITY = 250`, gruplar 249, 248, 247…
+Ayrıca `cmdDeck.statusBar.priority` ayarı eklendi: ileride başka bir eklenti 250'e denk gelirse
+kullanıcı bloğu kaydırabilir. Regresyon testi varsayılan değerin 250 olduğunu sabitliyor.
+
+### 7.6.2 Sağ tık menüsü tüm düğmeleri tek kalemde topluyordu
+
+Gözlem: durum çubuğunda sağ tık → gizle/göster işlemi **tüm** düğmeleri aynı anda etkiliyordu.
+
+Sebep: `createStatusBarItem(alignment, priority)` çağrısında kimlik verilmiyordu ve VSCode
+belgelediği gibi "if no identifier was provided … the identifier will match the Extension.id"
+kuralı devreye giriyor — yani dört düğmenin de kimliği `cmd-deck.cmd-deck` oluyordu. Sağ tık
+menüsü de öğeleri kimliğe göre grupladığı için tek kalem çıkıyor.
+
+Çözüm: üç argümanlı `createStatusBarItem(id, alignment, priority)` overload'ı kullanıldı.
+Kimlikler: `cmd-deck.cmd`, `cmd-deck.group.Python`, `cmd-deck.group.Flutter`, `cmd-deck.group.Node.js`.
+Artık menüde her düğme ayrı ayrı gizlenip gösterilebiliyor. Aynı isimli iki grup varsa
+(`A`, `A`) çakışmamaları için `#2` ekleniyor.
+
+Not: Bir grubun **adı** değişirse kimliği de değişir, o düğmenin gizleme durumu sıfırlanır.
+
+### 7.6.3 Menüde her öğe "Cmd Deck (extension)" görünüyordu
+
+Kimlikler ayrıldıktan sonra menüde ayrı kalemler çıktı ama **hepsi aynı etiketle**
+("Cmd Deck (extension)"). Sebep: `StatusBarItem.name` hiç set edilmemişti; VSCode bu alanı
+kullanıcıya gösteriyor ("The name of the entry … descriptive enough that users can understand
+what the status bar item is about"), boş olduğunda uzantı adına düşüyor.
+
+Çözüm: `plan.ts`'te her düğmeye `name` verildi — `Cmd Deck: Tüm Gruplar` ve
+`Cmd Deck: <grup adı>`. İki test eklendi: adların tam listesi ve adların kısa/ayırt edici
+kalması (menüde makul görünmesi için < 40 karakter).
+
+Doğrulama: `typecheck` ✔ · birim **107/107** ✔ (18 yeni: sıralama, öncelik ve kaydırma, ayrı kimlikler, tekrarlı grup adları, menü adları, gizleme, etiket, tooltip) ·
+entegrasyon 7/7 ✔ · paket 32.82 KB ✔
+
+## 8. Doğrulama (Definition of Done)
+
+- [x] `tsc --noEmit` ve `esbuild --bundle` hatasız
+- [x] `vsce package` `.vsix` üretir
+- [x] `code --install-extension` sonrası durum çubuğu öğesi görünür (kullanıcı doğruladı)
+- [x] Tıkla → grup → komut → terminalde çalışır (kullanıcı doğruladı)
+- [x] Kurulumda 3 grup / 36 komut okunuyor (entegrasyon testi)
+- [x] `confirm` olan komut onaysız çalışmaz (entegrasyon testi)
+- [x] `argsPrompt` girdisi tırnaklı yolları koruyarak argümanlara bölünür (birim testleri)
+- [x] Çalıştırılan komut sonraki açılışta üste çıkar (birim testleri)
+- [x] Workspace yokken (klasör açılmamış pencere) çökmez (entegrasyon testi pencere açmadan koşuyor)
+- [x] Klasör yokken komut da çalışır — `cwd` ana dizine düşüyor (entegrasyon testi)
+- [ ] Esc ile her iki kademede de çıkış elle denenmedi (kod yolu test edildi, arayüzde denenmedi)
+- [ ] Ayar değişikliğinde menünün yeniden yükleme olmadan güncellenmesi elle denenmedi
+- [ ] Terminal görevi reddedilirse `showErrorMessage` görünümü elle denenmedi
+
+## 9. Sonraki adımlar (kapsam dışı, sonra)
+
+- Keybinding'ler: `keybindings.json` içinde grup/komut ID'lerine doğrudan atama
+- Panodan sonuç: `registerTerminalProfileProvider`
+- Komut geçmişi ve tekrar çalıştırma (Ctrl+R benzeri)
+- Ekstra hedef: seçili metne uygulama, aktif editöre komut gönderme
+- Webview tabanlı tek tek komut düzenleyici (kullanıcı şimdilik istemedi)

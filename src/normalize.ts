@@ -1,3 +1,5 @@
+import { parseIcon } from './style';
+
 export interface DeckCommand {
   readonly name: string;
   readonly command: string;
@@ -58,7 +60,7 @@ export function normalizeCommand(raw: unknown): DeckCommand | undefined {
     name,
     command,
     description: text(r.description),
-    icon: text(r.icon, DEFAULT_ICON),
+    icon: parseIcon(r.icon),
     confirm,
     argsPrompt,
     clear: r.clear === true,
@@ -81,7 +83,7 @@ export function normalizeGroup(raw: unknown): DeckGroup | undefined {
     return undefined;
   }
 
-  return { name, icon: text(r.icon, DEFAULT_ICON), commands };
+  return { name, icon: parseIcon(r.icon), commands };
 }
 
 export function normalizeGroups(raw: unknown): DeckGroup[] {

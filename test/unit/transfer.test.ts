@@ -1,0 +1,167 @@
+import { describe, expect, it } from 'vitest';
+import { normalizeGroups } from '../../src/normalize';
+import {
+  mergeGroups,
+  parseGroups,
+  planImport,
+  removedInGroup,
+  serializeGroups,
+} from '../../src/transfer';
+
+const current = normalizeGroups([
+  {
+    name: 'A',
+    commands: [
+      { name: 'bir', command: 'ls' },
+      { name: 'iki', command: 'pwd' },
+    ],
+  },
+  { name: 'B', commands: [{ name: 'tek', command: 'id' }] },
+]);
+
+const incoming = normalizeGroups([
+  {
+    name: 'A',
+    commands: [
+      { name: 'bir', command: 'ls -la' },
+      { name: 'üç', command: 'whoami' },
+    ],
+  },
+  { name: 'C', commands: [{ name: 'yeni', command: 'date' }] },
+]);
+
+describe('serializeGroups', () => {
+  it('parseGroups ile geri dönüş sağlar', () => {
+    const text = serializeGroups(current);
+    expect(parseGroups(text)).toEqual(current);
+  });
+
+  it('okunabilir biçimlendirir', () => {
+    expect(serializeGroups(current).split('\n')[1]).toMatch(/^\s{2}\{?/);
+  });
+
+  it('platform belirteçlerini korur', () => {
+    const withToken = normalizeGroups([
+      { name: 'P', commands: [{ name: 'x', command: '{venv}pip list' }] },
+    ]);
+    expect(parseGroups(serializeGroups(withToken))?.[0].commands[0].command).toBe(
+      '{venv}pip list'
+    );
+  });
+});
+
+describe('parseGroups', () => {
+  it('geçersiz JSON için undefined döner', () => {
+    expect(parseGroups('{bozuk')).toBeUndefined();
+    expect(parseGroups('')).toBeUndefined();
+  });
+
+  it('JSON olsa da geçersiz şekilde undefined döner', () => {
+    expect(parseGroups('"metin"')).toBeUndefined();
+    expect(parseGroups('42')).toBeUndefined();
+    expect(parseGroups('[{"name":"A"}]')).toBeUndefined();
+    expect(parseGroups('[]')).toBeUndefined();
+  });
+
+  it('geçerli listeyi kabul eder', () => {
+    expect(parseGroups(serializeGroups(current))).toHaveLength(2);
+  });
+
+  it('geçersiz komutları atar, geçerli olanları korur', () => {
+    const parsed = parseGroups(
+      JSON.stringify([
+        { name: 'A', commands: [{ name: 'iyi', command: 'ls' }, { name: 'kotu' }] },
+      ])
+    );
+    expect(parsed?.[0].commands).toHaveLength(1);
+  });
+});
+
+describe('mergeGroups', () => {
+  it('aynı isimli komutu günceller', () => {
+    const merged = mergeGroups(current, incoming);
+    const a = merged.find((group) => group.name === 'A');
+
+    expect(a?.commands.find((command) => command.name === 'bir')?.command).toBe('ls -la');
+  });
+
+  it('yeni komutu ekler', () => {
+    const merged = mergeGroups(current, incoming);
+    const names = merged.find((group) => group.name === 'A')?.commands.map((c) => c.name);
+
+    expect(names).toEqual(['bir', 'iki', 'üç']);
+  });
+
+  it('yeni grubu sona ekler', () => {
+    const merged = mergeGroups(current, incoming);
+    expect(merged.map((group) => group.name)).toEqual(['A', 'B', 'C']);
+  });
+
+  it('dokunulmayan grubu olduğu gibi bırakır', () => {
+    const merged = mergeGroups(current, incoming);
+    const b = merged.find((group) => group.name === 'B');
+    expect(b?.commands.map((c) => c.name)).toEqual(['tek']);
+  });
+
+  it('orijinal listeleri değiştirmez', () => {
+    mergeGroups(current, incoming);
+    expect(current[0].commands.map((c) => c.name)).toEqual(['bir', 'iki']);
+  });
+
+  it('gelen listede olmayan komutu birleştirmede silmez', () => {
+    const merged = mergeGroups(current, incoming);
+    const a = merged.find((group) => group.name === 'A');
+    expect(a?.commands.map((c) => c.name)).toContain('iki');
+  });
+});
+
+describe('removedInGroup', () => {
+  it('gelende olmayan komutları bulur', () => {
+    const removed = removedInGroup(current[0], incoming[0]);
+    expect(removed.map((c) => c.name)).toEqual(['iki']);
+  });
+});
+
+describe('planImport', () => {
+  it('replace modunda listeyi tamamen değiştirir', () => {
+    const plan = planImport(current, incoming, 'replace');
+
+    expect(plan.result.map((group) => group.name)).toEqual(['A', 'C']);
+    expect(
+      plan.result.find((g) => g.name === 'A')?.commands.map((c) => c.name)
+    ).toEqual(['bir', 'üç']);
+  });
+
+  it('merge modunda mevcut listeyi genişletir', () => {
+    const plan = planImport(current, incoming, 'merge');
+    expect(plan.result.map((group) => group.name)).toEqual(['A', 'B', 'C']);
+  });
+
+  it('özet yeni ve silinecek komutları bildirir', () => {
+    const plan = planImport(current, incoming, 'replace');
+    const a = plan.summary.find((line) => line.startsWith('• A'));
+
+    expect(a).toContain('yeni');
+    expect(a).toContain('güncellenecek');
+    expect(a).toContain('silinecek');
+    expect(plan.summary.join('\n')).toContain('Toplam:');
+  });
+
+  it('merge modunda silinecek bildirmez', () => {
+    const plan = planImport(current, incoming, 'merge');
+    const a = plan.summary.find((line) => line.startsWith('• A'));
+
+    expect(a).not.toContain('silinecek');
+    expect(a).toContain('yeni');
+  });
+
+  it('mevcut liste boşken özet yeni liste der', () => {
+    const plan = planImport([], incoming, 'replace');
+    expect(plan.summary.join('\n')).toContain('yeni liste');
+  });
+
+  it('yeni grubu özette ayrı satır olarak gösterir', () => {
+    const plan = planImport(current, incoming, 'merge');
+    expect(plan.summary).toContain('• C: yeni grup, 1 komut');
+  });
+});

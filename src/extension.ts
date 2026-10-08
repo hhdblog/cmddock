@@ -1,9 +1,11 @@
 import * as vscode from 'vscode';
 import { getGroups } from './config';
+import { showIconCatalog } from './iconCatalog';
 import { DeckGroup, PickedCommand } from './normalize';
 import { checkPlatform, maybeShowPlatformNotice } from './platform';
-import { pickAnyCommand, pickCommand } from './picker';
+import { pickAnyCommand, pickCommand, pickCommandsInGroup } from './picker';
 import { runCommand } from './runner';
+import { exportCommands, importCommands } from './settings';
 import { createStatusBar, StatusBarHandle } from './statusBar';
 import { rankGroups, readLast, readUsage, recordRun, resolveLast } from './usage';
 
@@ -25,6 +27,26 @@ async function launch(
 
 export function activate(context: vscode.ExtensionContext): void {
   const statusBar = createStatusBar(context);
+
+  // Durum çubuğundaki grup düğmesi: grup seviyesini atlayıp o grubu açar.
+  context.subscriptions.push(
+    vscode.commands.registerCommand('cmd-deck.openGroup', async (groupName: string) => {
+      const groups = getGroups();
+      const group = groups.find((candidate) => candidate.name === groupName);
+
+      if (!group) {
+        void vscode.window.showWarningMessage(
+          `cmd-deck: "${groupName}" grubu artık ayarlarda yok.`
+        );
+        return;
+      }
+
+      const picked = await pickCommandsInGroup(group);
+      if (picked) {
+        await launch(context, statusBar, picked);
+      }
+    })
+  );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('cmd-deck.open', async () => {
@@ -73,6 +95,18 @@ export function activate(context: vscode.ExtensionContext): void {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('cmd-deck.checkPlatform', () => checkPlatform(context))
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('cmd-deck.export', () => exportCommands())
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('cmd-deck.import', () => importCommands())
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('cmd-deck.iconCatalog', () => showIconCatalog())
   );
 
   maybeShowPlatformNotice(context);

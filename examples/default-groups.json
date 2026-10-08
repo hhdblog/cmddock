@@ -1,56 +1,56 @@
 [
   {
     "name": "Python",
-    "icon": "$(symbol-variable)",
+    "icon": "$(snake)",
     "commands": [
-      { "name": "venv oluştur", "command": "{python} -m venv .venv", "description": "Sanal ortamı kur" },
-      { "name": "bağımlılıkları kur", "command": "{venv}pip install -r requirements.txt", "description": "requirements.txt'ten kur" },
-      { "name": "requirements üret", "command": "{venv}pip freeze > requirements.txt", "description": "freeze çıktısını dosyaya yaz" },
-      { "name": "paket kur", "command": "{venv}pip install", "argsPrompt": "paket adı (örn. requests==2.32.0)", "description": "tek paket kur" },
-      { "name": "dosya çalıştır", "command": "{venvpy}", "argsPrompt": "dosya yolu (örn. main.py)", "description": "belirtilen scripti çalıştır" },
-      { "name": "test", "command": "{venvpy} -m pytest", "description": "pytest" },
-      { "name": "format", "command": "{venvpy} -m black .", "description": "black" },
-      { "name": "lint", "command": "{venvpy} -m ruff check .", "description": "ruff" },
-      { "name": "tip kontrolü", "command": "{venvpy} -m mypy .", "description": "mypy" },
-      { "name": "Jupyter Lab", "command": "{venv}jupyter lab", "description": "notebook sunucusu (Ctrl+C ile durur)" },
-      { "name": "bağımlılık listesi", "command": "{venv}pip list", "description": "kurulu paketler" },
-      { "name": "güncel olmayanlar", "command": "{venv}pip list --outdated", "description": "outdated" }
+      { "name": "venv oluştur", "command": "{python} -m venv .venv", "icon": "$(folder)", "description": "Sanal ortamı kur" },
+      { "name": "bağımlılıkları kur", "command": "{venv}pip install -r requirements.txt", "icon": "$(cloud-download)", "description": "requirements.txt'ten kur" },
+      { "name": "requirements üret", "command": "{venv}pip freeze > requirements.txt", "icon": "$(archive)", "confirm": "requirements.txt üzerine yazılacak. Devam?", "description": "freeze çıktısını dosyaya yaz" },
+      { "name": "paket kur", "command": "{venv}pip install", "icon": "$(cloud-download)", "argsPrompt": "paket adı (örn. requests==2.32.0)", "description": "tek paket kur" },
+      { "name": "dosya çalıştır", "command": "{venvpy}", "icon": "$(play)", "argsPrompt": "dosya yolu (örn. main.py)", "description": "belirtilen scripti çalıştır" },
+      { "name": "test", "command": "{venvpy} -m pytest", "icon": "$(beaker)", "description": "pytest" },
+      { "name": "format", "command": "{venvpy} -m black .", "icon": "$(paintcan)", "description": "black" },
+      { "name": "lint", "command": "{venvpy} -m ruff check .", "icon": "$(shield)", "description": "ruff" },
+      { "name": "tip kontrolü", "command": "{venvpy} -m mypy .", "icon": "$(symbol-key)", "description": "mypy" },
+      { "name": "Jupyter Lab", "command": "{venv}jupyter lab", "icon": "$(book)", "description": "notebook sunucusu (Ctrl+C ile durur)" },
+      { "name": "bağımlılık listesi", "command": "{venv}pip list", "icon": "$(list-ordered)", "description": "kurulu paketler" },
+      { "name": "güncel olmayanlar", "command": "{venv}pip list --outdated", "icon": "$(clock)", "description": "outdated" }
     ]
   },
   {
     "name": "Flutter",
     "icon": "$(device-mobile)",
     "commands": [
-      { "name": "pub get", "command": "flutter pub get", "description": "bağımlılıkları indir" },
-      { "name": "çalıştır", "command": "flutter run", "description": "hot reload aktif, Ctrl+C ile durur" },
-      { "name": "build apk", "command": "flutter build apk --release", "clear": true, "description": "APK çıktısı" },
-      { "name": "build web", "command": "flutter build web", "clear": true, "description": "web çıktısı" },
-      { "name": "build ios", "command": "flutter build ios --release", "clear": true, "description": "macOS + Xcode gerekir" },
-      { "name": "analyze", "command": "flutter analyze", "description": "statik analiz" },
-      { "name": "test", "command": "flutter test", "description": "testler" },
-      { "name": "format", "command": "dart format .", "description": "dart formatter" },
-      { "name": "cihazlar", "command": "flutter devices", "description": "bağlı cihazlar" },
-      { "name": "temizle", "command": "flutter clean", "confirm": "Derleme önbelleği silinecek. Devam?", "description": "build klasörlerini siler" },
-      { "name": "upgrade", "command": "flutter upgrade", "description": "SDK güncelle" },
-      { "name": "stable kanal", "command": "flutter channel stable && flutter upgrade", "description": "kanala geç ve güncelle" }
+      { "name": "pub get", "command": "flutter pub get", "icon": "$(cloud-download)", "description": "bağımlılıkları indir" },
+      { "name": "çalıştır", "command": "flutter run", "icon": "$(play)", "description": "hot reload aktif, Ctrl+C ile durur" },
+      { "name": "build apk", "command": "flutter build apk --release", "icon": "$(package)", "clear": true, "description": "APK çıktısı" },
+      { "name": "build web", "command": "flutter build web", "icon": "$(globe)", "clear": true, "description": "web çıktısı" },
+      { "name": "build ios", "command": "flutter build ios --release", "icon": "$(device-desktop)", "clear": true, "description": "macOS + Xcode gerekir" },
+      { "name": "analyze", "command": "flutter analyze", "icon": "$(search)", "description": "statik analiz" },
+      { "name": "test", "command": "flutter test", "icon": "$(beaker)", "description": "testler" },
+      { "name": "format", "command": "dart format .", "icon": "$(paintcan)", "description": "dart formatter" },
+      { "name": "cihazlar", "command": "flutter devices", "icon": "$(device-mobile)", "description": "bağlı cihazlar" },
+      { "name": "temizle", "command": "flutter clean", "icon": "$(discard)", "confirm": "Derleme önbelleği silinecek. Devam?", "description": "build klasörlerini siler" },
+      { "name": "upgrade", "command": "flutter upgrade", "icon": "$(cloud-upload)", "description": "SDK güncelle" },
+      { "name": "stable kanal", "command": "flutter channel stable && flutter upgrade", "icon": "$(sync)", "description": "kanala geç ve güncelle" }
     ]
   },
   {
     "name": "Node.js",
     "icon": "$(server-environment)",
     "commands": [
-      { "name": "kur", "command": "npm install", "description": "bağımlılıkları kur" },
-      { "name": "temiz kur", "command": "npm ci", "clear": true, "description": "lock dosyasından birebir kur" },
-      { "name": "derle", "command": "npm run build", "clear": true, "description": "production build" },
-      { "name": "başlat", "command": "npm start", "description": "start scripti" },
-      { "name": "dev", "command": "npm run dev", "description": "watch modu (Ctrl+C ile durur)" },
-      { "name": "test", "command": "npm test", "description": "testler" },
-      { "name": "typecheck", "command": "npx tsc --noEmit", "description": "TS tip kontrolü" },
-      { "name": "lint", "command": "npm run lint", "description": "eslint" },
-      { "name": "outdated", "command": "npm outdated", "description": "güncel olmayanlar" },
-      { "name": "güvenlik açığı düzelt", "command": "npm audit fix", "confirm": "paket sürümleri değişecek. Devam?", "description": "audit fix" },
-      { "name": "node_modules temizle", "command": "{rm} node_modules", "confirm": "node_modules silinecek, yeniden kurulum gerekir. Devam?", "description": "bağımlılık klasörünü sil" },
-      { "name": "global bağla", "command": "npm link", "argsPrompt": "paket adı (örn. my-lib)", "description": "link" }
+      { "name": "kur", "command": "npm install", "icon": "$(cloud-download)", "description": "bağımlılıkları kur" },
+      { "name": "temiz kur", "command": "npm ci", "icon": "$(cloud-download)", "clear": true, "description": "lock dosyasından birebir kur" },
+      { "name": "derle", "command": "npm run build", "icon": "$(tools)", "clear": true, "description": "production build" },
+      { "name": "başlat", "command": "npm start", "icon": "$(play)", "description": "start scripti" },
+      { "name": "dev", "command": "npm run dev", "icon": "$(watch)", "description": "watch modu (Ctrl+C ile durur)" },
+      { "name": "test", "command": "npm test", "icon": "$(beaker)", "description": "testler" },
+      { "name": "typecheck", "command": "npx tsc --noEmit", "icon": "$(symbol-interface)", "description": "TS tip kontrolü" },
+      { "name": "lint", "command": "npm run lint", "icon": "$(shield)", "description": "eslint" },
+      { "name": "outdated", "command": "npm outdated", "icon": "$(clock)", "description": "güncel olmayanlar" },
+      { "name": "güvenlik açığı düzelt", "command": "npm audit fix", "icon": "$(shield)", "confirm": "paket sürümleri değişecek. Devam?", "description": "audit fix" },
+      { "name": "node_modules temizle", "command": "{rm} node_modules", "icon": "$(trash)", "confirm": "node_modules silinecek, yeniden kurulum gerekir. Devam?", "description": "bağımlılık klasörünü sil" },
+      { "name": "global bağla", "command": "npm link", "icon": "$(link)", "argsPrompt": "paket adı (örn. my-lib)", "description": "link" }
     ]
   }
 ]

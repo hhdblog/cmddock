@@ -53,74 +53,105 @@
         "title": "Platform Uyumluluğunu Kontrol Et",
         "category": "Cmd Deck",
         "icon": "$(check)"
+      },
+      {
+        "command": "cmd-deck.export",
+        "title": "Komutları Dışa Aktar",
+        "category": "Cmd Deck",
+        "icon": "$(json)"
+      },
+      {
+        "command": "cmd-deck.import",
+        "title": "Komutları İçe Aktar",
+        "category": "Cmd Deck",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "cmd-deck.iconCatalog",
+        "title": "İkon Kataloğu",
+        "category": "Cmd Deck",
+        "icon": "$(paintcan)"
       }
     ],
     "configurationDefaults": {
       "cmdDeck.groups": [
         {
           "name": "Python",
-          "icon": "$(symbol-variable)",
+          "icon": "$(snake)",
           "commands": [
             {
               "name": "venv oluştur",
               "command": "{python} -m venv .venv",
+              "icon": "$(folder)",
               "description": "Sanal ortamı kur"
             },
             {
               "name": "bağımlılıkları kur",
               "command": "{venv}pip install -r requirements.txt",
+              "icon": "$(cloud-download)",
               "description": "requirements.txt'ten kur"
             },
             {
               "name": "requirements üret",
               "command": "{venv}pip freeze > requirements.txt",
+              "icon": "$(archive)",
+              "confirm": "requirements.txt üzerine yazılacak. Devam?",
               "description": "freeze çıktısını dosyaya yaz"
             },
             {
               "name": "paket kur",
               "command": "{venv}pip install",
+              "icon": "$(cloud-download)",
               "argsPrompt": "paket adı (örn. requests==2.32.0)",
               "description": "tek paket kur"
             },
             {
               "name": "dosya çalıştır",
               "command": "{venvpy}",
+              "icon": "$(play)",
               "argsPrompt": "dosya yolu (örn. main.py)",
               "description": "belirtilen scripti çalıştır"
             },
             {
               "name": "test",
               "command": "{venvpy} -m pytest",
+              "icon": "$(beaker)",
               "description": "pytest"
             },
             {
               "name": "format",
               "command": "{venvpy} -m black .",
+              "icon": "$(paintcan)",
               "description": "black"
             },
             {
               "name": "lint",
               "command": "{venvpy} -m ruff check .",
+              "icon": "$(shield)",
               "description": "ruff"
             },
             {
               "name": "tip kontrolü",
               "command": "{venvpy} -m mypy .",
+              "icon": "$(symbol-key)",
               "description": "mypy"
             },
             {
               "name": "Jupyter Lab",
               "command": "{venv}jupyter lab",
+              "icon": "$(book)",
               "description": "notebook sunucusu (Ctrl+C ile durur)"
             },
             {
               "name": "bağımlılık listesi",
               "command": "{venv}pip list",
+              "icon": "$(list-ordered)",
               "description": "kurulu paketler"
             },
             {
               "name": "güncel olmayanlar",
               "command": "{venv}pip list --outdated",
+              "icon": "$(clock)",
               "description": "outdated"
             }
           ]
@@ -132,65 +163,77 @@
             {
               "name": "pub get",
               "command": "flutter pub get",
+              "icon": "$(cloud-download)",
               "description": "bağımlılıkları indir"
             },
             {
               "name": "çalıştır",
               "command": "flutter run",
+              "icon": "$(play)",
               "description": "hot reload aktif, Ctrl+C ile durur"
             },
             {
               "name": "build apk",
               "command": "flutter build apk --release",
+              "icon": "$(package)",
               "clear": true,
               "description": "APK çıktısı"
             },
             {
               "name": "build web",
               "command": "flutter build web",
+              "icon": "$(globe)",
               "clear": true,
               "description": "web çıktısı"
             },
             {
               "name": "build ios",
               "command": "flutter build ios --release",
+              "icon": "$(device-desktop)",
               "clear": true,
               "description": "macOS + Xcode gerekir"
             },
             {
               "name": "analyze",
               "command": "flutter analyze",
+              "icon": "$(search)",
               "description": "statik analiz"
             },
             {
               "name": "test",
               "command": "flutter test",
+              "icon": "$(beaker)",
               "description": "testler"
             },
             {
               "name": "format",
               "command": "dart format .",
+              "icon": "$(paintcan)",
               "description": "dart formatter"
             },
             {
               "name": "cihazlar",
               "command": "flutter devices",
+              "icon": "$(device-mobile)",
               "description": "bağlı cihazlar"
             },
             {
               "name": "temizle",
               "command": "flutter clean",
+              "icon": "$(discard)",
               "confirm": "Derleme önbelleği silinecek. Devam?",
               "description": "build klasörlerini siler"
             },
             {
               "name": "upgrade",
               "command": "flutter upgrade",
+              "icon": "$(cloud-upload)",
               "description": "SDK güncelle"
             },
             {
               "name": "stable kanal",
               "command": "flutter channel stable && flutter upgrade",
+              "icon": "$(sync)",
               "description": "kanala geç ve güncelle"
             }
           ]
@@ -202,65 +245,77 @@
             {
               "name": "kur",
               "command": "npm install",
+              "icon": "$(cloud-download)",
               "description": "bağımlılıkları kur"
             },
             {
               "name": "temiz kur",
               "command": "npm ci",
+              "icon": "$(cloud-download)",
               "clear": true,
               "description": "lock dosyasından birebir kur"
             },
             {
               "name": "derle",
               "command": "npm run build",
+              "icon": "$(tools)",
               "clear": true,
               "description": "production build"
             },
             {
               "name": "başlat",
               "command": "npm start",
+              "icon": "$(play)",
               "description": "start scripti"
             },
             {
               "name": "dev",
               "command": "npm run dev",
+              "icon": "$(watch)",
               "description": "watch modu (Ctrl+C ile durur)"
             },
             {
               "name": "test",
               "command": "npm test",
+              "icon": "$(beaker)",
               "description": "testler"
             },
             {
               "name": "typecheck",
               "command": "npx tsc --noEmit",
+              "icon": "$(symbol-interface)",
               "description": "TS tip kontrolü"
             },
             {
               "name": "lint",
               "command": "npm run lint",
+              "icon": "$(shield)",
               "description": "eslint"
             },
             {
               "name": "outdated",
               "command": "npm outdated",
+              "icon": "$(clock)",
               "description": "güncel olmayanlar"
             },
             {
               "name": "güvenlik açığı düzelt",
               "command": "npm audit fix",
+              "icon": "$(shield)",
               "confirm": "paket sürümleri değişecek. Devam?",
               "description": "audit fix"
             },
             {
               "name": "node_modules temizle",
               "command": "{rm} node_modules",
+              "icon": "$(trash)",
               "confirm": "node_modules silinecek, yeniden kurulum gerekir. Devam?",
               "description": "bağımlılık klasörünü sil"
             },
             {
               "name": "global bağla",
               "command": "npm link",
+              "icon": "$(link)",
               "argsPrompt": "paket adı (örn. my-lib)",
               "description": "link"
             }
@@ -289,7 +344,7 @@
               "icon": {
                 "type": "string",
                 "default": "$(terminal)",
-                "description": "Codicon adı, örn. $(zap)"
+                "description": "Codicon adı (\"zap\") veya \"$(zap)\" biçiminde yazılabilir. Varsayılan: $(terminal)."
               },
               "commands": {
                 "type": "array",
@@ -317,7 +372,7 @@
                     "icon": {
                       "type": "string",
                       "default": "$(terminal)",
-                      "description": "Codicon adı, örn. $(play)."
+                      "description": "Codicon adı (\"play\") veya \"$(play)\" biçiminde yazılabilir. Varsayılan: $(terminal)."
                     },
                     "confirm": {
                       "type": [
@@ -341,6 +396,53 @@
               }
             }
           }
+        },
+        "cmdDeck.statusBar.icon": {
+          "type": "string",
+          "default": "terminal",
+          "description": "Durum çubuğu düğmesinin ikonu. Kodikon adı (\"zap\") veya \"$(zap)\" biçiminde yazılabilir. Adaylar: \"Cmd Deck: İkon Kataloğu\"."
+        },
+        "cmdDeck.statusBar.color": {
+          "type": "string",
+          "default": "",
+          "description": "Durum çubuğu düğmesinin ön plan rengi. Boş bırakılırsa tema rengi kullanılır. \"#4EC9B0\" gibi hex ya da \"charts.red\", \"statusBarItem.errorBackground\" gibi tema rengi adı."
+        },
+        "cmdDeck.statusBar.background": {
+          "type": "string",
+          "default": "",
+          "description": "Durum çubuğu düğmesinin arka plan rengi. Aynı biçim: hex veya tema rengi adı. Boş bırakılırsa arka plan şeffaf kalır."
+        },
+        "cmdDeck.statusBar.showGroups": {
+          "type": "boolean",
+          "default": true,
+          "description": "Her grup için durum çubuğunda ayrı bir düğme gösterir. Tıklanınca grup seviyesi atlanır ve o grubun komutları açılır."
+        },
+        "cmdDeck.statusBar.showMaster": {
+          "type": "boolean",
+          "default": true,
+          "description": "\"cmd\" düğmesini gösterir: tüm gruplar tek listeden seçilir."
+        },
+        "cmdDeck.statusBar.groupLabel": {
+          "type": "string",
+          "default": "",
+          "enum": [
+            "",
+            "always"
+          ],
+          "description": "\"always\" ise grup düğmelerinde ikonun yanına grup adı da yazılır. Boş bırakılırsa yalnızca ikon görünür."
+        },
+        "cmdDeck.statusBar.hiddenGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Durum çubuğunda gösterilmeyecek grup adları. Örn. [\"Python\", \"Node.js\"]."
+        },
+        "cmdDeck.statusBar.priority": {
+          "type": "number",
+          "default": 250,
+          "description": "Durum çubuğu düğmelerinin sırası. Yüksek değer daha sola gelir; grup düğmeleri bundan 1, 2, 3 azalır. Başka bir eklenti aynı değeri kullanırsa düğmelerimizin arasına girer, o durumda bu değeri değiştir. Bu makinede kullanılan değerler: -1, 0, 1, 100, 1000."
         }
       }
     }
@@ -352,6 +454,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:integration": "node esbuild.mjs --tests && node out/test/runTest.js",
+    "sync-defaults": "node scripts/sync-defaults.mjs",
     "icon": "node scripts/make-icon.mjs",
     "package": "vsce package --no-dependencies",
     "vscode:prepublish": "npm run build"

@@ -40,16 +40,23 @@ export async function pickCommand(
     return undefined;
   }
 
-  const commandItems: CommandItem[] = pickedGroup.group.commands.map((command) => ({
+  return pickCommandsInGroup(pickedGroup.group);
+}
+
+/** Grup seviyesini atlayıp doğrudan o grubun komutlarını listeler. */
+export async function pickCommandsInGroup(
+  group: DeckGroup
+): Promise<PickedCommand | undefined> {
+  const commandItems: CommandItem[] = group.commands.map((command) => ({
     label: `${command.icon} ${command.name}`,
     description: command.description || command.command,
     detail: command.description ? command.command : undefined,
-    group: pickedGroup.group,
+    group,
     command,
   }));
 
   const pickedCommand = await vscode.window.showQuickPick(commandItems, {
-    placeHolder: `${pickedGroup.group.name} — komut seç`,
+    placeHolder: `${group.name} — komut seç`,
     matchOnDescription: true,
     matchOnDetail: true,
   });
