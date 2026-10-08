@@ -235,3 +235,65 @@ describe('slimGroups', () => {
     expect(serializeJson(slim).length).toBeLessThan(serializeJson(normalized).length);
   });
 });
+
+describe('gruba ait görünüm (ikon/renk) birleştirmede', () => {
+  const withLook = (icon: string, color?: string) => [
+    {
+      name: 'Git',
+      icon,
+      color,
+      commands: [{ name: 'durum', command: 'git status' }],
+    },
+  ];
+
+  it('değişen ikonu uygular', () => {
+    const merged = mergeGroups(
+      normalizeGroups(withLook('$(source-control)', '#F14E32')),
+      normalizeGroups(withLook('$(git-branch)', '#F14E32'))
+    );
+    expect(merged[0].icon).toBe('$(git-branch)');
+  });
+
+  it('değişen rengi uygular', () => {
+    const merged = mergeGroups(
+      normalizeGroups(withLook('$(source-control)', '#F14E32')),
+      normalizeGroups(withLook('$(source-control)', '#00FF00'))
+    );
+    expect(merged[0].color).toBe('#00FF00');
+  });
+
+  it('dosyadan renk kaldırıldıysa kaldırır', () => {
+    const merged = mergeGroups(
+      normalizeGroups(withLook('$(source-control)', '#F14E32')),
+      normalizeGroups(withLook('$(source-control)'))
+    );
+    expect(merged[0].color).toBeUndefined();
+  });
+
+  it('komutlar aynıysa da görünümü günceller', () => {
+    const merged = mergeGroups(
+      normalizeGroups(withLook('$(source-control)')),
+      normalizeGroups(withLook('$(rocket)'))
+    );
+    expect(merged[0].icon).toBe('$(rocket)');
+    expect(merged[0].commands).toHaveLength(1);
+  });
+
+  it('aynı görünümde özet değişiklik bildirmez', () => {
+    const plan = planImport(
+      normalizeGroups(withLook('$(source-control)', '#111111')),
+      normalizeGroups(withLook('$(source-control)', '#111111')),
+      'merge'
+    );
+    expect(plan.summary.join(' ')).not.toContain('ikon/renk');
+  });
+
+  it('görünüm değiştiğinde özette belirtir', () => {
+    const plan = planImport(
+      normalizeGroups(withLook('$(source-control)', '#111111')),
+      normalizeGroups(withLook('$(rocket)', '#222222')),
+      'merge'
+    );
+    expect(plan.summary.join(' ')).toContain('ikon/renk değişti');
+  });
+});

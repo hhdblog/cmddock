@@ -125,6 +125,12 @@ export function mergeGroups(
       continue;
     }
 
+    // Grup seviyesindeki alanlar da gelen dosyadan gelir. Yalnızca komutlar
+    // güncelleniyordu; dosyada ikonu ya da rengi değişen kullanıcının düzenlemesi
+    // sessizce kayboluyordu.
+    target.icon = group.icon;
+    target.color = group.color;
+
     for (const command of group.commands) {
       const index = target.commands.findIndex(
         (candidate) => candidate.name === command.name
@@ -177,11 +183,15 @@ function describe(
       return previous !== undefined && !isSameCommand(previous, command);
     }).length;
     const removed = removedInGroup(before, group).length;
+    // Komut değişmese bile ikon/renk değişmiş olabilir; özet bunu söylemezse
+    // kullanıcı hiçbir şey olmadığını sanır.
+    const appearance = before.icon !== group.icon || before.color !== group.color;
 
     const parts = [`${group.commands.length} komut`];
     if (added > 0) parts.push(`${added} yeni`);
     if (changed > 0) parts.push(`${changed} güncellenecek`);
     if (removed > 0) parts.push(`${removed} silinecek`);
+    if (appearance) parts.push('ikon/renk değişti');
 
     return `• ${group.name}: ${parts.join(', ')}`;
   });
