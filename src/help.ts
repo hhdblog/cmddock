@@ -47,6 +47,15 @@ Grupları birleştir   →   • Git: 15 komut, 1 yeni
 Listeyi değiştir     →   • Git: 15 komut, 2 silinecek
 \`\`\`
 
+Bir **grup** tamamen siliniyorsa komutlarıyla birlikte kaybolur ve ikonu, rengi
+de gider. Özet bunu ayrıca ve gürültülü biçimde bildirir:
+
+\`\`\`
+• Node.js: GRUP SİLİNECEK (12 komut, ikon ve renk de kaybolur)
+2 grup tamamen silinecek. Bu geri alınamaz — devam etmeden önce komutlarını
+başka bir gruba taşımayı düşün.
+\`\`\`
+
 Grupların ikonu ya da rengi değişirse özet \`ikon/renk değişti\` der.
 
 Listede gerçekten hiçbir şey değişmiyorsa özet hiç gösterilmez, dosyaya dokunulmaz.

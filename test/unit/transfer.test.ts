@@ -297,3 +297,60 @@ describe('gruba ait görünüm (ikon/renk) birleştirmede', () => {
     expect(plan.summary.join(' ')).toContain('ikon/renk değişti');
   });
 });
+
+describe('özet, silinen grupları da bildirir', () => {
+  const group = (name: string, commands = 3) =>
+    normalizeGroups([
+      {
+        name,
+        commands: Array.from({ length: commands }, (_, i) => ({ name: `k${i}`, command: 'x' })),
+      },
+    ]);
+
+  it('sonuçta olmayan grup görünür', () => {
+    const plan = planImport([...group('Python'), ...group('Node.js', 12)], group('Python'), 'replace');
+
+    expect(plan.summary.join('\n')).toContain('Node.js: GRUP SİLİNECEK');
+  });
+
+  it('kaç komutla birlikte kaybolduğunu söyler', () => {
+    const plan = planImport(group('Python'), group('Node.js', 12), 'replace');
+
+    expect(plan.summary.join('\n')).toContain('12 komut');
+  });
+
+  it('kaç grup silindiğini ve geri alınamaz olduğunu söyler', () => {
+    const current = [...group('Python'), ...group('Docker', 9), ...group('Go', 10)];
+    const plan = planImport(current, group('Python'), 'replace');
+
+    expect(plan.summary.join('\n')).toContain('2 grup tamamen silinecek');
+    expect(plan.summary.join('\n')).toContain('geri alınamaz');
+  });
+
+  it('grup kalıyorsa uyarı vermez', () => {
+    const current = [...group('Python'), ...group('Docker', 9)];
+    const plan = planImport(current, current, 'replace');
+
+    expect(plan.summary.join('\n')).not.toContain('GRUP SİLİNECEK');
+    expect(plan.summary.join('\n')).not.toContain('geri alınamaz');
+  });
+
+  it('merge modunda grup silinmez, uyarı da çıkmaz', () => {
+    const current = [...group('Python'), ...group('Docker', 9)];
+    const plan = planImport(current, group('Python'), 'merge');
+
+    expect(plan.result.map((g) => g.name)).toContain('Docker');
+    expect(plan.summary.join('\n')).not.toContain('GRUP SİLİNECEK');
+  });
+
+  it('silme uyarısı toplam satırından önce gelir', () => {
+    const plan = planImport([...group('Python'), ...group('Docker', 9)], group('Python'), 'replace');
+    const lines = plan.summary;
+
+    const warning = lines.findIndex((line) => line.includes('GERİ ALINAMAZ') || line.includes('geri alınamaz'));
+    const total = lines.findIndex((line) => line.startsWith('Toplam:'));
+
+    expect(warning).toBeGreaterThanOrEqual(0);
+    expect(warning).toBeLessThan(total);
+  });
+});

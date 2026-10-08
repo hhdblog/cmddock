@@ -168,6 +168,8 @@ function describe(
     return [`Sonuç: ${result.length} grup, ${countCommands(result)} komut (yeni liste)`];
   }
 
+  const names = new Set(result.map((group) => group.name));
+
   const lines = result.map((group) => {
     const before = current.find((candidate) => candidate.name === group.name);
 
@@ -195,6 +197,24 @@ function describe(
 
     return `• ${group.name}: ${parts.join(', ')}`;
   });
+
+  // Sonuçta hiç bulunmayan gruplar yukarıdaki gezinmede hiç görünmezdi: kullanıcı
+  // "Listeyi değiştir" ile bir grubu sildiğinde özet sessizce geçiyordu. Oysa
+  // grup komutlarıyla birlikte kayboluyor, bu da dosyadan bir grup silmenin
+  // tek yolu.
+  const dropped = current.filter((group) => !names.has(group.name));
+  for (const group of dropped) {
+    lines.push(
+      `• ${group.name}: GRUP SİLİNECEK (${group.commands.length} komut, ikon ve renk de kaybolur)`
+    );
+  }
+
+  if (dropped.length > 0) {
+    lines.push(
+      `${dropped.length} grup tamamen silinecek. Bu geri alınamaz — devam etmeden önce ` +
+        `komutlarını başka bir gruba taşımayı düşün.`
+    );
+  }
 
   lines.push(`Toplam: ${countCommands(current)} → ${countCommands(result)} komut`);
 
