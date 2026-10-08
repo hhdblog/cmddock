@@ -563,3 +563,20 @@ Doğrulama: `typecheck` ✔ · birim **139/139** ✔ · entegrasyon 7/7 ✔ · p
 - Komut geçmişi ve tekrar çalıştırma (Ctrl+R benzeri)
 - Ekstra hedef: seçili metne uygulama, aktif editöre komut gönderme
 - Webview tabanlı tek tek komut düzenleyici (kullanıcı şimdilik istemedi)
+
+## 10. Dağıtım öncesi yapılacaklar
+
+Sürüm **dağıtımın en sonunda** ilerletilecek; yeni özellikler eklendikçe commit'lenip
+test edilecek, sürüm atlaması dağıtım günü yapılacak.
+
+- [ ] `package.json` → `version`: `0.1.0` → **`0.2.0`** (menü etiketleri değişti,
+      iki komut yeniden yazıldı, şema eklendi, içe/dışa aktarım akışı değişti —
+      geriye uyumlu bir hata düzeltmesi değil)
+- [ ] `npm run package` → `cmd-deck-0.2.0.vsix`
+- [ ] `code --install-extension ... --force` (kurulu sürüm de `0.1.0`)
+- [ ] `README.md` sürüm/ekran görüntüsü tazelemesi
+- [ ] Marketplace hesabı/publisher doğrulaması — `publisher: "cmd-deck"` henüz
+      gerçek bir yayıncı hesabı değil, `vsce publish` öncesi gerekli
+
+> Not: Aynı sürüm numarasıyla `--force` kurulumu çalışır ama VSCode'da
+> "güncelleme yok" görünür. Test için yeterli, dağıtım için yetersiz.
