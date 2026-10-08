@@ -11,6 +11,7 @@ import {
   planImport,
   serializeGroups,
   serializeJson,
+  slimGroups,
 } from './transfer';
 
 const WRITE_LABEL = 'Yaz';
@@ -261,7 +262,9 @@ export async function applyGroupFile(context: vscode.ExtensionContext): Promise<
 
   await vscode.workspace
     .getConfiguration(CONFIG_SECTION)
-    .update(GROUPS_KEY, plan.result, destination);
+    // Normalize dolguları ayıklanır: ayarlar okunurken zaten geri doluyor,
+    // ama dosyada `confirm: false` gibi alanlar gürültüden başka bir işe yaramıyor.
+    .update(GROUPS_KEY, slimGroups(plan.result), destination);
 
   // Dosya hatırlansın: düzenlemeye döndüğünde aynı dosya açılsın.
   await rememberPath(context, source);

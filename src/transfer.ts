@@ -21,6 +21,75 @@ export function serializeGroups(groups: readonly DeckGroup[]): string {
   return serializeJson(groups);
 }
 
+const FALLBACK_ICON = '$(terminal)';
+
+interface LooseCommand {
+  name: string;
+  command: string;
+  icon?: string;
+  description?: string;
+  confirm?: string | false;
+  argsPrompt?: string;
+  clear?: boolean;
+}
+
+interface LooseGroup {
+  name: string;
+  icon?: string;
+  color?: string;
+  commands: LooseCommand[];
+}
+
+/**
+ * Normalizasyonun doldurduğu varsayılanları ayıklar — `settings.json`'a yazmadan
+ * önce kullanılır.
+ *
+ * Normalize edilmiş her komut `confirm: false`, `clear: false`, `icon: "$(terminal)"`
+ * ve çoğu zaman `description: ""` taşır. Bunlar okurken `normalizeGroups` tarafından
+ * zaten geri doldurulduğu için **davranış değişmez**; kazanç, üretilen dosyanın
+ * gerçekte ne ayarlandığını göstermesi. 61 komutta ~106 satır gürültü gider.
+ *
+ * Önemli: bu yalnızca serileştirmede kullanılır. `planImport` ve `isSameCommand`
+ * normalize edilmiş alanlar üzerinden karşılaştırma yapmaya devam eder —
+ * değiştirilirse "hiçbir şey değişmedi" algılaması bozulur.
+ */
+export function slimGroups(groups: readonly DeckGroup[]): LooseGroup[] {
+  return groups.map((group) => {
+    const slim: LooseGroup = { name: group.name, commands: [] };
+
+    if (group.icon && group.icon !== FALLBACK_ICON) {
+      slim.icon = group.icon;
+    }
+    if (group.color) {
+      slim.color = group.color;
+    }
+
+    slim.commands = group.commands.map((command) => {
+      const entry: LooseCommand = { name: command.name, command: command.command };
+
+      if (command.icon && command.icon !== FALLBACK_ICON) {
+        entry.icon = command.icon;
+      }
+      if (command.description) {
+        entry.description = command.description;
+      }
+      if (command.confirm) {
+        entry.confirm = command.confirm;
+      }
+      if (command.argsPrompt) {
+        entry.argsPrompt = command.argsPrompt;
+      }
+      if (command.clear) {
+        entry.clear = true;
+      }
+
+      return entry;
+    });
+
+    return slim;
+  });
+}
+
 /** Geçersiz JSON veya geçerli ama boş liste → undefined. */
 export function parseGroups(input: string): DeckGroup[] | undefined {
   let parsed: unknown;

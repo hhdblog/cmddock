@@ -208,8 +208,13 @@ hatalarını (`descrition` gibi) kırmızı gösterir. Bilinmeyen alan reddedili
 
 Dosyayı elle düzenlediğin için dışa aktarım **normalize edilmiş** hâli değil ham
 listeyi yazar; `description: ""`, `confirm: false` gibi gereksiz alanlar sızmaz.
-Buna karşılık `settings.json` uygulama sonrası normalize edilmiş hâli alır — o
-dosya elle tutulan değil, üretilen bir dosyadır.
+Aynı ayıklama `settings.json`'a yazarken de yapılır, orada da yalnızca gerçekten
+ayarladığın alanlar durur — 61 komutta `confirm: false` ve `clear: false` başına
+~106 satır gürültü geride kalmaz. Alanlar okunurken zaten geri doldurulduğu için
+hiçbir ayar kaybolmaz.
+
+> `settings.json`'ı elle düzenlemen gerekmiyor; ekip arkadaşın `Komut Dosyasını
+> Uygula` ile kendi dosyasına alsın. Paylaşılacak dosya `cmd-deck-groups.json`.
 
 ### Uygulama (import)
 

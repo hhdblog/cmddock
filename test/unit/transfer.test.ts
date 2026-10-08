@@ -6,6 +6,8 @@ import {
   planImport,
   removedInGroup,
   serializeGroups,
+  serializeJson,
+  slimGroups,
 } from '../../src/transfer';
 
 const current = normalizeGroups([
@@ -163,5 +165,73 @@ describe('planImport', () => {
   it('yeni grubu özette ayrı satır olarak gösterir', () => {
     const plan = planImport(current, incoming, 'merge');
     expect(plan.summary).toContain('• C: yeni grup, 1 komut');
+  });
+});
+describe('slimGroups', () => {
+  const raw = [
+    {
+      name: 'Git',
+      icon: '$(source-control)',
+      color: '#F14E32',
+      commands: [
+        { name: 'durum', command: 'git status', description: 'çalışma ağacı' },
+        { name: 'push', command: 'git push', confirm: 'Emin misin?' },
+        { name: 'temizle', command: 'rm -rf x', clear: true },
+        { name: 'klonla', command: 'git clone', argsPrompt: 'adres' },
+        { name: 'yoksay', command: 'git fetch', icon: '$(sync)' },
+      ],
+    },
+    { name: 'Düz', commands: [{ name: 'a', command: 'echo a' }] },
+  ];
+
+  const normalized = normalizeGroups(raw);
+  const slim = slimGroups(normalized);
+
+  it('varsayılan alanları ayıklar', () => {
+    expect(Object.keys(slim[0].commands[0]).sort()).toEqual(['command', 'description', 'name']);
+  });
+
+  it('varsayılan ikonu yazmaz', () => {
+    expect(slim[1].icon).toBeUndefined();
+    expect(slim[1].commands[0].icon).toBeUndefined();
+  });
+
+  it('özel ikonu korur', () => {
+    expect(slim[0].icon).toBe('$(source-control)');
+    expect(slim[0].commands[4].icon).toBe('$(sync)');
+  });
+
+  it('grup rengini korur', () => {
+    expect(slim[0].color).toBe('#F14E32');
+  });
+
+  it('confirm metnini korur', () => {
+    expect(slim[0].commands[1].confirm).toBe('Emin misin?');
+  });
+
+  it('confirm false ve clear false yazılmaz', () => {
+    expect('confirm' in slim[0].commands[0]).toBe(false);
+    expect('clear' in slim[0].commands[0]).toBe(false);
+  });
+
+  it('clear true ve argsPrompt korunur', () => {
+    expect(slim[0].commands[2].clear).toBe(true);
+    expect(slim[0].commands[3].argsPrompt).toBe('adres');
+  });
+
+  it('hiçbir yerde "confirm": false kalmaz', () => {
+    expect(serializeJson(slim)).not.toContain('"confirm": false');
+  });
+
+  /**
+   * En önemli değişmez: ayıklama yalnızca görünümü etkiler, davranışı değil.
+   * Okurken normalizeGroups geri doldurduğu için iki hâl de aynı listeye çevrilmeli.
+   */
+  it('normalize edilmiş hâle geri döndüğünde aynı komutları verir', () => {
+    expect(normalizeGroups(slim)).toEqual(normalized);
+  });
+
+  it('serileştirilmiş çıktı normalize edilmiş hâlden kısadır', () => {
+    expect(serializeJson(slim).length).toBeLessThan(serializeJson(normalized).length);
   });
 });
