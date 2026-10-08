@@ -540,6 +540,213 @@ Saf yardımcılar `plan.ts`: `visibleGroupNames` (şu an ne görünüyor) ve `hi
 
 Doğrulama: `typecheck` ✔ · birim **139/139** ✔ · entegrasyon 7/7 ✔ · paket 39.21 KB ✔
 
+## 7.12 Hazır grup kütüphanesi
+
+**Plan aşamasında — henüz uygulanmadı.** 2026-10-09.
+
+### Neden kütüphane, neden varsayılan listeye ekleme değil
+
+Varsayılanlar `configurationDefaults` içinde, yani **her kurulumda herkese** gelir.
+Şu an 61 komut / 5 grup var ve durum çubuğu zaten kısaltma ihtiyacı duyuyor
+(`maxGroupItems: 3`). On grup daha eklenirse Rust kullanmayanın eline de Rust
+düşer, menü ve çubuk taşar.
+
+| Seçenek | Sonuç |
+|---|---|
+| A — listeyi büyüt | Basit ama herkes her şeyi görür |
+| **B — yerleşik kütüphane** | **Seçildi.** Kullanıcı istediğini alır, istemeyen hiç görmez |
+| C — ikisi | Karma yol, iki yolu da sürdürür |
+
+Varsayılanlar 5 grupda kalır. Yeni komut: `Cmd Deck: Hazır Grup Ekle` →
+kütüphaneden seç → `cmdDeck.groups`'a eklenir.
+
+### Kütüphanedeki 10 grup
+
+İkonlar `src/icons.ts` kataloğundan (103 doğrulanmış kodikon); hepsi tek tek
+doğrulandı. `plug`, `key`, `lock`, `graph`, `flame` katalogda **yok**, bu yüzden
+kullanılmadı.
+
+| Grup | İkon | Renk | Komut |
+|---|---|---|---|
+| Docker | `$(package)` | `#2496ED` | 9 |
+| GitHub CLI | `$(source-control)` | `#8B949E` | 12 |
+| PostgreSQL | `$(database)` | `#4169E1` | 7 |
+| Go | `$(server-environment)` | `#00ADD8` | 10 |
+| Rust | `$(gear)` | `#DEA584` | 10 |
+| Kubernetes | `$(vm)` | `#326CE5` | 10 |
+| Java (Maven/Gradle) | `$(symbol-interface)` | `#E76F00` | 8 |
+| Redis | `$(server)` | `#DC382C` | 6 |
+| Android | `$(device-mobile)` | `#3DDC84` | 6 |
+| Vercel | `$(rocket)` | `#FF4A4A` | 5 |
+
+**Sıralama gerekçesi:** 1–3 herkes için (en yüksek kullanım × en zengin CLI),
+4–8 dikey ama o işi yapan için çok zaman kazandırır, 9–10 mevcut yığına uyuyor
+(Flutter/Android, web/Firebase).
+
+**Neden bu 10, neden 30 değil:** özgün ve doğru komut çifti olan her grup burada.
+MySQL yok (Postgres ile aynı kalıp), Make yok (proje-özel), Helm yok (kubectl'e
+çok yakın), Bash/PowerShell yok (zaten terminalde).
+
+### Komut listeleri
+
+**Docker** (`$(package)`, `#2496ED`)
+| Komut | Shell | Not |
+|---|---|---|
+| derle | `docker compose build` | |
+| başlat | `docker compose up -d` | |
+| durdur | `docker compose down` | |
+| loglar | `docker compose logs -f` | uzun süreli |
+| çalışanlar | `docker ps` | |
+| kabuğa gir | `docker compose exec` | `argsPrompt`: servis |
+| imajlar | `docker images` | |
+| temizle | `docker compose down -v --remove-orphans` | `confirm` |
+| sistemi temizle | `docker system prune -a` | `confirm` — imajları siler |
+
+**GitHub CLI** (`$(source-control)`, `#8B949E`)
+| Komut | Shell |
+|---|---|
+| durum | `gh status` |
+| PR listele | `gh pr list` |
+| PR aç | `gh pr create` |
+| PR görüntüle | `gh pr view` |
+| PR indir | `gh pr checkout` · `argsPrompt`: dal |
+| issue aç | `gh issue create` |
+| issue listele | `gh issue list` |
+| depoyu görüntüle | `gh repo view` |
+| çalışmalar | `gh run list` |
+| çalışma izle | `gh run watch` |
+| sürüm oluştur | `gh release create` · `argsPrompt`: sürüm |
+| oturum | `gh auth status` |
+
+**PostgreSQL** (`$(database)`, `#4169E1`)
+| Komut | Shell | Not |
+|---|---|---|
+| bağlan | `psql -U postgres` | uzun süreli |
+| veritabanları | `psql -l` | |
+| sorgu çalıştır | `psql -c` | `argsPrompt`: SQL |
+| yedek al | `pg_dump` | `argsPrompt`: veritabanı |
+| geri yükle | `psql -f` | `argsPrompt`: dosya |
+| tablo boyutları | `psql -c "\dt+"` | |
+| kilitleri izle | `psql -c "SELECT * FROM pg_stat_activity"` | |
+
+**Go** (`$(server-environment)`, `#00ADD8`)
+| Komut | Shell | Not |
+|---|---|---|
+| test | `go test ./...` | |
+| derle | `go build ./...` | |
+| çalıştır | `go run` | `argsPrompt`: dosya |
+| mod tidy | `go mod tidy` | |
+| vet | `go vet ./...` | |
+| biçim kontrol | `gofmt -l .` | |
+| biçim yaz | `gofmt -w .` | |
+| lint | `golangci-lint run` | |
+| paket ekle | `go get` | `argsPrompt`: paket |
+| önbellek temizle | `go clean -cache` | `confirm` |
+
+**Rust** (`$(gear)`, `#DEA584`)
+| Komut | Shell | Not |
+|---|---|---|
+| test | `cargo test` | |
+| derle | `cargo build` | |
+| sürüm derle | `cargo build --release` | |
+| çalıştır | `cargo run` | uzun süreli |
+| clippy | `cargo clippy` | |
+| biçim | `cargo fmt` | |
+| kontrol | `cargo check` | |
+| bağımlılık ekle | `cargo add` | `argsPrompt`: crate |
+| güncelle | `cargo update` | |
+| temizle | `cargo clean` | `confirm` |
+
+**Kubernetes** (`$(vm)`, `#326CE5`)
+| Komut | Shell | Not |
+|---|---|---|
+| pod listele | `kubectl get pods` | |
+| servis listele | `kubectl get svc` | |
+| tümü | `kubectl get all -A` | |
+| pod açıkla | `kubectl describe pod` | `argsPrompt`: ad |
+| log izle | `kubectl logs -f` | `argsPrompt`: pod |
+| kabuk | `kubectl exec -it` | `argsPrompt`: pod |
+| port yönlendir | `kubectl port-forward` | `argsPrompt`: pod/port |
+| uygula | `kubectl apply -f` | `argsPrompt`: dosya |
+| sil | `kubectl delete -f` | `argsPrompt` + `confirm` |
+| aktif context | `kubectl config current-context` | |
+
+**Java — Maven/Gradle** (`$(symbol-interface)`, `#E76F00`)
+| Komut | Shell | Not |
+|---|---|---|
+| derle | `mvn clean install` | |
+| test | `mvn test` | |
+| paketle | `mvn package` | |
+| çalıştır | `mvn spring-boot:run` | uzun süreli |
+| tek test | `mvn -Dtest=` | `argsPrompt`: sınıf |
+| sarmalayıcıyla | `./mvnw clean install` | |
+| gradle derle | `gradle build` | |
+| gradle test | `gradle test` | |
+
+**Redis** (`$(server)`, `#DC382C`)
+| Komut | Shell | Not |
+|---|---|---|
+| bağlan | `redis-cli` | uzun süreli |
+| ping | `redis-cli ping` | |
+| bilgi | `redis-cli info` | |
+| izle | `redis-cli monitor` | uzun süreli |
+| anahtarlar | `redis-cli keys '*'` | |
+| flushall | `redis-cli flushall` | `confirm` — her şeyi siler |
+
+**Android** (`$(device-mobile)`, `#3DDC84`)
+| Komut | Shell | Not |
+|---|---|---|
+| cihazlar | `adb devices` | |
+| shell | `adb shell` | uzun süreli |
+| logcat | `adb logcat` | uzun süreli |
+| apk kur | `adb install` | `argsPrompt`: dosya |
+| port yönlendir | `adb reverse` | `argsPrompt`: port |
+| kaldır | `adb uninstall` | `argsPrompt` + `confirm` |
+
+**Vercel** (`$(rocket)`, `#FF4A4A`)
+| Komut | Shell | Not |
+|---|---|---|
+| geliştirici sunucusu | `vercel dev` | uzun süreli |
+| derle | `vercel build` | |
+| loglar | `vercel logs` | uzun süreli |
+| ortam değişkenleri | `vercel env ls` | |
+| yayınla | `vercel --prod` | `confirm` — canlıya çıkarır |
+
+### Tasarım kararları
+
+1. **Veri nerede duracak:** `src/library.ts` içinde tipli `const`, `src/icons.ts`
+   deseninin aynısı. `examples/library-groups.json` + sync betiği **yapılmayacak**:
+   `configurationDefaults`'ın package.json'da yaşamak zorunda olması yüzden
+   JSON'a ihtiyaç vardı, kütüphanede böyle bir kısıt yok. Tek kaynak + tip
+   denetimi bedava, drift riski yok.
+2. **Yükleme doğrulaması:** `normalizeGroups` gibi eleme — geçersiz komut düşer,
+   çökmeye yol açmaz. Kütüphane bozuksa menü açılmaz değil, boş çıkar.
+3. **Eklerken mevcut gruplar korunur**, ad çakışırsa uyarılır (overwrite yok).
+4. **Hedef sorulur:** `pickTarget()` yeniden kullanılır — bu proje / kullanıcı.
+5. **Ekledikten sonra `statusBar.refresh()`** çağrılır, düğmeler anında görünür.
+6. **Yalnızca ekleme, silme yok.** Silme zaten `Komut Dosyasını Uygula` →
+   `Listeyi değiştir` ile yapılıyor; ikinci bir silme yolu karışıklık yaratır.
+
+### Uygulama adımları
+
+- [ ] `src/library.ts` — 10 grup, tipler, `normalizeLibrary()`
+- [ ] `test/unit/library.test.ts` — `defaults.test.ts` deseni:
+      ikon katalogda mı, grup/komut adları benzersiz mi, `argsPrompt`'lu
+      komutlarda `argsPrompt` var mı, yıkıcı komutlarda `confirm` var mı,
+      renkler 6 haneli hex mi, her grupta 5–15 komut mu
+- [ ] `package.json` — `cmd-deck.addGroup` komutu
+- [ ] `src/menu.ts` — "Hazır Grup Ekle" satırı
+- [ ] `src/settings.ts` — `addLibraryGroup(context)`: kütüphane seçici + hedef + yazma
+- [ ] `src/extension.ts` — komut kaydı + `statusBar.refresh()`
+- [ ] `README.md` — yeni komut, kütüphane açıklaması
+
+### DoD'ya eklenecekler
+
+- [ ] `Hazır Grup Ekle` ile eklenen grup menüde ve durum çubuğunda görünür
+- [ ] Zaten ekli olan grup ikinci kez eklenemez (tekrar listede çıkmaz)
+- [ ] Eklenen gruplar **mevcut komutları silmez**
+- [ ] Her iyonik grup için uçtan uca elle deneme (en az 1 grup)
+
 ## 8. Doğrulama (Definition of Done)
 
 - [x] `tsc --noEmit` ve `esbuild --bundle` hatasız
