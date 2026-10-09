@@ -8,6 +8,7 @@ import { LIBRARY_GROUPS, LibraryGroup } from './library';
 import { hiddenGroupNames, visibleGroupNames } from './plan';
 import {
   ImportMode,
+  parseFailureReason,
   parseGroups,
   planImport,
   serializeGroups,
@@ -220,7 +221,7 @@ export async function applyGroupFile(context: vscode.ExtensionContext): Promise<
   const incoming = parseGroups(text);
   if (!incoming) {
     void vscode.window.showErrorMessage(
-      'cmd-deck: içerik okunamadı. Beklenen biçim cmd-deck-groups.json dosyasındaki komut dizisi.'
+      `cmd-deck: içerik okunamadı — ${parseFailureReason(text) ?? 'beklenmeyen biçim.'}`
     );
     return;
   }

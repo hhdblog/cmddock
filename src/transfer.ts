@@ -90,6 +90,39 @@ export function slimGroups(groups: readonly DeckGroup[]): LooseGroup[] {
   });
 }
 
+/**
+ * Okuma hatasının nedenini söyler.
+ *
+ * `parseGroups` hem bozuk JSON'da hem de boş listede `undefined` dönüyor. Tek
+ * mesaj verilirse kullanıcı listenin boş olduğunu anlamıyor, var olmayan bir
+ * sözdizimi hatası arıyor.
+ */
+export function parseFailureReason(input: string): string | undefined {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(input);
+  } catch {
+    return 'JSON bozuk olabilir — tırnak, virgül ya da süslü parantez eksik.';
+  }
+
+  if (!Array.isArray(parsed)) {
+    return 'Dosya bir komut dizisi olmalı — köşeli parantezle başlamalı.';
+  }
+
+  if (parsed.length === 0) {
+    return 'Dosyada grup kalmadı. En az bir grup olmalı — son grubu silersen ' +
+      'çalıştırılacak komut kalmaz.';
+  }
+
+  // Dizi ve boş değil; gerçekten geçersizse normalizasyon boş döner.
+  if (normalizeGroups(parsed).length === 0) {
+    return 'Grup veya komut alanları eksik. Her grubun "name" ve "commands", ' +
+      'her komutun "name" ve "command" alanı gerekli.';
+  }
+
+  return undefined;
+}
+
 /** Geçersiz JSON veya geçerli ama boş liste → undefined. */
 export function parseGroups(input: string): DeckGroup[] | undefined {
   let parsed: unknown;

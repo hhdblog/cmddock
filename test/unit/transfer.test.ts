@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { normalizeGroups } from '../../src/normalize';
 import {
   mergeGroups,
+  parseFailureReason,
   parseGroups,
   planImport,
   removedInGroup,
@@ -352,5 +353,29 @@ describe('özet, silinen grupları da bildirir', () => {
 
     expect(warning).toBeGreaterThanOrEqual(0);
     expect(warning).toBeLessThan(total);
+  });
+});
+
+describe('parseFailureReason', () => {
+  it('bozuk JSON için sözdizimi derdini söyler', () => {
+    expect(parseFailureReason('{ bu json değil')).toContain('bozuk');
+  });
+
+  it('dizi olmayan içerikte biçim bekliyor', () => {
+    expect(parseFailureReason('"metin"')).toContain('köşeli parantez');
+  });
+
+  it('boş listede sonucun nedenini söyler', () => {
+    const reason = parseFailureReason('[]');
+    expect(reason).toContain('grup kalmadı');
+    expect(reason).toContain('En az bir grup');
+  });
+
+  it('eksik alanlarda hangi alanların gerekli olduğunu söyler', () => {
+    expect(parseFailureReason('[{"name":"A"}]')).toContain('"commands"');
+  });
+
+  it('geçerli listede hata vermez', () => {
+    expect(parseFailureReason('[{"name":"A","commands":[{"name":"a","command":"b"}]}]')).toBeUndefined();
   });
 });

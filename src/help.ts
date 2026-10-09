@@ -70,7 +70,8 @@ tüm listeyi gelen dosyayla değiştirdiği için, dosya bayattaysa (ör. kütü
 eklenmiş ama dosyaya geçmemiş bir grup) istemediğin gruplar da gider.
 \`Grup Kaldır\` yalnızca seçtiğin grubu çıkarır.
 
-Son grup kaldırılamaz — çalıştırılacak komut kalmaz.
+Son grup kaldırılamaz — çalıştırılacak komut kalmaz. Bu yüzden liste hiçbir
+zaman boşalmaz; boş bir \`[]\` dosyasını uygulamak da reddedilir.
 
 ## Gruplar arası işaretler
 
@@ -165,8 +166,9 @@ düğmeleri kendiliğinden yeniler.
 **Komut sildim ama hâlâ var.** \`Grupları birleştir\` silmez. \`Listeyi değiştir\`
 kullan.
 
-**Yorum satırı "içerik okunamadı" hatası verdi.** Dosya düz JSON olmalı.
-Yorumları kaldır, yeniden dene.
+**"İçerik okunamadı" hatası.** Mesaj nedenini söyler: JSON bozuk olabilir,
+dosya dizi olmayabilir, ya da dosyada **grup kalmamış** olabilir. Son durumda
+tek bir grup silmek de yasak — çalıştırılacak komut kalmaz.
 
 **Menüm şişti.** Durum çubuğunda \`maxGroupItems\` (varsayılan 3) ve
 \`hiddenGroups\` ayarları var; \`Cmd Deck: Durum Çubuğu Düğmelerini Seç\` ile
