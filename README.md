@@ -11,8 +11,8 @@ ekibinle paylaşabilirsin.
 ```bash
 npm install
 npm run build
-npm run package            # cmd-deck-0.1.0.vsix üretir
-code --install-extension cmd-deck-0.1.0.vsix
+npm run package            # cmd-deck-0.2.0.vsix üretir
+code --install-extension cmd-deck-0.2.0.vsix
 ```
 
 Geliştirirken VSCode'da bu klasörü açıp <kbd>F5</kbd> ile Extension Development Host başlat.
@@ -24,7 +24,7 @@ Geliştirirken VSCode'da bu klasörü açıp <kbd>F5</kbd> ile Extension Develop
 | Komut çalıştır                          | Durum çubuğundaki **grup ikonuna** tıkla → komut (grup seviyesi atlanır) |
 | Tüm gruplardan seç                      | Durum çubuğundaki `Cmd` düğmesine tıkla → grup → komut                   |
 | Komut listesini düzenle                 | `Cmd Deck: Komut Listesini Düzenle` → JSON dosyası açılır, düzenle       |
-| Hazır grup ekle (Docker, Go, k8s…)      | `Cmd Deck: Hazır Grup Ekle` → kütüphaneden seç                           |
+| Hazır grup ekle (Docker, Go, k8s, Surge…) | `Cmd Deck: Hazır Grup Ekle` → kütüphaneden seç                          |
 | Grup sil                                | `Cmd Deck: Grup Kaldır` → gruplardan seç                                 |
 | Grup seviyesine inmeden ara             | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `Cmd Deck: Tüm Komutlarda Ara`            |
 | Son komutu tekrarla                     | `Cmd Deck: Son Komutu Tekrar Çalıştır`                                   |
@@ -151,7 +151,7 @@ aynı komutlar Komut Paleti'nde de duruyor.
 
 ## Hazır grup kütüphanesi
 
-Kurulumla gelen 5 grubun dışında **10 hazır grup** daha var; hepsi tek komutla
+Kurulumla gelen 5 grubun dışında **11 hazır grup** daha var; hepsi tek komutla
 eklenir:
 
 `Cmd Deck: Hazır Grup Ekle` → kütüphaneden seç → hedefi sorar → yazar.
@@ -163,6 +163,7 @@ eklenir:
 | `$(database)` PostgreSQL       | 7     |     | `$(server)` Redis                         | 6     |
 | `$(server-environment)` Go     | 10    |     | `$(device-mobile)` Android                | 6     |
 | `$(gear)` Rust                 | 10    |     | `$(rocket)` Vercel                        | 5     |
+| `$(zap)` Surge                 | 15    |     |                                          |       |
 
 Kurulumda gelenler `configurationDefaults` içinde olduğu için **herkese** gelir;
 onu büyütmek istemeyenin menüsünü şişirmemek için bunlar kütüphanede duruyor.
@@ -171,10 +172,13 @@ Zaten eklediğin gruplar listede çıkmaz.
 Yalnızca **ekler**, silmez — mevcut komutlarına dokunmaz. Silmek için
 `Komut Dosyasını Uygula` → `Listeyi değiştir`.
 
-Kütüphane `src/library.ts` içinde; yeni grup eklemek için oraya bir giriş
-yazmak yeterli. `test/unit/library.test.ts` ikonların katalogda olduğunu,
-grup içi adların benzersizliğini ve **yıkıcı komutların onay istediğini**
-otomatik denetler.
+Kütüphane **`src/library.json`** içinde; yeni grup eklemek için oraya bir giriş
+yazmak yeterli. `npm run build` bunu okuyup `package.json` içindeki
+`configurationDefaults` alanını üretir — **iki dosyayı elle senkronlamak yok**,
+`library.json` tek kaynaktır.
+
+`test/unit/library.test.ts` ikonların katalogda olduğunu, grup içi adların
+benzersizliğini ve **yıkıcı komutların onay istediğini** otomatik denetler.
 
 ## Komutlarını tanımlama
 
@@ -216,7 +220,7 @@ Kendi ayarını yazarsan hazır grupların yerini alır — silmek istersen `"cm
 `src/library.json`'dır; `npm run build` onu okuyup `package.json` içindeki
 `configurationDefaults`'ı üretir, birim testi de ikisinin eşit kaldığını denetler.
 
-Aynı dosyada `defaults` (ilk kurulumda gelen 5 grup) ve `groups` (kütüphanedeki 15 grup)
+Aynı dosyada `defaults` (ilk kurulumda gelen 5 grup) ve `groups` (kütüphanedeki 16 grup)
 yan yana durur — böylece silinen bir varsayılan grup `Hazır Grup Ekle` ile geri
 getirilebilir.
 
@@ -334,9 +338,9 @@ Bilinmeyen belirteçler (`{herhangi}`) olduğu gibi bırakılır.
 
 ```bash
 npm run typecheck      # tsc --noEmit
-npm test               # 179 birim testi (vitest)
+npm test               # 332 birim testi (vitest)
 npm run test:integration   # gerçek VSCode içinde smoke test
-npm run sync-defaults  # examples/default-groups.json → package.json
+npm run sync-defaults  # src/library.json → package.json (defaults)
 npm run icon           # media/icon.png üret
 npm run watch          # esbuild watch
 ```

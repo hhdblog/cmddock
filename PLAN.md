@@ -899,7 +899,11 @@ test edilecek, sürüm atlaması dağıtım günü yapılacak.
       geriye uyumlu bir hata düzeltmesi değil)
 - [ ] `npm run package` → `cmd-deck-0.2.0.vsix`
 - [ ] `code --install-extension ... --force` (kurulu sürüm de `0.1.0`)
-- [ ] `README.md` sürüm/ekran görüntüsü tazelemesi
+- [x] `README.md` sürüm/ekran görüntüsü tazelemesi — sürüm `0.2.0`, grup sayısı
+      16, hazır grup 11, Surge tabloya eklendi, test sayısı 332, kütüphane kaynağı
+      `library.json` olarak düzeltildi (eski metin `library.ts` diyordu).
+      Ekran görüntüsü README'de yok, o yüzden eklenmedi — metinsel bir ağırlık
+      getirmiyor, VS Code Extensions sayfasında zaten duruyor.
 - [ ] Marketplace hesabı/publisher doğrulaması — `publisher: "cmd-deck"` henüz
       gerçek bir yayıncı hesabı değil, `vsce publish` öncesi gerekli
 
