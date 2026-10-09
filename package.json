@@ -3,7 +3,7 @@
   "displayName": "Cmdkit",
   "description": "Group frequently used terminal commands and run them from the status bar. Ships with a library of 167 commands in 16 groups.",
   "version": "0.2.0",
-  "publisher": "cmdkit",
+  "publisher": "hhdblog",
   "license": "MIT",
   "engines": {
     "vscode": "^1.90.0"
