@@ -136,6 +136,18 @@
           "description": "static analysis"
         },
         {
+          "name": "doctor",
+          "command": "flutter doctor",
+          "icon": "$(beaker)",
+          "description": "checks the Flutter/Android/Xcode setup"
+        },
+        {
+          "name": "doctor verbose",
+          "command": "flutter doctor -v",
+          "icon": "$(list-ordered)",
+          "description": "the same check with full detail"
+        },
+        {
           "name": "test",
           "command": "flutter test",
           "icon": "$(beaker)",
