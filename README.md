@@ -56,7 +56,7 @@ are optional:
 | `cmdkit.statusBar.hiddenGroups`  | `[]`       | Group names not shown: `["Python"]`                                                                                                                                                      |
 | `cmdkit.statusBar.groupLabel`    | `""`       | `"always"` writes the group name next to the icon                                                                                                                                        |
 | `cmdkit.statusBar.icon`          | `terminal` | Icon of the `Cmd` button. `"zap"` or `"$(zap)"` both work                                                                                                                               |
-| `cmdkit.statusBar.color`         | `""`       | Foreground colour: hex like `#4EC9B0` or a theme colour like `charts.red`                                                                                                                |
+| `cmdkit.statusBar.color`         | `#4EC9B0`  | Foreground colour: hex or a theme colour like `charts.red`. Set to `""` to follow the theme. Group buttons keep their own colour                                                                                                                |
 | `cmdkit.statusBar.background`    | `""`       | Background colour, same format                                                                                                                                                           |
 | `cmdkit.statusBar.priority`      | `250`      | Order of the buttons (higher = further left). Shift it if another extension collides                                                                                                      |
 

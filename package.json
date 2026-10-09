@@ -685,8 +685,8 @@
         },
         "cmdkit.statusBar.color": {
           "type": "string",
-          "default": "",
-          "description": "Foreground color of the status bar button. Leave empty to use the theme color. Either a hex value like \"#4EC9B0\" or a theme color name such as \"charts.red\" or \"statusBarItem.errorBackground\"."
+          "default": "#4EC9B0",
+          "description": "Foreground colour of the status bar buttons. Leave empty to use the theme colour. Either a hex value like \"#4EC9B0\" or a theme colour name such as \"charts.red\" or \"statusBarItem.errorBackground\". Group buttons keep their own colour when they have one."
         },
         "cmdkit.statusBar.background": {
           "type": "string",
