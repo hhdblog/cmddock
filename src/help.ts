@@ -28,8 +28,12 @@ Ama bu ayarı elle düzenlemek zahmetli. Bu yüzden düzenleme işi ayrı bir do
 Ayarı değiştirmeden hiçbir komut değişmez. Eklenti her zaman \`settings.json\`'ı
 okur, dosyayı değil — aradaki tek bağlantı bu üçüncü adımdır.
 
-Dosyada yorum satırı (\`//\`) kullanabilirsin. Elle düzenlediğin için yazmak
-normal; \`#4B8BBE\` gibi bir renk kodunun neden orada olduğunu not düşmek işe yarar.
+Dosyada yorum satırı (\`//\`) kullanabilirsin — dosya JSONC'dir, \`/* */\` blok
+yorumları da çalışır. Elle düzenlediğin için yazmak normal; \`#4B8BBE\` gibi bir
+renk kodunun neden orada olduğunu not düşmek işe yarar.
+
+Yorum yalnızca tırnak dışında yorumdur: \`"command": "curl https://x/y"\`
+satırındaki \`//\` komutun parçasıdır, silinmez.
 
 ### Dosya nerede?
 

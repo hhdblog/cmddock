@@ -261,7 +261,8 @@ bir kez dosya seçtirir — böylece başkasının gönderdiği listeyi de alabi
 | ------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `cmdDeck.groupFile` | `""`       | Düzenleme dosyasının yolu. Monorepo'da alt pakete yönlendirmek için: `"packages/api/cmd-deck-groups.json"`. Göreli yollar ilk çalışma alanı köküne göre çözülür |
 
-Dosyada **yorum serbest** (JSONC), otomatik tamamlama ve şema doğrulaması çalışır:
+Dosyada **yorum serbest** (JSONC — `//` satır, `/* */` blok), otomatik tamamlama
+ve şema doğrulaması çalışır:
 `schemas/cmd-deck-groups.json` hem `name`/`command` zorunluluğunu hem de yazım
 hatalarını (`descrition` gibi) kırmızı gösterir. Bilinmeyen alan reddedilir.
 

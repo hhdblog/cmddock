@@ -80,6 +80,68 @@ describe('parseGroups', () => {
   });
 });
 
+describe('parseGroups — JSONC yorumları', () => {
+  // Kılavuz ve README yorumu vaat ediyordu; dosya katmanı reddediyordu.
+  // Kullanıcı yorum yazıp dosyayı uyguladığında tüm komutları sessizce
+  // kaybediyordu ve hata mesajı yorumun sebebini ele vermiyordu.
+
+  const COMMENTED = `[
+  // sık kullandıklarım
+  {
+    "name": "Git",
+    "icon": "$(source-control)",
+    "color": "#F14E32", // kırmızı
+    "commands": [
+      /* günlük işler */
+      { "name": "status", "command": "git status" }
+    ]
+  }
+]`;
+
+  it('yorumlu dosyayı kabul eder', () => {
+    const groups = parseGroups(COMMENTED);
+    expect(groups).toHaveLength(1);
+    expect(groups?.[0].name).toBe('Git');
+  });
+
+  it('yorumlu dosya yorumsuzla aynı komutları verir', () => {
+    const commented = parseGroups(COMMENTED);
+    const plain = parseGroups(
+      '[{"name":"Git","icon":"$(source-control)","color":"#F14E32","commands":[{"name":"status","command":"git status"}]}]'
+    );
+    expect(commented).toEqual(plain);
+  });
+
+  it('yorum komut metnindeyse dokunulmaz', () => {
+    const groups = parseGroups(
+      '[{"name":"G","commands":[{"name":"x","command":"git commit -m \'// sabit\'"}]}]'
+    );
+    expect(groups?.[0].commands[0].command).toBe("git commit -m '// sabit'");
+  });
+
+  it('yorumlu ama bozuk dosya sessizce geçmez', () => {
+    expect(parseGroups('// not\n[{')).toBeUndefined();
+  });
+
+  it('yorumlu dosyanın hatası yorumu suçlamaz', () => {
+    // Gerçek sorun eksik parantez; "JSON bozuk" demek doğru, "yorum geçersiz"
+    // demek yanlış olurdu.
+    expect(parseFailureReason('// not\n[{')).toBe(
+      'JSON bozuk olabilir — tırnak, virgül ya da süslü parantez eksik.'
+    );
+  });
+
+  it('yorumlu dosya boş listede ayırt edilir', () => {
+    expect(parseFailureReason('// not\n[]')).toContain('grup kalmadı');
+  });
+
+  it('yorumlu dosyada eksik alan yine ayırt edilir', () => {
+    expect(parseFailureReason('// not\n[{"name":"G","commands":[]}]')).toContain(
+      'boş'
+    );
+  });
+});
+
 describe('mergeGroups', () => {
   it('aynı isimli komutu günceller', () => {
     const merged = mergeGroups(current, incoming);

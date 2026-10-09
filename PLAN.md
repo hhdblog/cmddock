@@ -866,12 +866,10 @@ Yardımcı menü dört bölüme ayrıldı, sıra **kullanım sıklığına** gö
 
 **Bilinen borç (2026-10-09 itibarıyla)**
 
-- Son silinen grubu geri al: kütüphane kütüphane gruplarını kapsıyor ama kullanıcının
-  kendi yazdığı grubu silmişse kurtarmanın yolu yok
-- JSONC yorum desteği: editör yoruma izin veriyor, `parseGroups` reddediyor.
-  Kullanım kılavuzunda uyarı var ama kökten çözülmedi
+- Silinen grubu geri al: kullanıcının kendi yazdığı grup silinince kurtarmanın yolu yok
+  (kütüphane grupları geri geliyor, kullanıcının grupları geri gelmiyor)
 - Bu planın §2/§3/§4 kısımları 3 gruplu/48 testli eski durumu anlatıyor;
-  gerçek: 15 grup, 320 test. `README.md` doğru olan belge
+  gerçek: 16 grup, 418 test. `README.md` doğru olan belge
 
 **Fikir (kapsam dışı)**
 

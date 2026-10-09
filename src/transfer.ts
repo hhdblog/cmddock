@@ -1,3 +1,4 @@
+import { parseJsonc } from './jsonc';
 import { DeckCommand, DeckGroup, countCommands, normalizeGroups } from './normalize';
 
 export type ImportMode = 'replace' | 'merge';
@@ -102,12 +103,14 @@ export function slimGroups(groups: readonly DeckGroup[]): LooseGroup[] {
  * sözdizimi hatası arıyor.
  */
 export function parseFailureReason(input: string): string | undefined {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(input);
-  } catch {
+  const result = parseJsonc(input);
+  if (!result.ok) {
+    // Yorum temizlendikten sonra da hata varsa gerçek sorun yorum değil —
+    // kullanıcının aradığı cevap "tırnak, virgül ya da parantez eksik".
     return 'JSON bozuk olabilir — tırnak, virgül ya da süslü parantez eksik.';
   }
+
+  const parsed = result.value;
 
   if (!Array.isArray(parsed)) {
     return 'Dosya bir komut dizisi olmalı — köşeli parantezle başlamalı.';
@@ -139,14 +142,12 @@ export function parseFailureReason(input: string): string | undefined {
 
 /** Geçersiz JSON veya geçerli ama boş liste → undefined. */
 export function parseGroups(input: string): DeckGroup[] | undefined {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(input);
-  } catch {
+  const result = parseJsonc(input);
+  if (!result.ok) {
     return undefined;
   }
 
-  const groups = normalizeGroups(parsed);
+  const groups = normalizeGroups(result.value);
   return groups.length > 0 ? groups : undefined;
 }
 
