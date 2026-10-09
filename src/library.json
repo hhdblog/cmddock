@@ -629,7 +629,7 @@
         },
         {
           "name": "tablo boyutları",
-          "command": "psql -c \"dt+\"",
+          "command": "psql -c \"\\dt+\"",
           "icon": "$(table)",
           "description": "tablolar ve boyutları"
         },
