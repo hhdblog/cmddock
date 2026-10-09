@@ -195,17 +195,17 @@ otomatik denetler.
 ]
 ```
 
-| Alan          | Zorunlu | Açıklama                                                                                                        |
-| ------------- | ------- | --------------------------------------------------------------------------------------------------------------- |
-| `name`        | evet    | Menüde görünen ad                                                                                               |
-| `command`     | evet    | Çalıştırılacak shell komutu                                                                                     |
-| `description` | hayır   | Sağda gri metin olarak görünür                                                                                  |
-| `icon`        | hayır   | Kodikon, varsayılan `$(terminal)`. Düz ad da olur (`zap`)                                                       |
-| `color`       | hayır   | Durum çubuğundaki **bu grubun** rengi: `#4B8BBE` ya da `charts.blue`. Boşsa `cmdDeck.statusBar.color` uygulanır |
-| `confirm`     | hayır   | `true` veya metin → çalıştırmadan önce onay                                                                     |
-| `argsPrompt`  | hayır   | Çalıştırmadan önce girdi ister                                                                                  |
+| Alan          | Zorunlu | Açıklama                                                                                                                                      |
+| ------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | evet    | Menüde görünen ad                                                                                                                             |
+| `command`     | evet    | Çalıştırılacak shell komutu                                                                                                                   |
+| `description` | hayır   | Sağda gri metin olarak görünür                                                                                                                |
+| `icon`        | hayır   | Kodikon, varsayılan `$(terminal)`. Düz ad da olur (`zap`)                                                                                     |
+| `color`       | hayır   | Durum çubuğundaki **bu grubun** rengi: `#4B8BBE` ya da `charts.blue`. Boşsa `cmdDeck.statusBar.color` uygulanır                               |
+| `confirm`     | hayır   | `true` veya metin → çalıştırmadan önce onay                                                                                                   |
+| `argsPrompt`  | hayır   | Çalıştırmadan önce girdi ister                                                                                                                |
 | `argsSingle`  | hayır   | **true ise girdinin tamamı tek argüman olur**, boşluktan bölünmez. `git commit -m`, `psql -c` gibi serbest metin bekleyen bayraklar için şart |
-| `clear`       | hayır   | `true` → terminal temizlenerek çalışır                                                                          |
+| `clear`       | hayır   | `true` → terminal temizlenerek çalışır                                                                                                        |
 
 Kurulumda 5 hazır grup gelir: **Python**, **Flutter**, **Node.js**, **Git**, **Firebase**
 (toplam 61 komut).
@@ -353,4 +353,4 @@ Tasarım kararları ve uygulama günlüğü: `PLAN.md` (depo kökünde).
 
 MIT
 
-git deneme amaçlı değiştirdim
+git deneme amaçlı değiştirdim...

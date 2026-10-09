@@ -1,6 +1,6 @@
 import * as os from 'node:os';
 import * as vscode from 'vscode';
-import { splitArgs } from './args';
+import { buildCommandLine, splitArgs } from './args';
 import { DeckCommand, DeckGroup } from './normalize';
 import { expandTokens } from './tokens';
 
@@ -82,10 +82,13 @@ export async function runCommand(
   //  farklı bir tip — karıştırmamak için varsayılan bırakıldı.)
   const options: vscode.ShellExecutionOptions = { cwd };
 
-  const execution =
-    args.length > 0
-      ? new vscode.ShellExecution(commandLine, args, options)
-      : new vscode.ShellExecution(commandLine, options);
+  // Tek dize overload'ı: VSCode 1.141'de ShellExecution(command, args) komutun
+  // kendisini tırnaklıyor ("'git checkout' main" → command not found). Tırnaklamayı
+  // kendimiz yapıyoruz, kabuğa olduğu gibi geçiyoruz.
+  const execution = new vscode.ShellExecution(
+    buildCommandLine(commandLine, args),
+    options
+  );
 
   // TaskDefinition sabit tutuluyor: tüm komutlar tek terminali paylaşır (panel: Shared).
   const task = new vscode.Task(
