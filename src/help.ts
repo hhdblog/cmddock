@@ -95,6 +95,10 @@ eklenmiş ama dosyaya geçmemiş bir grup) istemediğin gruplar da gider.
 Son grup kaldırılamaz — çalıştırılacak komut kalmaz. Bu yüzden liste hiçbir
 zaman boşalmaz; boş bir \`[]\` dosyasını uygulamak da reddedilir.
 
+Geri alma yolu yok, kasıtlı: ayarlar dosyası sürüm kontrolünde değil, "son
+yazılan liste"tir. Silmeden önce dosyan elinde olduğu için bir şey giderse
+dosyadan geri getirip \`Listeyi değiştir\` ile uygulaman yeterli.
+
 ## Gruplar arası işaretler
 
 Aynı isimli iki grup yazarsan ikinci düğme de birincisini açar — ayarları elle

@@ -866,8 +866,14 @@ Yardımcı menü dört bölüme ayrıldı, sıra **kullanım sıklığına** gö
 
 **Bilinen borç (2026-10-09 itibarıyla)**
 
-- Silinen grubu geri al: kullanıcının kendi yazdığı grup silinince kurtarmanın yolu yok
-  (kütüphane grupları geri geliyor, kullanıcının grupları geri gelmiyor)
+- Silinen grubu geri getirme yolu yok — **bu bilinçli bir karar, eksik değil.**
+  `settings.json` sürüm kontrolünde değil, "son yazılan liste"tir; geri alma
+  için tutulan geçmiş olsaydı hangi yazmanın geri alınacağı belirsizleşirdi.
+  Bunun yerine silme yolu kasten pahalı: `Grup Kaldır` tek grup ister, silinen
+  grup özette "GRUP SİLİNECEK" diye ayrı satırda ve geri alınamaz uyarısıyla
+  bildirilir, son grup zaten kaldırılamaz. Kullanıcı silmeden önce uyarılıyor.
+  Bir grup kazara giderse kaynak dosya (`cmd-deck-groups.json`) çoğu zaman hâlâ
+  duruyor ve `Listeyi değiştir` ile geri gelir — dosya senin kontrolünde.
 - Bu planın §2/§3/§4 kısımları 3 gruplu/48 testli eski durumu anlatıyor;
   gerçek: 16 grup, 418 test. `README.md` doğru olan belge
 
