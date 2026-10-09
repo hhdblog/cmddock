@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Cmdkit: Run",
+      "name": "CmdDock: Run",
       "type": "extensionHost",
       "request": "launch",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
@@ -10,7 +10,7 @@
       "preLaunchTask": "npm: build"
     },
     {
-      "name": "Cmdkit: Watch (yeniden derle + yeniden başlat)",
+      "name": "CmdDock: Watch (yeniden derle + yeniden başlat)",
       "type": "extensionHost",
       "request": "launch",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],

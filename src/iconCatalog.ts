@@ -32,7 +32,7 @@ export async function showIconCatalog(): Promise<void> {
 
   await vscode.env.clipboard.writeText(picked.iconName);
   void vscode.window.showInformationMessage(
-    `cmdkit: copied "${picked.iconName}" — ` +
-      'Write it into cmdkit.statusBar.icon or the icon field of a group or command.'
+    `cmddock: copied "${picked.iconName}" — ` +
+      'Write it into cmddock.statusBar.icon or the icon field of a group or command.'
   );
 }

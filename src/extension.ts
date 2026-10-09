@@ -56,13 +56,13 @@ export function activate(context: vscode.ExtensionContext): void {
 
   // Durum çubuğundaki grup düğmesi: grup seviyesini atlayıp o grubu açar.
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.openGroup', async (groupName: string) => {
+    vscode.commands.registerCommand('cmddock.openGroup', async (groupName: string) => {
       const groups = getGroups();
       const group = groups.find((candidate) => candidate.name === groupName);
 
       if (!group) {
         void vscode.window.showWarningMessage(
-          `cmdkit: the group "${groupName}" is no longer in your settings.`
+          `cmddock: the group "${groupName}" is no longer in your settings.`
         );
         return;
       }
@@ -72,19 +72,19 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.open', async () => {
+    vscode.commands.registerCommand('cmddock.open', async () => {
       await handle(context, statusBar, await pickCommand(ranked(context)));
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.search', async () => {
+    vscode.commands.registerCommand('cmddock.search', async () => {
       await handle(context, statusBar, await pickAnyCommand(ranked(context)));
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.runLast', async () => {
+    vscode.commands.registerCommand('cmddock.runLast', async () => {
       const groups = ranked(context);
       const last = readLast(context.workspaceState);
       const resolved = resolveLast(groups, last);
@@ -92,8 +92,8 @@ export function activate(context: vscode.ExtensionContext): void {
       if (!resolved) {
         void vscode.window.showInformationMessage(
           last
-            ? 'cmdkit: the last run command is no longer in your settings.'
-            : 'cmdkit: no command has been run yet.'
+            ? 'cmddock: the last run command is no longer in your settings.'
+            : 'cmddock: no command has been run yet.'
         );
         return;
       }
@@ -103,27 +103,27 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.reload', () => reloadGroupFile(context))
+    vscode.commands.registerCommand('cmddock.reload', () => reloadGroupFile(context))
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.checkPlatform', () => checkPlatform(context))
+    vscode.commands.registerCommand('cmddock.checkPlatform', () => checkPlatform(context))
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.export', () => editGroupFile(context))
+    vscode.commands.registerCommand('cmddock.export', () => editGroupFile(context))
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.import', () => applyGroupFile(context))
+    vscode.commands.registerCommand('cmddock.import', () => applyGroupFile(context))
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.statusBarItems', () => pickStatusBarItems())
+    vscode.commands.registerCommand('cmddock.statusBarItems', () => pickStatusBarItems())
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.addGroup', async () => {
+    vscode.commands.registerCommand('cmddock.addGroup', async () => {
       await addLibraryGroup(context);
       // Yeni grubun durum çubuğu düğmesi anında görünsün.
       statusBar.refresh();
@@ -131,18 +131,18 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.removeGroup', async () => {
+    vscode.commands.registerCommand('cmddock.removeGroup', async () => {
       await removeGroup(context);
       statusBar.refresh();
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.usage', () => showUsage())
+    vscode.commands.registerCommand('cmddock.usage', () => showUsage())
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('cmdkit.iconCatalog', () => showIconCatalog())
+    vscode.commands.registerCommand('cmddock.iconCatalog', () => showIconCatalog())
   );
 
   maybeShowPlatformNotice(context);

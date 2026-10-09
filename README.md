@@ -1,9 +1,9 @@
-# Cmdkit
+# CmdDock
 
 Reach your most used terminal commands in two clicks, from a single item in the status bar.
 
-`Cmdkit` → command group → command → runs in the terminal. Groups are edited in
-`cmdkit-groups.json`, applied into `.vscode/settings.json`, and you can commit that
+`CmdDock` → command group → command → runs in the terminal. Groups are edited in
+`cmddock-groups.json`, applied into `.vscode/settings.json`, and you can commit that
 file to share it with your team.
 
 ## Install
@@ -24,15 +24,15 @@ Extension Development Host.
 | -------------------------------------- | ----------------------------------------------------------------------------- |
 | Run a command                          | Click the **group icon** in the status bar → command (skips the group level)  |
 | Pick from every group                  | Click the `Cmd` button in the status bar → group → command                    |
-| Edit the command list                  | `Cmdkit: Edit Command List` → the JSON file opens, edit it                    |
-| Add a built-in group (Docker, Go, k8s, Surge…) | `Cmdkit: Add Built-in Group` → pick from the library                     |
-| Remove a group                         | `Cmdkit: Remove Group` → pick from the groups                                 |
-| Search without going through a group   | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `Cmdkit: Search All Commands`                   |
-| Repeat the last command                | `Cmdkit: Run Last Command Again`                                              |
-| Check Windows compatibility            | `Cmdkit: Check Platform Compatibility`                                       |
-| Browse the usable icons                | `Cmdkit: Icon Catalog`                                                        |
-| Learn how the command file works       | `Cmdkit: How to Use the Command File`                                        |
-| Choose which groups show in the bar    | `Cmdkit: Choose Status Bar Items` (multi select, tick)                        |
+| Edit the command list                  | `CmdDock: Edit Command List` → the JSON file opens, edit it                    |
+| Add a built-in group (Docker, Go, k8s, Surge…) | `CmdDock: Add Built-in Group` → pick from the library                     |
+| Remove a group                         | `CmdDock: Remove Group` → pick from the groups                                 |
+| Search without going through a group   | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `CmdDock: Search All Commands`                   |
+| Repeat the last command                | `CmdDock: Run Last Command Again`                                              |
+| Check Windows compatibility            | `CmdDock: Check Platform Compatibility`                                       |
+| Browse the usable icons                | `CmdDock: Icon Catalog`                                                        |
+| Learn how the command file works       | `CmdDock: How to Use the Command File`                                        |
+| Choose which groups show in the bar    | `CmdDock: Choose Status Bar Items` (multi select, tick)                        |
 
 The commands you use most float to the top; on a tie the `settings.json` order
 wins. The order of the groups themselves always follows your settings.
@@ -49,16 +49,16 @@ are optional:
 
 | Setting                            | Default    | Description                                                                                                                                                                              |
 | --------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cmdkit.groupFile`               | `""`       | Path to the command file — see the section above                                                                                                                                         |
-| `cmdkit.statusBar.showGroups`    | `true`     | Show a separate button per group                                                                                                                                                         |
-| `cmdkit.statusBar.showMaster`    | `true`     | Show the `Cmd` button                                                                                                                                                                    |
-| `cmdkit.statusBar.maxGroupItems` | `3`        | How many group buttons show in the bar **to begin with**. The rest are created but start hidden: right click the status bar → `Hide Status Bar Items` → **Show**. **`0` = unlimited** |
-| `cmdkit.statusBar.hiddenGroups`  | `[]`       | Group names not shown: `["Python"]`                                                                                                                                                      |
-| `cmdkit.statusBar.groupLabel`    | `""`       | `"always"` writes the group name next to the icon                                                                                                                                        |
-| `cmdkit.statusBar.icon`          | `terminal` | Icon of the `Cmd` button. `"zap"` or `"$(zap)"` both work                                                                                                                               |
-| `cmdkit.statusBar.color`         | `#4EC9B0`  | Foreground colour: hex or a theme colour like `charts.red`. Set to `""` to follow the theme. Group buttons keep their own colour                                                                                                                |
-| `cmdkit.statusBar.background`    | `""`       | Background colour, same format                                                                                                                                                           |
-| `cmdkit.statusBar.priority`      | `250`      | Order of the buttons (higher = further left). Shift it if another extension collides                                                                                                      |
+| `cmddock.groupFile`               | `""`       | Path to the command file — see the section above                                                                                                                                         |
+| `cmddock.statusBar.showGroups`    | `true`     | Show a separate button per group                                                                                                                                                         |
+| `cmddock.statusBar.showMaster`    | `true`     | Show the `Cmd` button                                                                                                                                                                    |
+| `cmddock.statusBar.maxGroupItems` | `3`        | How many group buttons show in the bar **to begin with**. The rest are created but start hidden: right click the status bar → `Hide Status Bar Items` → **Show**. **`0` = unlimited** |
+| `cmddock.statusBar.hiddenGroups`  | `[]`       | Group names not shown: `["Python"]`                                                                                                                                                      |
+| `cmddock.statusBar.groupLabel`    | `""`       | `"always"` writes the group name next to the icon                                                                                                                                        |
+| `cmddock.statusBar.icon`          | `terminal` | Icon of the `Cmd` button. `"zap"` or `"$(zap)"` both work                                                                                                                               |
+| `cmddock.statusBar.color`         | `#4EC9B0`  | Foreground colour: hex or a theme colour like `charts.red`. Set to `""` to follow the theme. Group buttons keep their own colour                                                                                                                |
+| `cmddock.statusBar.background`    | `""`       | Background colour, same format                                                                                                                                                           |
+| `cmddock.statusBar.priority`      | `250`      | Order of the buttons (higher = further left). Shift it if another extension collides                                                                                                      |
 
 A group button's tooltip shows the group name, the command count and **the most used
 command** (`Most used: test (×5)`). The colour setting applies to every button at once;
@@ -70,7 +70,7 @@ on a fresh install.
 
 This is not a limit, it is a starting value: the first 3 groups are visible and the rest
 start **hidden** — the buttons are still created, so they appear under **right click →
-`Hide Status Bar Items` → `Cmdkit: Git` / `Cmdkit: Firebase`** in the status bar. Groups
+`Hide Status Bar Items` → `CmdDock: Git` / `CmdDock: Firebase`** in the status bar. Groups
 you reveal there stay visible through the next command run; the cap is only reapplied
 when you change the setting.
 
@@ -88,27 +88,27 @@ needed. VSCode's own status bar context menu can hide them too.
 separately under `Hide Status Bar Items`:
 
 ```
-Cmdkit: All Groups
-Cmdkit: Python
-Cmdkit: Flutter
-Cmdkit: Node.js
+CmdDock: All Groups
+CmdDock: Python
+CmdDock: Flutter
+CmdDock: Node.js
 ```
 
 Two things make this work (both are in place):
 
 - **Identity:** `createStatusBarItem(id, ...)` gives each button its own id
-  (`cmdkit.cmd`, `cmdkit.group.Python`, …). Without ids they all fall back to the
+  (`cmddock.cmd`, `cmddock.group.Python`, …). Without ids they all fall back to the
   extension identity, the menu collapses into a single entry, and hiding one hides them all.
 - **Name:** `StatusBarItem.name` is set. That is the label the menu shows; left empty,
-  every entry reads "Cmdkit (extension)".
+  every entry reads "CmdDock (extension)".
 
 **Ordering collisions:** VSCode sorts the status bar by the priority of every extension,
 so another extension using the same number interleaves with ours (Live Server uses `100`,
 which put itself between the `Cmd` button and the group icons). Scanning the installed
 extensions turned up `-1, 0, 1, 100, 1000`, so the default is **250** (the 200–259 band was
-free). Shift `cmdkit.statusBar.priority` if you still see a collision.
+free). Shift `cmddock.statusBar.priority` if you still see a collision.
 
-**Cmdkit: Icon Catalog** lists about 120 verified codicons grouped by category and draws
+**CmdDock: Icon Catalog** lists about 120 verified codicons grouped by category and draws
 them live; the name you pick is copied to the clipboard — then paste it into
 `statusBar.icon` or the `icon` field of a group or command.
 
@@ -159,7 +159,7 @@ gets executed directly; the same commands are in the Command Palette too.
 Beyond the 5 groups that ship with the install there are **11 more built-in groups**;
 each is added with a single command:
 
-`Cmdkit: Add Built-in Group` → pick from the library → it asks for a destination → writes.
+`CmdDock: Add Built-in Group` → pick from the library → it asks for a destination → writes.
 
 | Group                           | Commands |     | Group                                      | Commands |
 | ------------------------------ | -------- | --- | ----------------------------------------- | -------- |
@@ -186,10 +186,10 @@ names are unique within a group, and that **destructive commands ask for confirm
 
 ## Defining your commands
 
-In `settings.json`, under `cmdkit.groups`:
+In `settings.json`, under `cmddock.groups`:
 
 ```jsonc
-"cmdkit.groups": [
+"cmddock.groups": [
   {
     "name": "Git",
     "icon": "$(source-control)",
@@ -209,7 +209,7 @@ In `settings.json`, under `cmdkit.groups`:
 | `command`     | yes      | The shell command to run                                                                                                                                          |
 | `description` | no       | Shown as dimmed text on the right                                                                                                                                 |
 | `icon`        | no       | Codicon, default `$(terminal)`. A bare name works too (`zap`)                                                                                                     |
-| `color`       | no       | Colour of **this group** in the status bar: `#4B8BBE` or `charts.blue`. Empty falls back to `cmdkit.statusBar.color`                                               |
+| `color`       | no       | Colour of **this group** in the status bar: `#4B8BBE` or `charts.blue`. Empty falls back to `cmddock.statusBar.color`                                               |
 | `confirm`     | no       | `true` or a string → asks before running                                                                                                                           |
 | `argsPrompt`  | no       | Asks for input before running                                                                                                                                    |
 | `argsSingle`  | no       | **When true the whole input is one argument**, not split on spaces. Required for flags that take free text, such as `git commit -m` or `psql -c`                   |
@@ -217,7 +217,7 @@ In `settings.json`, under `cmdkit.groups`:
 
 The install brings 5 built-in groups: **Python**, **Flutter**, **Node.js**, **Git**,
 **Firebase** (69 commands in total). Writing your own setting replaces them — to drop them
-outright, use `"cmdkit.groups": []`.
+outright, use `"cmddock.groups": []`.
 
 All 61 commands have a meaningful icon (`$(beaker)` test, `$(shield)` lint,
 `$(cloud-download)` install, `$(trash)` delete, `$(paintcan)` format…). The single source
@@ -238,27 +238,27 @@ by side in that file, so a default group you removed can be brought back with
 
 The `color` field of a group only paints the status bar icon (colours cannot be shown in
 the menu, `QuickPickItem` does not support them). Priority: the group's own `color` →
-otherwise `cmdkit.statusBar.color`.
+otherwise `cmddock.statusBar.color`.
 
 ## Adding, removing and editing commands
 
-Commands live in the `cmdkit.groups` setting, but to edit them by hand the extension uses
+Commands live in the `cmddock.groups` setting, but to edit them by hand the extension uses
 an **editing file: it opens in VSCode, is validated against the schema, then applied to
 your settings.**
 
 ```
-Cmdkit: Edit Command List     →  cmdkit-groups.json opens (written from settings if missing)
+CmdDock: Edit Command List     →  cmddock-groups.json opens (written from settings if missing)
    ... edit, Ctrl+S ...
-Cmdkit: Apply Command File    →  shows a summary, asks, writes settings.json
+CmdDock: Apply Command File    →  shows a summary, asks, writes settings.json
 ```
 
 | Command                                | What it does                                                                                                                              |
 | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `Cmdkit: Edit Command List`            | Opens the file. **Asks nothing.** If the file is missing it is created from the current settings; if it exists it is **never overwritten** (so unsaved edits survive) |
-| `Cmdkit: Apply Command File`           | Reads the file, **summarises what will change**, asks for confirmation, then picks a destination and writes                                   |
-| `Cmdkit: Reload File From Settings`    | **Overwrites** the file with the current list from settings — the way to discard your edits                                                |
+| `CmdDock: Edit Command List`            | Opens the file. **Asks nothing.** If the file is missing it is created from the current settings; if it exists it is **never overwritten** (so unsaved edits survive) |
+| `CmdDock: Apply Command File`           | Reads the file, **summarises what will change**, asks for confirmation, then picks a destination and writes                                   |
+| `CmdDock: Reload File From Settings`    | **Overwrites** the file with the current list from settings — the way to discard your edits                                                |
 
-The path is remembered per project. The default is **`.vscode/cmdkit-groups.json`** — the
+The path is remembered per project. The default is **`.vscode/cmddock-groups.json`** — the
 file is applied into `.vscode/settings.json`, so source and destination are in the same
 place. With no project open it falls back to your home directory. When no path has been
 remembered, `Apply Command File` asks you to pick a file once — that way you can also
@@ -266,11 +266,11 @@ take a list someone else sent you.
 
 | Setting                | Default    | Description                                                                                                                                                        |
 | ------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cmdkit.groupFile` | `""`       | Path to the editing file. To point at a sub-package in a monorepo: `"packages/api/cmdkit-groups.json"`. Relative paths resolve against the first workspace root |
+| `cmddock.groupFile` | `""`       | Path to the editing file. To point at a sub-package in a monorepo: `"packages/api/cmddock-groups.json"`. Relative paths resolve against the first workspace root |
 
 **Comments are free** in the file (JSONC — `//` line, `/* */` block), and
 autocompletion and schema validation work:
-`schemas/cmdkit-groups.json` marks both the `name`/`command` requirement and typos
+`schemas/cmddock-groups.json` marks both the `name`/`command` requirement and typos
 (like `descrition`) in red. Unknown fields are rejected.
 
 Because you edit the file by hand, the export writes the **raw list, not the normalised
@@ -280,7 +280,7 @@ set stay — that keeps about 106 lines of noise from 69 commands out. No settin
 because the fields are filled back in as they are read.
 
 > You never edit `settings.json` by hand; have a teammate pull it into their own file with
-> `Apply Command File`. The file to share is `cmdkit-groups.json`.
+> `Apply Command File`. The file to share is `cmddock-groups.json`.
 
 ### Applying (import)
 
@@ -305,7 +305,7 @@ If nothing actually changes, no summary appears at all: you get a "nothing was w
 notice straight away and the file is left alone. (Because the summary compares normalised
 fields, purely cosmetic differences are not caught at this step.)
 
-The file format is exactly the same as `cmdkit.groups` and it preserves platform tokens
+The file format is exactly the same as `cmddock.groups` and it preserves platform tokens
 (`{venv}`, `{rm}` …) as written. Copying to the clipboard was dropped: to share a list,
 either commit the file (a teammate pulls it with `Apply Command File`) or commit
 `.vscode/settings.json` after applying. The second is longer and noisier; the first is

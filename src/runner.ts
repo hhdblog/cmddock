@@ -4,7 +4,7 @@ import { buildCommandLine, splitArgs } from './args';
 import { Command, Group } from './normalize';
 import { expandTokens } from './tokens';
 
-const TASK_SOURCE = 'cmdkit';
+const TASK_SOURCE = 'cmddock';
 const RUN_LABEL = 'Run';
 
 function errorText(error: unknown): string {
@@ -111,7 +111,7 @@ export async function runCommand(
     return true;
   } catch (error) {
     void vscode.window.showErrorMessage(
-      `cmdkit: could not start "${command.name}" — ${errorText(error)}`
+      `cmddock: could not start "${command.name}" — ${errorText(error)}`
     );
     return false;
   }

@@ -3,7 +3,7 @@ import { getGroups } from './config';
 import { Command, Group } from './normalize';
 import { expandTokens, isPosixOnly } from './tokens';
 
-const NOTICE_KEY = 'cmdkit.platformNoticeShown';
+const NOTICE_KEY = 'cmddock.platformNoticeShown';
 
 interface Offending {
   readonly group: Group;
@@ -46,7 +46,7 @@ async function copyWindowsVersion(offending: readonly Offending[]): Promise<void
 
   await vscode.env.clipboard.writeText(expandTokens(source.command.command, 'win32'));
   void vscode.window.showInformationMessage(
-    'cmdkit: copied — replace the command in cmdkit.groups with this.'
+    'cmddock: copied — replace the command in cmddock.groups with this.'
   );
 }
 
@@ -56,7 +56,7 @@ export async function checkPlatform(context: vscode.ExtensionContext): Promise<v
 
   if (offending.length === 0) {
     void vscode.window.showInformationMessage(
-      `cmdkit: no problematic commands for ${process.platform}.`
+      `cmddock: no problematic commands for ${process.platform}.`
     );
     return;
   }
@@ -90,7 +90,7 @@ export function maybeShowPlatformNotice(context: vscode.ExtensionContext): void 
 
   void vscode.window
     .showInformationMessage(
-      `cmdkit: ${count} commands contain macOS/Linux paths and will not run on Windows.`,
+      `cmddock: ${count} commands contain macOS/Linux paths and will not run on Windows.`,
       'Copy the Windows equivalent'
     )
     .then((choice) => {

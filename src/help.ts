@@ -1,31 +1,31 @@
 import * as vscode from 'vscode';
 
 /**
- * The guide shown by the `Cmdkit: How to Use the Command File` command.
+ * The guide shown by the `CmdDock: How to Use the Command File` command.
  *
  * Kept as a plain file on purpose: the content lands in a virtual document the
  * user can read and copy from. It is long enough that
  * `showInformationMessage` will not do, so a previewable Markdown document is
  * opened instead.
  */
-export const USAGE = `# Cmdkit — how to use the command file
+export const USAGE = `# CmdDock — how to use the command file
 
-Commands live in the **\`cmdkit.groups\`** setting and run in this order on
+Commands live in the **\`cmddock.groups\`** setting and run in this order on
 screen:
 
 \`Cmd\` button → group → command → runs in the terminal.
 
 Editing that setting by hand is tedious, so the editing happens in a separate
-file: **\`cmdkit-groups.json\`**.
+file: **\`cmddock-groups.json\`**.
 
 ## Three steps
 
-1. **\`Cmdkit: Edit Command List\`** → the file opens.
+1. **\`CmdDock: Edit Command List\`** → the file opens.
    If it does not exist it is created from your settings; if it does, it is
    **never overwritten**.
 2. Edit the file, save with <kbd>Ctrl</kbd>+<kbd>S</kbd>.
    **Saving does not apply it.**
-3. **\`Cmdkit: Apply Command File\`** → summarises what will change, asks for
+3. **\`CmdDock: Apply Command File\`** → summarises what will change, asks for
    confirmation, asks for a destination and writes \`settings.json\`.
 
 No command changes until you change the setting. The extension always reads
@@ -41,16 +41,16 @@ https://x/y"\` the \`//\` is part of the command and is left alone.
 
 ### Where is the file?
 
-By default **\`<project>/.vscode/cmdkit-groups.json\`** — the file is applied
+By default **\`<project>/.vscode/cmddock-groups.json\`** — the file is applied
 into \`.vscode/settings.json\`, so source and destination sit in the same folder.
 With no project open it falls back to your home directory. The path is
 remembered per project.
 
-To point at a sub-package in a monorepo use the \`cmdkit.groupFile\` setting:
+To point at a sub-package in a monorepo use the \`cmddock.groupFile\` setting:
 
 \`\`\`json
 {
-  "cmdkit.groupFile": "packages/api/cmdkit-groups.json"
+  "cmddock.groupFile": "packages/api/cmddock-groups.json"
 }
 \`\`\`
 
@@ -93,7 +93,7 @@ untouched.
 To delete a command: remove it from the file and apply with **\`Replace list\`**.
 \`Merge groups\` never deletes — the old command survives even if you confirm.
 
-To delete a group, **\`Cmdkit: Remove Group\`** is safer. \`Replace list\` swaps the
+To delete a group, **\`CmdDock: Remove Group\`** is safer. \`Replace list\` swaps the
 whole list for the incoming file, so if the file is stale (say a group was
 added from the library but never written back to the file) groups you wanted to
 keep go with it. \`Remove Group\` takes out only the group you picked.
@@ -120,13 +120,13 @@ happens when settings are written by hand. Keep the group names distinct.
 
 With no project open the question is skipped and the user settings are used.
 
-A project value **shadows** a user value. So if a project has \`cmdkit.groups\`
+A project value **shadows** a user value. So if a project has \`cmddock.groups\`
 in \`.vscode/settings.json\`, a user setting you write at the same time stays
 ineffective for that project.
 
 ## Sharing with a team
 
-The file to share is **\`cmdkit-groups.json\`**. Commit it to the repo and let a
+The file to share is **\`cmddock-groups.json\`**. Commit it to the repo and let a
 teammate pull it into their own settings with \`Apply Command File\`.
 
 Committing \`.vscode/settings.json\` works too, but it is written normalised, so
@@ -209,10 +209,10 @@ may be broken, the file may not be an array, the command arrays may be empty,
 or fields may be missing.
 
 **"My menu is crowded."** There are \`maxGroupItems\` (default 3) and
-\`hiddenGroups\` settings; run \`Cmdkit: Choose Status Bar Items\` to tick the ones
+\`hiddenGroups\` settings; run \`CmdDock: Choose Status Bar Items\` to tick the ones
 that should stay.
 
-**"More built-in groups."** \`Cmdkit: Add Built-in Group\` — Docker, Go,
+**"More built-in groups."** \`CmdDock: Add Built-in Group\` — Docker, Go,
 Kubernetes, PostgreSQL, GitHub CLI and five more.
 `;
 

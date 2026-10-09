@@ -7,7 +7,7 @@ import { getGroups } from '../../src/config';
 import { runCommand } from '../../src/runner';
 import { Command, Group } from '../../src/normalize';
 
-const EXTENSION_ID = 'cmdkit.cmdkit';
+const EXTENSION_ID = 'cmddock.cmddock';
 
 interface ManifestCommand {
   command: string;
@@ -33,7 +33,7 @@ async function waitFor(condition: () => boolean, timeoutMs: number): Promise<boo
   return condition();
 }
 
-suite('cmdkit entegrasyon', () => {
+suite('cmddock entegrasyon', () => {
   test('manifest açılışta etkinleşmeyi istiyor', () => {
     // Bu olmadan activate() hiç çağrılmaz ve durum çubuğu öğesi hiç oluşmaz.
     const events = readManifest().activationEvents ?? [];
@@ -78,8 +78,8 @@ suite('cmdkit entegrasyon', () => {
   test('durum çubuğu komutu çalıştırılabilir ve çökmez', async () => {
     // pickCommand kullanıcı girdisi bekler; burada yalnızca komutun
     // kayıtlı olduğunu ve hata vermediğini doğruluyoruz.
-    await vscode.commands.executeCommand('cmdkit.runLast');
-    await vscode.commands.executeCommand('cmdkit.checkPlatform');
+    await vscode.commands.executeCommand('cmddock.runLast');
+    await vscode.commands.executeCommand('cmddock.checkPlatform');
   });
 
   test('komut gerçekten terminal görevi olarak başlatılıyor', async () => {

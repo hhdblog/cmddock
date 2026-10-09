@@ -5,8 +5,8 @@ import { DEFAULT_MAX_GROUP_ITEMS, MASTER_ID, MASTER_PRIORITY, planItems, StatusB
 import { ColorSpec, parseColor, parseIcon } from './style';
 import { countOf, readLast, readUsage, UsageMap } from './usage';
 
-const OPEN_COMMAND = 'cmdkit.open';
-const OPEN_GROUP_COMMAND = 'cmdkit.openGroup';
+const OPEN_COMMAND = 'cmddock.open';
+const OPEN_GROUP_COMMAND = 'cmddock.openGroup';
 const DEFAULT_ICON = 'terminal';
 
 export interface StatusBarHandle {
@@ -15,7 +15,7 @@ export interface StatusBarHandle {
 }
 
 function setting(key: string): unknown {
-  return vscode.workspace.getConfiguration('cmdkit.statusBar').get(key);
+  return vscode.workspace.getConfiguration('cmddock.statusBar').get(key);
 }
 
 function applyColor(value: ColorSpec): string | vscode.ThemeColor | undefined {
@@ -80,7 +80,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
         entry.priority
       );
       // Menüde ("Hide Status Bar Items") görünecek ad; set edilmezse menüde
-      // "Cmdkit (extension)" yazar ve tüm düğmeler aynı görünür.
+      // "CmdDock (extension)" yazar ve tüm düğmeler aynı görünür.
       item.name = entry.name;
       item.command =
         entry.kind === 'group'
@@ -160,7 +160,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
       const lines =
         entry.kind === 'master' && !empty
           ? [
-              `**Cmdkit** — ${groups.length} groups, ${countCommands(groups)} commands`,
+              `**CmdDock** — ${groups.length} groups, ${countCommands(groups)} commands`,
               ...omittedNote(plan, groups.length),
               last
                 ? `Last: ${resolveLastLabel(groups, last.group, last.name) ?? 'no longer in your settings'}`
@@ -170,7 +170,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
               'Click: pick a group → run a command',
             ]
           : empty
-            ? ['Cmdkit — "cmdkit.groups" is empty, no commands']
+            ? ['CmdDock — "cmddock.groups" is empty, no commands']
             : entry.tooltipLines;
 
       const tooltip = new vscode.MarkdownString(lines.join('\n\n'));
@@ -187,7 +187,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((event) => {
-      if (event.affectsConfiguration('cmdkit')) {
+      if (event.affectsConfiguration('cmddock')) {
         refresh();
       }
     })

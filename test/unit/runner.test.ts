@@ -295,12 +295,12 @@ describe('runCommand — hata yolu', () => {
     expect(error?.text).toContain('terminal yok');
   });
 
-  it('hata mesajında cmdkit adı geçer', async () => {
+  it('hata mesajında cmddock adı geçer', async () => {
     failNextTask('patlama');
 
     await runCommand(GROUP, command({ name: 'test' }));
 
-    expect(messages.find((m) => m.kind === 'error')?.text).toContain('cmdkit:');
+    expect(messages.find((m) => m.kind === 'error')?.text).toContain('cmddock:');
   });
 
   it('hata sonrası bir sonraki çalıştırma yine denenir', async () => {

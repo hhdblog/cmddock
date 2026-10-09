@@ -59,8 +59,8 @@ describe('statusBar', () => {
 
   describe('master tooltip', () => {
     beforeEach(() => {
-      setConfiguration('cmdkit', { groups: [PYTHON] });
-      setConfiguration('cmdkit.statusBar', {});
+      setConfiguration('cmddock', { groups: [PYTHON] });
+      setConfiguration('cmddock.statusBar', {});
     });
 
     it('henüz komut çalıştırılmadıysa bunu yazar', () => {
@@ -70,14 +70,14 @@ describe('statusBar', () => {
     });
 
     it('son komut ayarlardaysa grup › komut biçiminde yazar', () => {
-      context.workspaceState.update('cmdkit.last', { group: 'Python', name: 'test' });
+      context.workspaceState.update('cmddock.last', { group: 'Python', name: 'test' });
       const handle = activate(context);
 
       expect(tooltipOf(masterOf(handle))).toContain('Last: Python › test');
     });
 
     it('son komut ayarlardan silinmişse "null" yazmaz', () => {
-      context.workspaceState.update('cmdkit.last', { group: 'Python', name: 'eski-komut' });
+      context.workspaceState.update('cmddock.last', { group: 'Python', name: 'eski-komut' });
       const handle = activate(context);
 
       const tooltip = tooltipOf(masterOf(handle));
@@ -86,7 +86,7 @@ describe('statusBar', () => {
     });
 
     it('son komutun grubu silinmişse de "null" yazmaz', () => {
-      context.workspaceState.update('cmdkit.last', { group: 'Git', name: 'status' });
+      context.workspaceState.update('cmddock.last', { group: 'Git', name: 'status' });
       const handle = activate(context);
 
       const tooltip = tooltipOf(masterOf(handle));
@@ -101,7 +101,7 @@ describe('statusBar', () => {
     });
 
     it('toplam çalıştırma sayısını yazar', () => {
-      context.workspaceState.update('cmdkit.usage', {
+      context.workspaceState.update('cmddock.usage', {
         ['Pythontest']: { count: 3, lastRun: 1 },
         ['Pythonlint']: { count: 2, lastRun: 1 },
       });
@@ -111,14 +111,14 @@ describe('statusBar', () => {
     });
 
     it('gruplar boşken boş listede olduğunu söyler', () => {
-      setConfiguration('cmdkit', { groups: [] });
+      setConfiguration('cmddock', { groups: [] });
       const handle = activate(context);
 
-      expect(tooltipOf(masterOf(handle))).toContain('"cmdkit.groups" is empty');
+      expect(tooltipOf(masterOf(handle))).toContain('"cmddock.groups" is empty');
     });
 
     it('gruplar boşken düğme metnine "!" ekler', () => {
-      setConfiguration('cmdkit', { groups: [] });
+      setConfiguration('cmddock', { groups: [] });
       const handle = activate(context);
 
       expect(masterOf(handle).text.endsWith('!')).toBe(true);
@@ -127,9 +127,9 @@ describe('statusBar', () => {
 
   describe('gizli başlatılan düğmeler', () => {
     beforeEach(() => {
-      setConfiguration('cmdkit', { groups: [PYTHON, FLUTTER, PYTHON, PYTHON] });
+      setConfiguration('cmddock', { groups: [PYTHON, FLUTTER, PYTHON, PYTHON] });
       // maxGroupItems 1: diğer gruplar oluşturulur ama gizli başlar.
-      setConfiguration('cmdkit.statusBar', { maxGroupItems: 1 });
+      setConfiguration('cmddock.statusBar', { maxGroupItems: 1 });
     });
 
     it('sınırın ötesindeki düğmeleri yine de oluşturur', () => {
@@ -167,7 +167,7 @@ describe('statusBar', () => {
     it('gizli düğmenin grubu renkliyse rengi de yazılır', () => {
       const handle = activate(context);
       const hiddenPython = handle.items.find(
-        (item) => item.id === 'cmdkit.group.Python#3'
+        (item) => item.id === 'cmddock.group.Python#3'
       );
 
       expect(hiddenPython?.color).toBe('#4B8BBE');
@@ -176,7 +176,7 @@ describe('statusBar', () => {
     it('aynı grubun gizli düğmesi görünür düğmesiyle aynı metni taşır', () => {
       const handle = activate(context);
       const pythonTexts = handle.items
-        .filter((item) => item.id.startsWith('cmdkit.group.Python'))
+        .filter((item) => item.id.startsWith('cmddock.group.Python'))
         .map((item) => item.text);
 
       // Biri görünür, ikisi gizli — metin hepsinde aynı olmalı.
@@ -186,14 +186,14 @@ describe('statusBar', () => {
 
   describe('hiddenGroups', () => {
     beforeEach(() => {
-      setConfiguration('cmdkit', { groups: [PYTHON, FLUTTER] });
-      setConfiguration('cmdkit.statusBar', { hiddenGroups: ['Python'] });
+      setConfiguration('cmddock', { groups: [PYTHON, FLUTTER] });
+      setConfiguration('cmddock.statusBar', { hiddenGroups: ['Python'] });
     });
 
     it('gizlenen grubun düğmesini hiç oluşturmaz', () => {
       const handle = activate(context);
 
-      expect(handle.items.map((item) => item.id)).toEqual(['cmdkit.cmd', 'cmdkit.group.Flutter']);
+      expect(handle.items.map((item) => item.id)).toEqual(['cmddock.cmd', 'cmddock.group.Flutter']);
     });
 
     it('gizlenen grup hiç oluşturulmadığı için "gizli düğme" sayısına girmez', () => {
@@ -203,8 +203,8 @@ describe('statusBar', () => {
     });
 
     it('sınırdan fazla kalan düğmeleri Cmd tooltip\'inde sayar', () => {
-      setConfiguration('cmdkit', { groups: [PYTHON, FLUTTER, PYTHON] });
-      setConfiguration('cmdkit.statusBar', { maxGroupItems: 1 });
+      setConfiguration('cmddock', { groups: [PYTHON, FLUTTER, PYTHON] });
+      setConfiguration('cmddock.statusBar', { maxGroupItems: 1 });
 
       const handle = activate(context);
 
@@ -214,8 +214,8 @@ describe('statusBar', () => {
 
   describe('yeniden kurulum', () => {
     beforeEach(() => {
-      setConfiguration('cmdkit', { groups: [PYTHON] });
-      setConfiguration('cmdkit.statusBar', {});
+      setConfiguration('cmddock', { groups: [PYTHON] });
+      setConfiguration('cmddock.statusBar', {});
     });
 
     it('yapı değişmedikçe düğmeleri yeniden oluşturmaz', () => {
@@ -234,7 +234,7 @@ describe('statusBar', () => {
       const handle = activate(context);
       const before = handle.items.length;
 
-      context.workspaceState.update('cmdkit.usage', { ['Pythontest']: { count: 9, lastRun: 1 } });
+      context.workspaceState.update('cmddock.usage', { ['Pythontest']: { count: 9, lastRun: 1 } });
       handle.refresh();
 
       expect(handle.items).toHaveLength(before);
@@ -243,7 +243,7 @@ describe('statusBar', () => {
     it('ayar değişimi yapıyı değiştiriyorsa düğmeleri yeniden oluşturur', () => {
       const handle = activate(context);
 
-      setConfiguration('cmdkit', { groups: [PYTHON, FLUTTER] });
+      setConfiguration('cmddock', { groups: [PYTHON, FLUTTER] });
       handle.refresh();
 
       expect(handle.items).toHaveLength(3);
@@ -253,7 +253,7 @@ describe('statusBar', () => {
       const handle = activate(context);
       const old = [...handle.items];
 
-      setConfiguration('cmdkit', { groups: [PYTHON, FLUTTER] });
+      setConfiguration('cmddock', { groups: [PYTHON, FLUTTER] });
       handle.refresh();
 
       for (const item of old) {
@@ -264,21 +264,21 @@ describe('statusBar', () => {
 
   describe('düğme bağlantıları', () => {
     beforeEach(() => {
-      setConfiguration('cmdkit', { groups: [PYTHON, FLUTTER] });
-      setConfiguration('cmdkit.statusBar', {});
+      setConfiguration('cmddock', { groups: [PYTHON, FLUTTER] });
+      setConfiguration('cmddock.statusBar', {});
     });
 
     it('master düğmesi tüm grupları açar', () => {
       const handle = activate(context);
 
-      expect(masterOf(handle).command).toBe('cmdkit.open');
+      expect(masterOf(handle).command).toBe('cmddock.open');
     });
 
     it('grup düğmesi grup adını argüman olarak geçer', () => {
       const handle = activate(context);
 
       expect(handle.items[1].command).toEqual({
-        command: 'cmdkit.openGroup',
+        command: 'cmddock.openGroup',
         title: 'Python commands',
         arguments: ['Python'],
       });
@@ -295,21 +295,21 @@ describe('statusBar', () => {
       const handle = activate(context);
 
       expect(handle.items.map((item) => item.name)).toEqual([
-        'Cmdkit: All Groups',
-        'Cmdkit: Python',
-        'Cmdkit: Flutter',
+        'CmdDock: All Groups',
+        'CmdDock: Python',
+        'CmdDock: Flutter',
       ]);
     });
   });
 
   describe('gruptaki en çok kullanılan komut', () => {
     beforeEach(() => {
-      setConfiguration('cmdkit', { groups: [PYTHON] });
-      setConfiguration('cmdkit.statusBar', {});
+      setConfiguration('cmddock', { groups: [PYTHON] });
+      setConfiguration('cmddock.statusBar', {});
     });
 
     it('tooltip\'te kullanım sayısıyla birlikte yazar', () => {
-      context.workspaceState.update('cmdkit.usage', {
+      context.workspaceState.update('cmddock.usage', {
         ['Pythontest']: { count: 5, lastRun: 1 },
         ['Pythonlint']: { count: 2, lastRun: 1 },
       });
@@ -327,25 +327,25 @@ describe('statusBar', () => {
 
   describe('görünürlük ayarları', () => {
     beforeEach(() => {
-      setConfiguration('cmdkit', { groups: [PYTHON, FLUTTER] });
+      setConfiguration('cmddock', { groups: [PYTHON, FLUTTER] });
     });
 
     it('showGroups false ise yalnızca master kalır', () => {
-      setConfiguration('cmdkit.statusBar', { showGroups: false });
+      setConfiguration('cmddock.statusBar', { showGroups: false });
       const handle = activate(context);
 
       expect(handle.items).toHaveLength(1);
     });
 
     it('showMaster false ise yalnızca grup düğmeleri kalır', () => {
-      setConfiguration('cmdkit.statusBar', { showMaster: false });
+      setConfiguration('cmddock.statusBar', { showMaster: false });
       const handle = activate(context);
 
       expect(handle.items).toHaveLength(2);
     });
 
     it('maxGroupItems 0 ise sınır uygulanmaz', () => {
-      setConfiguration('cmdkit.statusBar', { maxGroupItems: 0 });
+      setConfiguration('cmddock.statusBar', { maxGroupItems: 0 });
       const handle = activate(context);
 
       expect(handle.items.every((item) => item.visible)).toBe(true);
@@ -361,8 +361,8 @@ describe('tooltip ikonları', () => {
   };
 
   it('tooltip kodikonları çizdirir', () => {
-    setConfiguration('cmdkit', { groups: [PYTHON_GROUP] });
-    setConfiguration('cmdkit.statusBar', { showMaster: false });
+    setConfiguration('cmddock', { groups: [PYTHON_GROUP] });
+    setConfiguration('cmddock.statusBar', { showMaster: false });
 
     const handle = activate(createContext());
 
@@ -372,8 +372,8 @@ describe('tooltip ikonları', () => {
   });
 
   it('tooltip metninde ham ikon söz dizimi kalır (VSCode çizer)', () => {
-    setConfiguration('cmdkit', { groups: [PYTHON_GROUP] });
-    setConfiguration('cmdkit.statusBar', { showMaster: false });
+    setConfiguration('cmddock', { groups: [PYTHON_GROUP] });
+    setConfiguration('cmddock.statusBar', { showMaster: false });
 
     const handle = activate(createContext());
 
@@ -381,7 +381,7 @@ describe('tooltip ikonları', () => {
   });
 
   it('master tooltip de kodikon çizdirir', () => {
-    setConfiguration('cmdkit', { groups: [PYTHON_GROUP] });
+    setConfiguration('cmddock', { groups: [PYTHON_GROUP] });
 
     const handle = activate(createContext());
 

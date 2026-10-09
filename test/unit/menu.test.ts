@@ -21,14 +21,14 @@ describe('yardımcı menü', () => {
   it('tanımlı komutların hepsini kapsar', () => {
     const ids = new Set(MENU_ACTIONS.map((action) => action.id));
     for (const id of [
-      'cmdkit.search',
-      'cmdkit.runLast',
-      'cmdkit.export',
-      'cmdkit.import',
-      'cmdkit.checkPlatform',
-      'cmdkit.iconCatalog',
-      'cmdkit.statusBarItems',
-      'cmdkit.reload',
+      'cmddock.search',
+      'cmddock.runLast',
+      'cmddock.export',
+      'cmddock.import',
+      'cmddock.checkPlatform',
+      'cmddock.iconCatalog',
+      'cmddock.statusBarItems',
+      'cmddock.reload',
     ]) {
       expect(ids.has(id)).toBe(true);
     }
@@ -93,7 +93,7 @@ describe('menü bölümleri', () => {
 
   it('en çok kullanılan komutlar üstte', () => {
     const first = MENU_ACTIONS.slice(0, 2).map((action) => action.id);
-    expect(first).toEqual(['cmdkit.search', 'cmdkit.runLast']);
+    expect(first).toEqual(['cmddock.search', 'cmddock.runLast']);
   });
 
   it('günlük komutlar aynı bölümde', () => {
@@ -104,9 +104,9 @@ describe('menü bölümleri', () => {
 
   it('düzenleme komutları bir arada', () => {
     const edit = MENU_ACTIONS.filter((action) => action.section === 'edit').map((a) => a.id);
-    expect(edit).toContain('cmdkit.export');
-    expect(edit).toContain('cmdkit.import');
-    expect(edit).toContain('cmdkit.addGroup');
+    expect(edit).toContain('cmddock.export');
+    expect(edit).toContain('cmddock.import');
+    expect(edit).toContain('cmddock.addGroup');
   });
 
   it('ayraç etiketleri boş değil', () => {

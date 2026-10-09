@@ -9,7 +9,7 @@ installed with the extension (69 commands); the other eleven are one command awa
 
 Python, Flutter, Node.js, Git and Firebase ship enabled. Docker, GitHub CLI,
 PostgreSQL, Go, Rust, Kubernetes, Java (Maven/Gradle), Redis, Android, Vercel and
-Surge are added with **Cmdkit: Add Built-in Group**.
+Surge are added with **CmdDock: Add Built-in Group**.
 
 Every command runs in the shared terminal with its working directory set to the
 workspace root. Long-running commands (`flutter run`, `npm run dev`,
@@ -17,8 +17,8 @@ workspace root. Long-running commands (`flutter run`, `npm run dev`,
 
 ### Editing
 
-Commands live in the `cmdkit.groups` setting, but editing it by hand is tedious, so
-the extension uses a separate file: `cmdkit-groups.json`. Open it from the command
+Commands live in the `cmddock.groups` setting, but editing it by hand is tedious, so
+the extension uses a separate file: `cmddock-groups.json`. Open it from the command
 palette, edit it, then apply. The file is JSONC — `//` and `/* */` comments work,
 and it is validated against a JSON schema as you type.
 
@@ -39,5 +39,5 @@ works on all three.
   lists every group flat for searching.
 - Commands you run most float to the top of the list.
 - Usage counters are stored per project and never touch `settings.json`.
-- `Cmdkit: Check Platform Compatibility` lists commands that will not run on your
+- `CmdDock: Check Platform Compatibility` lists commands that will not run on your
   platform and copies the Windows equivalent to the clipboard.

@@ -54,13 +54,13 @@ describe('readUsage', () => {
   });
 
   it('bozuk state çökmez', () => {
-    expect(readUsage(fakeState({ 'cmdkit.usage': 'çöp' }))).toEqual({});
-    expect(readUsage(fakeState({ 'cmdkit.usage': [1, 2] }))).toEqual({});
-    expect(readUsage(fakeState({ 'cmdkit.usage': { anahtar: 'çöp' } }))).toEqual({});
+    expect(readUsage(fakeState({ 'cmddock.usage': 'çöp' }))).toEqual({});
+    expect(readUsage(fakeState({ 'cmddock.usage': [1, 2] }))).toEqual({});
+    expect(readUsage(fakeState({ 'cmddock.usage': { anahtar: 'çöp' } }))).toEqual({});
   });
 
   it('eksik alanları varsayılana düşürür', () => {
-    const usage = readUsage(fakeState({ 'cmdkit.usage': { anahtar: { count: -3 } } }));
+    const usage = readUsage(fakeState({ 'cmddock.usage': { anahtar: { count: -3 } } }));
     expect(usage['anahtar']).toEqual({ count: 0, lastRun: 0 });
   });
 });
@@ -91,7 +91,7 @@ describe('recordRun', () => {
 
   it('mevcut sayaçları silmez', async () => {
     const state = fakeState({
-      'cmdkit.usage': { [keyOf('A', 'bir')]: { count: 7, lastRun: 1 } },
+      'cmddock.usage': { [keyOf('A', 'bir')]: { count: 7, lastRun: 1 } },
     });
 
     await recordRun(state, groups[0], commandOf('A', 'bir'));
@@ -103,9 +103,9 @@ describe('recordRun', () => {
 describe('readLast', () => {
   it('geçersiz değerlerde undefined döner', () => {
     expect(readLast(fakeState())).toBeUndefined();
-    expect(readLast(fakeState({ 'cmdkit.last': 42 }))).toBeUndefined();
-    expect(readLast(fakeState({ 'cmdkit.last': { group: 'A' } }))).toBeUndefined();
-    expect(readLast(fakeState({ 'cmdkit.last': { group: '', name: 'bir' } }))).toBeUndefined();
+    expect(readLast(fakeState({ 'cmddock.last': 42 }))).toBeUndefined();
+    expect(readLast(fakeState({ 'cmddock.last': { group: 'A' } }))).toBeUndefined();
+    expect(readLast(fakeState({ 'cmddock.last': { group: '', name: 'bir' } }))).toBeUndefined();
   });
 });
 

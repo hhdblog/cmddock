@@ -40,7 +40,7 @@ export async function pickCommand(
 ): Promise<PickResult | undefined> {
   if (groups.length === 0) {
     void vscode.window.showWarningMessage(
-      'cmdkit: no command groups. Add one to the "cmdkit.groups" setting.'
+      'cmddock: no command groups. Add one to the "cmddock.groups" setting.'
     );
     return undefined;
   }
@@ -126,7 +126,7 @@ export async function pickAnyCommand(
 ): Promise<PickResult | undefined> {
   if (groups.length === 0) {
     void vscode.window.showWarningMessage(
-      'cmdkit: no command groups. Add one to the "cmdkit.groups" setting.'
+      'cmddock: no command groups. Add one to the "cmddock.groups" setting.'
     );
     return undefined;
   }

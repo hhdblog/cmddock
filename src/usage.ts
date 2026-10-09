@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import { Command, Group } from './normalize';
 
-const USAGE_KEY = 'cmdkit.usage';
-const LAST_KEY = 'cmdkit.last';
+const USAGE_KEY = 'cmddock.usage';
+const LAST_KEY = 'cmddock.last';
 
 export interface UsageRecord {
   readonly count: number;

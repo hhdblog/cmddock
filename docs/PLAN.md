@@ -1,4 +1,4 @@
-# cmdkit — VSCode durum çubuğu terminal komut paneli
+# cmddock — VSCode durum çubuğu terminal komut paneli
 
 Durum çubuğundaki bir öğeye tıkla → grup seç → komut seç → komut terminalde çalışsın.
 
@@ -9,10 +9,10 @@ Evet. Kullanılacak tüm API'ler stabil sürümde (`stable`):
 | İhtiyaç | API | Durum |
 |---|---|---|
 | Durum çubuğu öğesi | `window.createStatusBarItem(StatusBarAlignment.Right, 100)` | stable |
-| Tıklamayı komuta bağlama | `statusBarItem.command = 'cmdkit.open'` | stable |
+| Tıklamayı komuta bağlama | `statusBarItem.command = 'cmddock.open'` | stable |
 | İki kademeli menü | `window.showQuickPick()` (ardışık iki çağrı) | stable |
 | Komutu terminalde çalıştırma | `tasks.executeTask({ type:'shell', command, options })` | stable |
-| Yapılandırma okuma | `workspace.getConfiguration('cmdkit')` | stable |
+| Yapılandırma okuma | `workspace.getConfiguration('cmddock')` | stable |
 | Ayar değişimini dinleme | `workspace.onDidChangeConfiguration` | stable |
 | Kalıcı sayaç | `ExtensionContext.workspaceState` | stable |
 
@@ -20,7 +20,7 @@ Deneysel API, `enabledApiProposals` veya VSCode önizleme sürümü gerekmiyor.
 
 ## 2. Mimari karar: kaynak gerçekliği nerede?
 
-**Gruplar ve komutlar `settings.json` içinde** (`cmdkit.groups`), kullanım sayaçları `workspaceState` içinde.
+**Gruplar ve komutlar `settings.json` içinde** (`cmddock.groups`), kullanım sayaçları `workspaceState` içinde.
 
 Gerekçe:
 - Gruplar elle düzenlenebilir, git'e commit'lenip ekip ile paylaşılabilir.
@@ -28,7 +28,7 @@ Gerekçe:
 - Sayaçları ayarlara yazmak kullanıcının dosyasını kirletirdi.
 
 ```jsonc
-"cmdkit.groups": [
+"cmddock.groups": [
   {
     "name": "Git",
     "icon": "$(source-control)",
@@ -81,7 +81,7 @@ kullanıcı bu komutları `python3 -m pip ...` biçiminde kendisi düzenler.
 ## 3. Dosya yapısı
 
 ```
-cmdkit/
+cmddock/
 ├── PLAN.md
 ├── package.json          # manifest + contributes + scripts
 ├── tsconfig.json
@@ -110,7 +110,7 @@ cmdkit/
 │   ├── iconCatalog.ts    # katalog penceresi: canlı ikon + panoya kopyalama
 │   ├── plan.ts           # SAF: durum çubuğu öğelerinin planı (düğme, metin, ad, kimlik, öncelik, renk, grup sınırı)
 │   ├── menu.ts           # SAF: Cmd menüsünün "diğer menüler" listesi
-│   ├── settings.ts       # pano/dosya seçimi + cmdkit.groups ayarına yazma
+│   ├── settings.ts       # pano/dosya seçimi + cmddock.groups ayarına yazma
 │   ├── picker.ts         # iki kademeli QuickPick (grup → komut)
 │   ├── runner.ts         # confirm, argsPrompt, executeTask + ShellExecution
 │   └── usage.ts          # workspaceState sayaçları, sıralama, son komut çözümleme
@@ -130,8 +130,8 @@ cmdkit/
 2. `esbuild.mjs`: `src/extension.ts` → `dist/extension.js`, `external: ['vscode']`, `format: 'cjs'`, `sourcemap`
 3. `package.json`: `main`, `engines.vscode: ^1.90.0`, `activationEvents: []`
    (VSCode ≥1.74 `contributes.commands` içinden `onCommand` aktivasyonunu kendisi üretir, elle yazmaya gerek yok)
-4. `contributes.commands`: `cmdkit.open`, `cmdkit.search`, `cmdkit.runLast`, `cmdkit.reload`
-5. `contributes.configuration` → `cmdkit.groups` şeması + `configurationDefaults` ile 3 varsayılan grup
+4. `contributes.commands`: `cmddock.open`, `cmddock.search`, `cmddock.runLast`, `cmddock.reload`
+5. `contributes.configuration` → `cmddock.groups` şeması + `configurationDefaults` ile 3 varsayılan grup
 6. Doğrulama: `npm run typecheck` ✔, `npm run build` ✔, `npm run package` ✔ (10.02 KB vsix), izole dizine kurulum ✔
 
 Sürüm kararı: yerel VSCode **1.141.0**, ancak `engines.vscode` bilinçli olarak `^1.90.0`
@@ -142,7 +142,7 @@ hata olarak yakalar. Kullanılan araç sürümleri: TypeScript 7, esbuild 0.28, 
 
 ### Adım 2 — Çekirdek akış — ✅ TAMAMLANDI
 1. `statusBar.ts`: `StatusBarAlignment.Right`, öncelik `100`, metin `$(terminal) cmd`, `tooltip`, `show()`,
-   `onDidChangeConfiguration` + `affectsConfiguration('cmdkit')` ile canlı yenileme
+   `onDidChangeConfiguration` + `affectsConfiguration('cmddock')` ile canlı yenileme
 2. `picker.ts` sıralı iki `showQuickPick`: grup → komut. Komut satırı `detail`, kullanıcı açıklaması
    `description`; `matchOnDetail` ile shell metnine göre arama
 3. `runner.ts`: `tasks.executeTask` + `ShellExecution`, `TaskScope.Workspace`,
@@ -160,12 +160,12 @@ Doğrulama: `typecheck` ✔ · `build` ✔ (9.0 KB) · `package` ✔ (12.09 KB) 
 saf mantık testi ✔ (36 komut normalize edildi, bozuk veri çökmüyor, `splitArgs` 7/7 test)
 
 ### Adım 3 — Kullanım kolaylığı — ✅ TAMAMLANDI
-1. `usage.ts`: `workspaceState` sayaçları (`cmdkit.usage` = key → `{count, lastRun}`),
-   son komut (`cmdkit.last` = `{group, name}`). Anahtar `grup\u001fkomut` — isim çakışmalarına kapalı.
+1. `usage.ts`: `workspaceState` sayaçları (`cmddock.usage` = key → `{count, lastRun}`),
+   son komut (`cmddock.last` = `{group, name}`). Anahtar `grup\u001fkomut` — isim çakışmalarına kapalı.
    Bozuk state → boş harita, çökme yok.
-2. `cmdkit.search`: `pickAnyCommand` tüm grupları tek listeye düşürür, `description`'da grup,
+2. `cmddock.search`: `pickAnyCommand` tüm grupları tek listeye düşürür, `description`'da grup,
    `detail`'da shell metni, ikisinde de filtreleme açık.
-3. `cmdkit.runLast`: `resolveLast` son komutu **güncel ayarlardan** çözer; komut silinmişse
+3. `cmddock.runLast`: `resolveLast` son komutu **güncel ayarlardan** çözer; komut silinmişse
    "artık ayarlarda yok" mesajı, hiç çalıştırılmamışsa "henüz çalıştırılmadı".
 4. `configurationDefaults`: 3 varsayılan grup ✔ (Adım 1'de yapıldı)
 5. Durum çubuğu tooltip'i artık grup/komut sayısı + son komut + toplam çalıştırma gösterir.
@@ -192,7 +192,7 @@ grup sırası Python > Flutter > Node.js olarak korundu, bozuk state ve silinmi�
    | `{rm}` | `rm -rf` | `cmd /c rmdir /s /q` |
 
    Bilinmeyen belirteçler (`{yok}`) olduğu gibi bırakılır — kullanıcının `{...}` yazan komutu bozulmaz.
-4. `platform.ts`: Windows'ta **bir kez** uyarı (globalState bayrağı), `cmdkit.checkPlatform` ile elle
+4. `platform.ts`: Windows'ta **bir kez** uyarı (globalState bayrağı), `cmddock.checkPlatform` ile elle
    tetiklenebilen kontrol. Sorunlu komut seçilince Windows karşılığı **panoya kopyalanır**;
    ayarları uzantı kendisi yazmaz (kullanıcı bilinçli yapıştırır).
 5. Varsayılanlardaki ham POSIX yolları (`rm -rf node_modules`) `{rm}` ile değiştirildi;
@@ -247,17 +247,17 @@ Not: Entegrasyon testinin ilk denemesinde `await import()` ile TS kaynağı yük
 - [ ] `executeTask` çağrısında `scope` verilmezse task `window` scope'una düşer, terminal açılmayabilir → `scope: vscode.TaskScope.Workspace`
 - [ ] `showQuickPick` boş dönerse (`undefined`) çalıştırma — `Esc` de bu yolu verir
 - [ ] Komut satırında `&&`, `|` varsa `ShellExecution` doğru davranır (shell'e gider); `ProcessExecution` seçilirse kırılır
-- [ ] Ayar değişikliğinde yalnızca `cmdkit` altındaki anahtarlara bakılmalı, `affectsConfiguration` filtresi kullanılmalı
+- [ ] Ayar değişikliğinde yalnızca `cmddock` altındaki anahtarlara bakılmalı, `affectsConfiguration` filtresi kullanılmalı
 - [ ] Uzun komut listelerinde `QuickPick` `matchOnDescription`/`matchOnDetail` ayarları sıralamayı bozabilir, bilinçli karar verilmeli
 - [ ] Uzak (SSH/WSL) ortamda `workspaceFolders[0].uri.fsPath` uzak yoldur — terminal de uzak olduğu için tutarlı, `cwd` boş bırakılmamalı
 - [ ] Varsayılanlar POSIX yol kullanıyor (`.venv/bin/...`) — Windows'ta `.venv/Scripts/...` gerekir, ilk açılışta uyarılmalı
 - [ ] `flutter build ios` yalnızca macOS'ta çalışır, grup yazılırken platform notu düşülmeli
-- [ ] Pencere açılmadan `cmdkit.runLast` çağrılırsa "önce bir komut çalıştırın" mesajı
+- [ ] Pencere açılmadan `cmddock.runLast` çağrılırsa "önce bir komut çalıştırın" mesajı
 
 ## 7.1 `.vscode/launch.json` ve entegrasyon testinin bulduğu hata
 
 `.vscode/launch.json` eklendi (dosya yoksa F5 "hata ayıklayıcı seç" listesi açıyor):
-`Cmdkit: Run` (`preLaunchTask: npm: build`) ve `Cmdkit: Watch` (`npm: watch`).
+`CmdDock: Run` (`preLaunchTask: npm: build`) ve `CmdDock: Watch` (`npm: watch`).
 
 Entegrasyon testine **görev çalıştırma** ve **onay reddi** senaryoları eklendi. İlk çalıştırma
 gerçek bir hata yakaladı:
@@ -276,7 +276,7 @@ klasör yoksa `os.homedir()` (düz bir terminalin açıldığı yer). Artık 7/7
 `activationEvents: []` bırakılmıştı (VSCode ≥1.74 `contributes.commands`'tan `onCommand`
 aktivasyonunu kendisi üretiyor diye düşünülmüştü — **bu doğru, ama yetersiz**).
 Sonuç: durum çubuğu öğesi `activate()` içinde oluşturulduğu için uzantı hiçbir zaman
-etkinleşmiyordu. Komut Paleti'nden `Cmdkit` komutları çalışıyordu, durum çubuğu
+etkinleşmiyordu. Komut Paleti'nden `CmdDock` komutları çalışıyordu, durum çubuğu
 hiç görünmüyordu. Exthost loglarında hiç aktivasyon kaydı yoktu.
 
 Düzeltme: `"activationEvents": ["onStartupFinished"]`. Durum çubuğu eklentisi her pencere
@@ -295,8 +295,8 @@ Kullanıcı webview tabanlı tam düzenleyici yerine **toplu içe/dışa aktarma
 
 | Karar | Gerekçe |
 |---|---|
-| `cmdkit.export` → **seçim**: pano veya dosya | Kullanıcı isteği: çıktı hem panoya kopyalanabilir hem konum seçilip dosyaya kaydedilebilir (varsayılan `cmdkit-groups.json`, kaydettikten sonra "Aç" düğmesi) |
-| `cmdkit.import` → pano veya dosya | Pano en hızlı yol, dosya takım paylaşımı için |
+| `cmddock.export` → **seçim**: pano veya dosya | Kullanıcı isteği: çıktı hem panoya kopyalanabilir hem konum seçilip dosyaya kaydedilebilir (varsayılan `cmddock-groups.json`, kaydettikten sonra "Aç" düğmesi) |
+| `cmddock.import` → pano veya dosya | Pano en hızlı yol, dosya takım paylaşımı için |
 | İki mod: birleştir / değiştir | Birleştirme güvenli (silmez), değiştir ise silme işleminin kendisi — ikisi de gerekliydi |
 | Yazmadan önce modal özet | "3 komut silinecek" bilgisi olmadan ayar dosyası yazılmıyor |
 | Hedef sorusu (bu proje / kullanıcı) | Aynı listeyi paylaşırken kapsam projeye göre değişir; klasör yoksa doğrudan global |
@@ -314,9 +314,9 @@ Doğrulama: `typecheck` ✔ · birim **68/68** ✔ (20 yeni) · entegrasyon 7/7 
 
 | Konu | Karar |
 |---|---|
-| Yeni ayarlar | `cmdkit.statusBar.icon`, `.color`, `.background` |
+| Yeni ayarlar | `cmddock.statusBar.icon`, `.color`, `.background` |
 | Renk kabulü | hex (`#4EC9B0`, `#f00`) veya tema rengi adı (`charts.red`, `statusBarItem.errorBackground`); boş/geçersiz → temaya bırakılır |
-| `Cmdkit: İkon Kataloğu` | ~120 ikon, 10 kategori, her satırda ikon canlı çizilir, seçilen ad panoya kopyalanır |
+| `CmdDock: İkon Kataloğu` | ~120 ikon, 10 kategori, her satırda ikon canlı çizilir, seçilen ad panoya kopyalanır |
 | Grup/komut ikonu da normalleştiriliyor | `"icon": "git-branch"` → `$(git-branch)`; ham yazı menüde görünmesin diye |
 
 **Kodikon adları doğrulandı.** VSCode ikonları listeleyen API sunmuyor; ilk denemede mini bundle'da
@@ -360,7 +360,7 @@ kalsın ama o da opsiyonel olsun (VSCode'un durum çubuğu sağtık menüsünde 
 | Konu | Karar |
 |---|---|
 | Grup düğmesi | Metin yok, yalnızca grup ikonu (`$(snake)`, `$(device-mobile)`, `$(server-environment)`) |
-| Tıklama | `cmdkit.openGroup` + grup adı argümanı → `pickCommandsInGroup`, grup seviyesi atlanır |
+| Tıklama | `cmddock.openGroup` + grup adı argümanı → `pickCommandsInGroup`, grup seviyesi atlanır |
 | Öncelik | `cmd` taban değer, gruplar base-1, base-2 … → `cmd` + gruplar yan yana, ayar sırasına göre (taban 250, aşağıdaki çakışma notuna bak) |
 | Görünürlük | `showGroups`, `showMaster`, `hiddenGroups: string[]`, `groupLabel: "" \| "always"` |
 | Tooltip | Grup adı + komut sayısı + `En çok: test (×5)` (en çok kullanılan komut) |
@@ -388,7 +388,7 @@ Kurulu eklentilerin 15.166 JS/TS dosyası taranıp `createStatusBarItem` çağr�
 | `-1` | Prettier |
 
 200–259 bandı **tamamen boş** çıktı → `MASTER_PRIORITY = 250`, gruplar 249, 248, 247…
-Ayrıca `cmdkit.statusBar.priority` ayarı eklendi: ileride başka bir eklenti 250'e denk gelirse
+Ayrıca `cmddock.statusBar.priority` ayarı eklendi: ileride başka bir eklenti 250'e denk gelirse
 kullanıcı bloğu kaydırabilir. Regresyon testi varsayılan değerin 250 olduğunu sabitliyor.
 
 ### 7.6.2 Sağ tık menüsü tüm düğmeleri tek kalemde topluyordu
@@ -397,25 +397,25 @@ Gözlem: durum çubuğunda sağ tık → gizle/göster işlemi **tüm** düğmel
 
 Sebep: `createStatusBarItem(alignment, priority)` çağrısında kimlik verilmiyordu ve VSCode
 belgelediği gibi "if no identifier was provided … the identifier will match the Extension.id"
-kuralı devreye giriyor — yani dört düğmenin de kimliği `cmdkit.cmdkit` oluyordu. Sağ tık
+kuralı devreye giriyor — yani dört düğmenin de kimliği `cmddock.cmddock` oluyordu. Sağ tık
 menüsü de öğeleri kimliğe göre grupladığı için tek kalem çıkıyor.
 
 Çözüm: üç argümanlı `createStatusBarItem(id, alignment, priority)` overload'ı kullanıldı.
-Kimlikler: `cmdkit.cmd`, `cmdkit.group.Python`, `cmdkit.group.Flutter`, `cmdkit.group.Node.js`.
+Kimlikler: `cmddock.cmd`, `cmddock.group.Python`, `cmddock.group.Flutter`, `cmddock.group.Node.js`.
 Artık menüde her düğme ayrı ayrı gizlenip gösterilebiliyor. Aynı isimli iki grup varsa
 (`A`, `A`) çakışmamaları için `#2` ekleniyor.
 
 Not: Bir grubun **adı** değişirse kimliği de değişir, o düğmenin gizleme durumu sıfırlanır.
 
-### 7.6.3 Menüde her öğe "Cmdkit (extension)" görünüyordu
+### 7.6.3 Menüde her öğe "CmdDock (extension)" görünüyordu
 
 Kimlikler ayrıldıktan sonra menüde ayrı kalemler çıktı ama **hepsi aynı etiketle**
-("Cmdkit (extension)"). Sebep: `StatusBarItem.name` hiç set edilmemişti; VSCode bu alanı
+("CmdDock (extension)"). Sebep: `StatusBarItem.name` hiç set edilmemişti; VSCode bu alanı
 kullanıcıya gösteriyor ("The name of the entry … descriptive enough that users can understand
 what the status bar item is about"), boş olduğunda uzantı adına düşüyor.
 
-Çözüm: `plan.ts`'te her düğmeye `name` verildi — `Cmdkit: Tüm Gruplar` ve
-`Cmdkit: <grup adı>`. İki test eklendi: adların tam listesi ve adların kısa/ayırt edici
+Çözüm: `plan.ts`'te her düğmeye `name` verildi — `CmdDock: Tüm Gruplar` ve
+`CmdDock: <grup adı>`. İki test eklendi: adların tam listesi ve adların kısa/ayırt edici
 kalması (menüde makul görünmesi için < 40 karakter).
 
 Doğrulama: `typecheck` ✔ · birim **107/107** ✔ (18 yeni: sıralama, öncelik ve kaydırma, ayrı kimlikler, tekrarlı grup adları, menü adları, gizleme, etiket, tooltip) ·
@@ -429,7 +429,7 @@ entegrasyon 7/7 ✔ · paket 32.82 KB ✔
 |---|---|
 | Veri tipi | `Group.color` **ham string** olarak tutuluyor, `ColorSpec` değil. Parse edilmiş nesne JSON'a girip dışa/içe aktarımda bozulurdu (`{"hex":"..."}` → yeniden okununca undefined) |
 | Çözümleme | `plan.ts` içinde `parseColor(group.color)`: hex → doğrudan, `charts.blue` gibi tema adı → `ThemeColor` |
-| Öncelik | Grubun kendi `color`'ı → yoksa `cmdkit.statusBar.color` → yoksa tema |
+| Öncelik | Grubun kendi `color`'ı → yoksa `cmddock.statusBar.color` → yoksa tema |
 | Varsayılanlar | Python `#FFD43B` (resmî sarı), Flutter `#47C5FB`, Node.js `#83CD29` (marka tonları, koyu çubukta okunaklı) |
 | Sınır | Renk **sadece durum çubuğunda** görünür. QuickPick'te renk gösterilemiyor (`QuickPickItem` renk desteklemiyor) — komut bazlı renk bu yüzden eklenmedi |
 
@@ -523,7 +523,7 @@ listeliyor. `item.hide()` ile gizlenen bir öğe hiç çizilmediği için listed
 (Bundle minify ve yerelleştirilmiş olduğu için bu satır koddan doğrulanamadı; davranış kullanıcının
 gözlemiyle teyit edildi ve önceki "ayrı id ver" düzeltmesinin de çalıştığını göstermişti.)
 
-Çözüm: **kendi seçim arayüzümüz.** `Cmdkit: Durum Çubuğu Düğmelerini Seç`
+Çözüm: **kendi seçim arayüzümüz.** `CmdDock: Durum Çubuğu Düğmelerini Seç`
 (`canPickMany` QuickPick): görünür düğmeler işaretli başlar, kullanıcı seçip onaylayınca
 `hiddenGroups` **kullanıcı ayarlarına** yazılır ve `maxGroupItems: 0` ile sınır kaldırılır —
 böylece "5 grubu da aç" seçimi gerçekten kalıcı ve sınırsız olur (aksi halde sınır seçimi yine
@@ -557,8 +557,8 @@ düşer, menü ve çubuk taşar.
 | **B — yerleşik kütüphane** | **Seçildi.** Kullanıcı istediğini alır, istemeyen hiç görmez |
 | C — ikisi | Karma yol, iki yolu da sürdürür |
 
-Varsayılanlar 5 grupda kalır. Yeni komut: `Cmdkit: Hazır Grup Ekle` →
-kütüphaneden seç → `cmdkit.groups`'a eklenir.
+Varsayılanlar 5 grupda kalır. Yeni komut: `CmdDock: Hazır Grup Ekle` →
+kütüphaneden seç → `cmddock.groups`'a eklenir.
 
 ### Kütüphanedeki 10 grup
 
@@ -775,7 +775,7 @@ silinen bir varsayılan grup `Hazır Grup Ekle` ile geri getirilebiliyor.
 - [x] `test/unit/library.test.ts` — 22 test: ikon katalogda mı, grup/komut adları
       benzersiz mi, yıkıcı komutlar `confirm` istiyor mu, geri alınamaz komutlar
       uyarıyor mu, renkler 6 haneli hex mi, her grupta 5–15 komut mu
-- [x] `package.json` — `cmdkit.addGroup` komutu
+- [x] `package.json` — `cmddock.addGroup` komutu
 - [x] `src/menu.ts` — "Hazır Grup Ekle" satırı
 - [x] `src/settings.ts` — `addLibraryGroup()`: kütüphane seçici + hedef + yazma
 - [x] `src/extension.ts` — komut kaydı + `statusBar.refresh()`
@@ -803,7 +803,7 @@ sayıyordu (`psql -U postgres` öyle).
 
 Dışa/içe aktarım ikişerli seçiciyle çalışıyordu (panoya mı dosyaya mı) ve panoya
 kopyalama yolu elle yapıştırılan JSON'u gereksiz yere bozuyordu. Artık tek bir
-düzenleme dosyası var: `cmdkit-groups.json`.
+düzenleme dosyası var: `cmddock-groups.json`.
 
 - **Komut Listesini Düzenle** — dosyayı açar, soru sormaz; yoksa ayarlardan yazar,
   varsa üzerine yazmaz
@@ -816,7 +816,7 @@ Dosya proje köküne açılıyordu ama uygulandığı yer `.vscode/settings.json
 kaynak ve hedef ayrı yerlerde. Sonuç: repoda izlenmeyen dosya, monorepo'da yanlış
 kapsam, çok köklü alanda keyfî konum. Varsayılan artık `.vscode/` altında.
 
-`cmdkit.groupFile` ayarı eklendi (monorepo için alt pakete yönlendirme).
+`cmddock.groupFile` ayarı eklendi (monorepo için alt pakete yönlendirme).
 
 ### Kapatılan veri kaybı yolları
 
@@ -831,7 +831,7 @@ kapsam, çok köklü alanda keyfî konum. Varsayılan artık `.vscode/` altında
 
 ### Kullanım kılavuzu
 
-`Cmdkit: Komut Dosyası Nasıl Kullanılır` kılavuzu önizlenebilir Markdown olarak
+`CmdDock: Komut Dosyası Nasıl Kullanılır` kılavuzu önizlenebilir Markdown olarak
 açıyor. Alan listesi şemadan, belirteçler `tokens.ts`'ten okunuyor — yeni alan
 eklenirse kılavuzda geçmiyorsa test düşüyor. Kılavuzdaki her JSON bloğu ayrıştırılıyor.
 
@@ -859,7 +859,7 @@ Yardımcı menü dört bölüme ayrıldı, sıra **kullanım sıklığına** gö
 - [ ] Ayar değişikliğinde menünün yeniden yükleme olmadan güncellenmesi elle denenmedi
 - [x] Terminal görevi reddedilirse `showErrorMessage` görünümü — kod yolu
       `runner.test.ts`'te (hata fırlatıldığında mesaj gösteriliyor, komut adı ve
-      `cmdkit:` öneki geçiyor, sonraki çalıştırma etkilenmiyor); **görünümü
+      `cmddock:` öneki geçiyor, sonraki çalıştırma etkilenmiyor); **görünümü
       VS Code'da elle doğrulanmadı**
 
 ## 9. Sonraki adımlar
@@ -872,7 +872,7 @@ Yardımcı menü dört bölüme ayrıldı, sıra **kullanım sıklığına** gö
   Bunun yerine silme yolu kasten pahalı: `Grup Kaldır` tek grup ister, silinen
   grup özette "GRUP SİLİNECEK" diye ayrı satırda ve geri alınamaz uyarısıyla
   bildirilir, son grup zaten kaldırılamaz. Kullanıcı silmeden önce uyarılıyor.
-  Bir grup kazara giderse kaynak dosya (`cmdkit-groups.json`) çoğu zaman hâlâ
+  Bir grup kazara giderse kaynak dosya (`cmddock-groups.json`) çoğu zaman hâlâ
   duruyor ve `Listeyi değiştir` ile geri gelir — dosya senin kontrolünde.
 - Bu planın §2/§3/§4 kısımları 3 gruplu/48 testli eski durumu anlatıyor;
   gerçek: 16 grup, 418 test. `README.md` doğru olan belge
@@ -904,14 +904,14 @@ test edilecek, sürüm atlaması dağıtım günü yapılacak.
 - [x] `package.json` → `version`: `0.1.0` → **`0.2.0`** (menü etiketleri değişti,
       iki komut yeniden yazıldı, şema eklendi, içe/dışa aktarım akışı değişti —
       geriye uyumlu bir hata düzeltmesi değil) — `4bb8b50`
-- [x] `npm run package` → `cmdkit-0.2.0.vsix` (9 dosya, 60.76 KB)
-- [x] `code --install-extension ... --force` — kurulu: `cmdkit@0.2.0`
+- [x] `npm run package` → `cmddock-0.2.0.vsix` (9 dosya, 60.76 KB)
+- [x] `code --install-extension ... --force` — kurulu: `cmddock@0.2.0`
 - [x] `README.md` sürüm/ekran görüntüsü tazelemesi — sürüm `0.2.0`, grup sayısı
       16, hazır grup 11, Surge tabloya eklendi, test sayısı 332, kütüphane kaynağı
       `library.json` olarak düzeltildi (eski metin `library.ts` diyordu).
       Ekran görüntüsü README'de yok, o yüzden eklenmedi — metinsel bir ağırlık
       getirmiyor, VS Code Extensions sayfasında zaten duruyor.
-- [ ] Marketplace hesabı/publisher doğrulaması — `publisher: "cmdkit"` henüz
+- [ ] Marketplace hesabı/publisher doğrulaması — `publisher: "cmddock"` henüz
       gerçek bir yayıncı hesabı değil, `vsce publish` öncesi gerekli
 
 > Not: Aynı sürüm numarasıyla `--force` kurulumu çalışır ama VSCode'da

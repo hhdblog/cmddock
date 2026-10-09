@@ -30,80 +30,80 @@
   "contributes": {
     "commands": [
       {
-        "command": "cmdkit.open",
+        "command": "cmddock.open",
         "title": "Commands",
-        "category": "Cmdkit",
+        "category": "CmdDock",
         "icon": "$(terminal)"
       },
       {
-        "command": "cmdkit.search",
+        "command": "cmddock.search",
         "title": "Search All Commands",
-        "category": "Cmdkit",
+        "category": "CmdDock",
         "icon": "$(search)"
       },
       {
-        "command": "cmdkit.runLast",
+        "command": "cmddock.runLast",
         "title": "Run Last Command Again",
-        "category": "Cmdkit",
+        "category": "CmdDock",
         "icon": "$(debug-rerun)"
       },
       {
-        "command": "cmdkit.reload",
+        "command": "cmddock.reload",
         "title": "Reload File From Settings",
-        "category": "Cmdkit",
+        "category": "CmdDock",
         "icon": "$(refresh)"
       },
       {
-        "command": "cmdkit.checkPlatform",
+        "command": "cmddock.checkPlatform",
         "title": "Check Platform Compatibility",
-        "category": "Cmdkit",
+        "category": "CmdDock",
         "icon": "$(check)"
       },
       {
-        "command": "cmdkit.export",
+        "command": "cmddock.export",
         "title": "Edit Command List",
-        "category": "Cmdkit",
+        "category": "CmdDock",
         "icon": "$(json)"
       },
       {
-        "command": "cmdkit.import",
+        "command": "cmddock.import",
         "title": "Apply Command File",
-        "category": "Cmdkit",
+        "category": "CmdDock",
         "icon": "$(sync)"
       },
       {
-        "command": "cmdkit.statusBarItems",
+        "command": "cmddock.statusBarItems",
         "title": "Choose Status Bar Items",
-        "category": "Cmdkit",
+        "category": "CmdDock",
         "icon": "$(list-selection)"
       },
       {
-        "command": "cmdkit.iconCatalog",
+        "command": "cmddock.iconCatalog",
         "title": "Icon Catalog",
-        "category": "Cmdkit",
+        "category": "CmdDock",
         "icon": "$(paintcan)"
       },
       {
-        "command": "cmdkit.addGroup",
+        "command": "cmddock.addGroup",
         "title": "Add Built-in Group",
-        "category": "Cmdkit",
+        "category": "CmdDock",
         "icon": "$(new-folder)"
       },
       {
-        "command": "cmdkit.removeGroup",
+        "command": "cmddock.removeGroup",
         "title": "Remove Group",
-        "category": "Cmdkit",
+        "category": "CmdDock",
         "icon": "$(trash)"
       },
       {
-        "command": "cmdkit.usage",
+        "command": "cmddock.usage",
         "title": "How to Use the Command File",
-        "category": "Cmdkit",
+        "category": "CmdDock",
         "icon": "$(markdown)"
       }
     ],
     "configurationDefaults": {
-      "cmdkit.groups": [
+      "cmddock.groups": [
         {
           "name": "Python",
           "icon": "$(snake)",
@@ -590,15 +590,15 @@
     "jsonValidation": [
       {
         "fileMatch": [
-          "cmdkit-groups.json"
+          "cmddock-groups.json"
         ],
-        "url": "./schemas/cmdkit-groups.json"
+        "url": "./schemas/cmddock-groups.json"
       }
     ],
     "configuration": {
-      "title": "Cmdkit",
+      "title": "CmdDock",
       "properties": {
-        "cmdkit.groups": {
+        "cmddock.groups": {
           "type": "array",
           "default": [],
           "description": "Command groups shown in the menus. Leave empty to use the built-in defaults (Python, Flutter, Node.js).",
@@ -620,7 +620,7 @@
               },
               "color": {
                 "type": "string",
-                "description": "Durum çubuğundaki bu grup düğmesinin ön plan rengi. \"#4B8BBE\" gibi hex ya da \"charts.blue\" gibi tema rengi adı. Boş bırakılırsa cmdkit.statusBar.color uygulanır."
+                "description": "Durum çubuğundaki bu grup düğmesinin ön plan rengi. \"#4B8BBE\" gibi hex ya da \"charts.blue\" gibi tema rengi adı. Boş bırakılırsa cmddock.statusBar.color uygulanır."
               },
               "commands": {
                 "type": "array",
@@ -678,42 +678,42 @@
             }
           }
         },
-        "cmdkit.groupFile": {
+        "cmddock.groupFile": {
           "type": "string",
           "default": "",
-          "description": "Path to the file where the command list is edited. Relative paths resolve against the first workspace root. Leave empty to use .vscode/cmdkit-groups.json. To point at a sub-package in a monorepo: \"packages/api/cmdkit-groups.json\"."
+          "description": "Path to the file where the command list is edited. Relative paths resolve against the first workspace root. Leave empty to use .vscode/cmddock-groups.json. To point at a sub-package in a monorepo: \"packages/api/cmddock-groups.json\"."
         },
-        "cmdkit.statusBar.icon": {
+        "cmddock.statusBar.icon": {
           "type": "string",
           "default": "terminal",
-          "description": "Icon for the status bar button. Accepts a codicon name (\"zap\") or the \"$(zap)\" form. Run \"Cmdkit: Icon Catalog\" to see the candidates."
+          "description": "Icon for the status bar button. Accepts a codicon name (\"zap\") or the \"$(zap)\" form. Run \"CmdDock: Icon Catalog\" to see the candidates."
         },
-        "cmdkit.statusBar.color": {
+        "cmddock.statusBar.color": {
           "type": "string",
           "default": "#4EC9B0",
           "description": "Foreground colour of the status bar buttons. Leave empty to use the theme colour. Either a hex value like \"#4EC9B0\" or a theme colour name such as \"charts.red\" or \"statusBarItem.errorBackground\". Group buttons keep their own colour when they have one."
         },
-        "cmdkit.statusBar.background": {
+        "cmddock.statusBar.background": {
           "type": "string",
           "default": "",
           "description": "Background color of the status bar button. Same format as the foreground color. Leave empty to keep the background transparent."
         },
-        "cmdkit.statusBar.showGroups": {
+        "cmddock.statusBar.showGroups": {
           "type": "boolean",
           "default": true,
           "description": "Show a separate status bar button per group. Clicking one skips the group level and opens that group's commands directly."
         },
-        "cmdkit.statusBar.showMaster": {
+        "cmddock.statusBar.showMaster": {
           "type": "boolean",
           "default": true,
           "description": "Show the \"cmd\" button, which lists every group's commands in a single flat list."
         },
-        "cmdkit.statusBar.maxGroupItems": {
+        "cmddock.statusBar.maxGroupItems": {
           "type": "number",
           "default": 3,
-          "description": "Maximum number of group buttons shown in the status bar. Anything beyond that is reachable through the Cmd button and the search command. Set to 0 for no limit. To show no group buttons at all, set cmdkit.statusBar.showGroups to false."
+          "description": "Maximum number of group buttons shown in the status bar. Anything beyond that is reachable through the Cmd button and the search command. Set to 0 for no limit. To show no group buttons at all, set cmddock.statusBar.showGroups to false."
         },
-        "cmdkit.statusBar.groupLabel": {
+        "cmddock.statusBar.groupLabel": {
           "type": "string",
           "default": "",
           "enum": [
@@ -722,7 +722,7 @@
           ],
           "description": "When set to \"always\", the group name is written next to the icon on each group button. Leave empty to show icons only."
         },
-        "cmdkit.statusBar.hiddenGroups": {
+        "cmddock.statusBar.hiddenGroups": {
           "type": "array",
           "items": {
             "type": "string"
@@ -730,7 +730,7 @@
           "default": [],
           "description": "Group names not shown in the status bar. For example [\"Python\", \"Node.js\"]."
         },
-        "cmdkit.statusBar.priority": {
+        "cmddock.statusBar.priority": {
           "type": "number",
           "default": 250,
           "description": "Order of the status bar buttons. A higher value sits further left; each group button takes 1, 2, 3 below this. Another extension using the same value interleaves with ours — change this value in that case. Values already used on this machine: -1, 0, 1, 100, 1000."
@@ -763,11 +763,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hhdblog/cmdkit.git"
+    "url": "https://github.com/hhdblog/cmddock.git"
   },
-  "homepage": "https://github.com/hhdblog/cmdkit#readme",
+  "homepage": "https://github.com/hhdblog/cmddock#readme",
   "bugs": {
-    "url": "https://github.com/hhdblog/cmdkit/issues"
+    "url": "https://github.com/hhdblog/cmddock/issues"
   },
   "galleryBanner": {
     "color": "#1F2430",

@@ -1,14 +1,14 @@
 import { Group, countCommands } from './normalize';
 import { ColorSpec, parseColor, parseIcon } from './style';
 
-export const MASTER_ID = 'cmdkit';
-export const MASTER_STATUS_BAR_ID_PREFIX = 'cmdkit';
-export const ENTRY_NAME_PREFIX = 'Cmdkit';
+export const MASTER_ID = 'cmddock';
+export const MASTER_STATUS_BAR_ID_PREFIX = 'cmddock';
+export const ENTRY_NAME_PREFIX = 'CmdDock';
 export const MASTER_LABEL = 'Cmd';
 
 /**
  * İlk kurulumda kaç grup düğmesi gösterilsin. Kullanıcı sonradan
- * `cmdkit.statusBar.maxGroupItems` ile değiştirir; 0 = sınırsız.
+ * `cmddock.statusBar.maxGroupItems` ile değiştirir; 0 = sınırsız.
  */
 export const DEFAULT_MAX_GROUP_ITEMS = 3;
 
@@ -17,7 +17,7 @@ export const DEFAULT_MAX_GROUP_ITEMS = 3;
  * sıralar (yüksek = daha sol), yani bizim düğmelerimizin araya girmemesi için
  * kullanılmayan bir bant seçilmeli. Bu makinedeki eklentiler -1, 0, 1, 100 ve 1000
  * kullanıyor; 100 bantı Live Server/Pylance ile çakışıyordu. 200-259 boş.
- * Çakışma olursa `cmdkit.statusBar.priority` ile kaydırılabilir.
+ * Çakışma olursa `cmddock.statusBar.priority` ile kaydırılabilir.
  */
 export const MASTER_PRIORITY = 250;
 
@@ -34,7 +34,7 @@ export interface StatusBarOptions {
    * 0 veya negatif = sınırsız (tüm gruplar gösterilir).
    */
   readonly maxGroupItems?: number;
-  /** "cmd" düğmesinin ikonu (cmdkit.statusBar.icon). */
+  /** "cmd" düğmesinin ikonu (cmddock.statusBar.icon). */
   readonly masterIcon: string;
   /** "cmd" düğmesinin önceliği; grup düğmeleri bundan 1, 2, 3... azalır. */
   readonly masterPriority?: number;
@@ -57,7 +57,7 @@ export interface StatusBarPlanItem {
   /**
    * Sağ tık menüsünde ("Hide Status Bar Items") görünen ad. VSCode bu alanı
    * kullanıcıya gösterir; set edilmezse uzantı adına düşer ve menüde her öğe
-   * "Cmdkit (extension)" olarak aynı görünür.
+   * "CmdDock (extension)" olarak aynı görünür.
    */
   readonly name: string;
   readonly text: string;
@@ -67,7 +67,7 @@ export interface StatusBarPlanItem {
    * listelenir ve kullanıcı kendi açabilir.
    */
   readonly visible: boolean;
-  /** Bu düğmenin ön plan rengi; yoksa genel cmdkit.statusBar.color uygulanır. */
+  /** Bu düğmenin ön plan rengi; yoksa genel cmddock.statusBar.color uygulanır. */
   readonly color?: ColorSpec;
   readonly tooltipLines: string[];
   readonly priority: number;
@@ -86,7 +86,7 @@ function masterItem(
     name: `${ENTRY_NAME_PREFIX}: All Groups`,
     statusBarId: `${MASTER_STATUS_BAR_ID_PREFIX}.cmd`,
     tooltipLines: [
-      `**Cmdkit** — ${groups.length} grup, ${countCommands(groups)} komut`,
+      `**CmdDock** — ${groups.length} grup, ${countCommands(groups)} komut`,
       'Click: pick a group → run a command',
     ],
     priority: basePriority,

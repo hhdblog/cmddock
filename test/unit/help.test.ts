@@ -13,8 +13,8 @@ const manifest = JSON.parse(
   readFileSync(fileURLToPath(new URL('../../package.json', import.meta.url)), 'utf8')
 ) as { contributes: { configuration: { properties: Record<string, Schema> } } };
 
-// Schema nests: cmdkit.groups → items (group) → properties.commands.items (command)
-const groupsSetting = manifest.contributes.configuration.properties['cmdkit.groups'];
+// Schema nests: cmddock.groups → items (group) → properties.commands.items (command)
+const groupsSetting = manifest.contributes.configuration.properties['cmddock.groups'];
 const groupFields = Object.keys(groupsSetting?.items?.properties ?? {});
 const commandFields = Object.keys(groupsSetting?.items?.properties?.commands?.items?.properties ?? {});
 
