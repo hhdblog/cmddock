@@ -1,7 +1,7 @@
 {
   "name": "cmdkit",
   "displayName": "Cmdkit",
-  "description": "Group frequently used terminal commands and run them from the status bar. Ships with a library of 159 commands in 16 groups.",
+  "description": "Group frequently used terminal commands and run them from the status bar. Ships with a library of 160 commands in 16 groups.",
   "version": "0.2.0",
   "publisher": "cmdkit",
   "license": "MIT",
@@ -353,6 +353,12 @@
           "icon": "$(source-control)",
           "color": "#F14E32",
           "commands": [
+            {
+              "name": "init",
+              "command": "git init",
+              "icon": "$(new-folder)",
+              "description": "make this folder a repository"
+            },
             {
               "name": "status",
               "command": "git status",

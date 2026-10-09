@@ -266,6 +266,12 @@
       "color": "#F14E32",
       "commands": [
         {
+          "name": "init",
+          "command": "git init",
+          "icon": "$(new-folder)",
+          "description": "make this folder a repository"
+        },
+        {
           "name": "status",
           "command": "git status",
           "icon": "$(source-control)",

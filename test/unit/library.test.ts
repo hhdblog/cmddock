@@ -83,10 +83,10 @@ describe('hazır grup kütüphanesi', () => {
     }
   });
 
-  it('gruplar 5–15 komut arasında', () => {
+  it('gruplar 5–16 komut arasında', () => {
     for (const group of LIBRARY_GROUPS) {
       expect(group.commands.length, group.name).toBeGreaterThanOrEqual(5);
-      expect(group.commands.length, group.name).toBeLessThanOrEqual(15);
+      expect(group.commands.length, group.name).toBeLessThanOrEqual(16);
     }
   });
 
