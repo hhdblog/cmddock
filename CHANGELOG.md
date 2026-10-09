@@ -1,30 +1,35 @@
 # Changelog
 
-Bu dosya VS Code Marketplace'te uzantı sayfasında gösterilir.
+## 0.2.2
+
+- **Changelog is now English.** It was written in Turkish while the rest of the
+  extension (description, README, UI) is English, so the release notes were the only
+  unreadable part for most of the audience.
 
 ## 0.2.1
 
-Marketplace'e çıkan ilk düzeltme sürümü. Komut kütüphanesi değişmedi; görünürlük ve
-paketleme düzeltmeleri.
+First fix release after the Marketplace debut. The command library is unchanged —
+this release covers visibility and packaging.
 
-### Görünürlük
+### Visibility
 
-- **Keywords 4 → 9.** `productivity`, `cli`, `shell`, `command palette`, `workflow`
-  eklendi. Arama sonuçlarında daha fazla yer kaplıyor.
-- **Marketplace sayfası alanları.** `repository`, `homepage`, `bugs` ve `galleryBanner`
-  eklendi — "View Repository" ve "Report Issue" düğmeleri artık çalışıyor. Kaynak kod
-  görünür olduğu için uzantının güven mesajı güçlendi.
+- **Keywords 4 → 9.** Added `productivity`, `cli`, `shell`, `command palette`
+  and `workflow`, so the extension surfaces in more searches.
+- **Marketplace page fields.** Added `repository`, `homepage`, `bugs` and
+  `galleryBanner`, which makes the "View Repository" and "Report Issue" buttons
+  work. Source code is visible, which strengthens the trust story for an
+  extension that runs shell commands.
 
-### Paketleme
+### Packaging
 
-- **Paket 61 KB → 41 KB.** `PLAN.md` (900 satır tasarım günlüğü) ve kaynak haritası
-  (214 KB) paketlenmiyor. Kaynak haritası yerelde üretilmeye devam ediyor, hata ayıklama
-  bozulmadı.
-- `.vscodeignore` eklendi: kaynak dosyalar, testler, yapılandırmalar paketlenmiyor.
+- **Package 61 KB → 41 KB.** `PLAN.md` (a 900-line design log) and the source map
+  (214 KB) are no longer packaged. The source map is still generated locally, so
+  debugging is unaffected.
+- Added `.vscodeignore`: sources, tests and configuration files are not packaged.
 
-### Düzeltmeler
+### Fixes
 
-- **Python grubu rengi** `#4B8BBE` → `#FFD43B` (Python'un resmî sarısı). Koyu temada
-  kontrast 4.85 → 12.46; Flutter'un tonuna benzerliği giderildi.
-- **Cmd düğmesi** varsayılan olarak turkuaz (`#4EC9B0`) — uzantı simgesiyle aynı renk.
-- **README'den `PLAN.md` referansı kaldırıldı.** Tasarım günlüğü `docs/` altına taşındı.
+- **Python group colour** `#4B8BBE` → `#FFD43B`, Python's official yellow. Contrast
+  on dark themes goes from 4.85 to 12.46, and it no longer resembles Flutter's tone.
+- **Cmd button** now defaults to teal (`#4EC9B0`), matching the extension icon.
+- **Removed the `PLAN.md` link from the README.** The design log moved to `docs/`.
