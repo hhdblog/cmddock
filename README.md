@@ -11,8 +11,8 @@ file to share it with your team.
 ```bash
 npm install
 npm run build
-npm run package            # produces cmdkit-bar-0.2.5.vsix
-code --install-extension cmdkit-bar-0.2.5.vsix
+npm run package            # produces cmddock-0.2.5.vsix
+code --install-extension cmddock-0.2.5.vsix
 ```
 
 While developing, open this folder in VSCode and press <kbd>F5</kbd> to start the
