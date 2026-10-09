@@ -40,7 +40,7 @@ export async function pickCommand(
 ): Promise<PickResult | undefined> {
   if (groups.length === 0) {
     void vscode.window.showWarningMessage(
-      'cmd-deck: komut grubu yok. "cmdDeck.groups" ayarına grup ekle.'
+      'cmdkit: komut grubu yok. "cmdkit.groups" ayarına grup ekle.'
     );
     return undefined;
   }
@@ -126,7 +126,7 @@ export async function pickAnyCommand(
 ): Promise<PickResult | undefined> {
   if (groups.length === 0) {
     void vscode.window.showWarningMessage(
-      'cmd-deck: komut grubu yok. "cmdDeck.groups" ayarına grup ekle.'
+      'cmdkit: komut grubu yok. "cmdkit.groups" ayarına grup ekle.'
     );
     return undefined;
   }

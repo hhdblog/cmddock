@@ -3,7 +3,7 @@ import { getGroups } from './config';
 import { DeckCommand, DeckGroup } from './normalize';
 import { expandTokens, isPosixOnly } from './tokens';
 
-const NOTICE_KEY = 'cmdDeck.platformNoticeShown';
+const NOTICE_KEY = 'cmdkit.platformNoticeShown';
 
 interface Offending {
   readonly group: DeckGroup;
@@ -46,7 +46,7 @@ async function copyWindowsVersion(offending: readonly Offending[]): Promise<void
 
   await vscode.env.clipboard.writeText(expandTokens(source.command.command, 'win32'));
   void vscode.window.showInformationMessage(
-    'cmd-deck: panoya kopyalandı — cmdDeck.groups içindeki komutu bununla değiştir.'
+    'cmdkit: panoya kopyalandı — cmdkit.groups içindeki komutu bununla değiştir.'
   );
 }
 
@@ -56,7 +56,7 @@ export async function checkPlatform(context: vscode.ExtensionContext): Promise<v
 
   if (offending.length === 0) {
     void vscode.window.showInformationMessage(
-      `cmd-deck: ${process.platform} için sorunlu komut yok.`
+      `cmdkit: ${process.platform} için sorunlu komut yok.`
     );
     return;
   }
@@ -90,7 +90,7 @@ export function maybeShowPlatformNotice(context: vscode.ExtensionContext): void 
 
   void vscode.window
     .showInformationMessage(
-      `cmd-deck: ${count} komut macOS/Linux yolu içeriyor, Windows'ta çalışmaz.`,
+      `cmdkit: ${count} komut macOS/Linux yolu içeriyor, Windows'ta çalışmaz.`,
       'Windows karşılığını kopyala'
     )
     .then((choice) => {

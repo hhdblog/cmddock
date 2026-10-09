@@ -20,13 +20,13 @@ describe('config', () => {
 
   describe('readRawGroups', () => {
     it('ayarı normalize etmeden olduğu gibi döndürür', () => {
-      setConfiguration('cmdDeck', { groups: HAND_WRITTEN });
+      setConfiguration('cmdkit', { groups: HAND_WRITTEN });
 
       expect(readRawGroups()).toEqual(HAND_WRITTEN);
     });
 
     it('komut eksik alanlarını doldurmaz', () => {
-      setConfiguration('cmdDeck', { groups: [{ name: 'Git', commands: [{ name: 'a', command: 'b' }] }] });
+      setConfiguration('cmdkit', { groups: [{ name: 'Git', commands: [{ name: 'a', command: 'b' }] }] });
 
       const raw = readRawGroups() as { commands: Record<string, unknown>[] }[];
       expect(Object.keys(raw[0].commands[0]).sort()).toEqual(['command', 'name']);
@@ -39,7 +39,7 @@ describe('config', () => {
 
   describe('getGroups', () => {
     it('eksik alanları doldurur', () => {
-      setConfiguration('cmdDeck', {
+      setConfiguration('cmdkit', {
         groups: [{ name: 'Git', commands: [{ name: 'durum', command: 'git status' }] }],
       });
 
@@ -55,13 +55,13 @@ describe('config', () => {
     });
 
     it('command boş olan komutu düşürür', () => {
-      setConfiguration('cmdDeck', { groups: HAND_WRITTEN });
+      setConfiguration('cmdkit', { groups: HAND_WRITTEN });
 
       expect(getGroups()[0].commands.map((c) => c.name)).toEqual(['durum', 'temizle']);
     });
 
     it('ayar bir dizi değilse boş liste döner', () => {
-      setConfiguration('cmdDeck', { groups: 'metin' });
+      setConfiguration('cmdkit', { groups: 'metin' });
 
       expect(getGroups()).toEqual([]);
     });

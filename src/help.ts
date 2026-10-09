@@ -1,28 +1,28 @@
 import * as vscode from 'vscode';
 
 /**
- * `Cmd Deck: Komut Dosyası Nasıl Kullanılır` komutunun gösterdiği kılavuz.
+ * `Cmdkit: Komut Dosyası Nasıl Kullanılır` komutunun gösterdiği kılavuz.
  *
  * Düz dosya olarak durması bilinçli: içerik eklenti klasöründe ya da sanal
  * belgede, kullanıcı okuyup kopyalayabiliyor. Uzun metin olacağı için
  * `showInformationMessage` yerine önizlenebilir bir Markdown belgesi açılıyor.
  */
-export const KULLANIM = `# Cmd Deck — komut dosyası nasıl kullanılır
+export const KULLANIM = `# Cmdkit — komut dosyası nasıl kullanılır
 
-Komutlar **\`cmdDeck.groups\`** ayarında yaşar ve ekranda şu sırayla çalışır:
+Komutlar **\`cmdkit.groups\`** ayarında yaşar ve ekranda şu sırayla çalışır:
 
 \`Cmd\` düğmesi → grup → komut → terminalde çalışır.
 
 Ama bu ayarı elle düzenlemek zahmetli. Bu yüzden düzenleme işi ayrı bir dosyada:
-**\`cmd-deck-groups.json\`**.
+**\`cmdkit-groups.json\`**.
 
 ## Üç adım
 
-1. **\`Cmd Deck: Komut Listesini Düzenle\`** → dosya açılır.
+1. **\`Cmdkit: Komut Listesini Düzenle\`** → dosya açılır.
    Dosya yoksa ayarlarınla oluşturulur; varsa **üzerine yazılmaz**.
 2. Dosyayı düzenle, <kbd>Ctrl</kbd>+<kbd>S</kbd> ile kaydet.
    **Kaydetmek uygulamaz.**
-3. **\`Cmd Deck: Komut Dosyasını Uygula\`** → ne değişeceğini özetler, onay
+3. **\`Cmdkit: Komut Dosyasını Uygula\`** → ne değişeceğini özetler, onay
    ister, hedefi sorar ve \`settings.json\`'a yazar.
 
 Ayarı değiştirmeden hiçbir komut değişmez. Eklenti her zaman \`settings.json\`'ı
@@ -37,15 +37,15 @@ satırındaki \`//\` komutun parçasıdır, silinmez.
 
 ### Dosya nerede?
 
-Varsayılan **\`<proje>/.vscode/cmd-deck-groups.json\`** — dosyanın uygulandığı
+Varsayılan **\`<proje>/.vscode/cmdkit-groups.json\`** — dosyanın uygulandığı
 yer de \`.vscode/settings.json\`, kaynak ve hedef aynı klasörde duruyor. Proje
 açılmadıysa ev dizinine düşer. Yol proje bazlı hatırlanır.
 
-Monorepo'da alt pakete yönlendirmek için \`cmdDeck.groupFile\` ayarını kullan:
+Monorepo'da alt pakete yönlendirmek için \`cmdkit.groupFile\` ayarını kullan:
 
 \`\`\`json
 {
-  "cmdDeck.groupFile": "packages/api/cmd-deck-groups.json"
+  "cmdkit.groupFile": "packages/api/cmdkit-groups.json"
 }
 \`\`\`
 
@@ -87,7 +87,7 @@ Listede gerçekten hiçbir şey değişmiyorsa özet hiç gösterilmez, dosyaya 
 Komutu silmek: dosyadan sil, **\`Listeyi değiştir\`** ile uygula.
 \`Grupları birleştir\` silmez, onaylansa bile eski komut kalır.
 
-Grubu silmek için **\`Cmd Deck: Grup Kaldır\`** daha güvenli. \`Listeyi değiştir\`
+Grubu silmek için **\`Cmdkit: Grup Kaldır\`** daha güvenli. \`Listeyi değiştir\`
 tüm listeyi gelen dosyayla değiştirdiği için, dosya bayattaysa (ör. kütüphaneden
 eklenmiş ama dosyaya geçmemiş bir grup) istemediğin gruplar da gider.
 \`Grup Kaldır\` yalnızca seçtiğin grubu çıkarır.
@@ -114,12 +114,12 @@ yazarken olabiliyor. Grup adlarını farklı tut.
 Proje açık değilse soru çıkmaz, doğrudan kullanıcı ayarlarına yazılır.
 
 Proje değeri kullanıcı değerini **gölgeler**. Yani bir projede
-\`.vscode/settings.json\` içinde \`cmdDeck.groups\` varsa, aynı anda yazdığın
+\`.vscode/settings.json\` içinde \`cmdkit.groups\` varsa, aynı anda yazdığın
 kullanıcı ayarı o projede etkisiz kalır.
 
 ## Ekiple paylaşma
 
-Paylaşılacak dosya **\`cmd-deck-groups.json\`**. Repoya commit'le, ekip arkadaşın
+Paylaşılacak dosya **\`cmdkit-groups.json\`**. Repoya commit'le, ekip arkadaşın
 \`Komut Dosyasını Uygula\` ile kendi ayarlarına alsın.
 
 \`.vscode/settings.json\`'a commit etmek de çalışır ama normalize edilmiş hâlde
@@ -202,10 +202,10 @@ dosya dizi olmayabilir, komut dizileri boş olabilir, ya da alanlar eksik
 olabilir.
 
 **Menüm şişti.** Durum çubuğunda \`maxGroupItems\` (varsayılan 3) ve
-\`hiddenGroups\` ayarları var; \`Cmd Deck: Durum Çubuğu Düğmelerini Seç\` ile
+\`hiddenGroups\` ayarları var; \`Cmdkit: Durum Çubuğu Düğmelerini Seç\` ile
 görünmesi gerekenleri işaretle.
 
-**Daha fazla hazır grup.** \`Cmd Deck: Hazır Grup Ekle\` — Docker, Go, Kubernetes,
+**Daha fazla hazır grup.** \`Cmdkit: Hazır Grup Ekle\` — Docker, Go, Kubernetes,
 PostgreSQL, GitHub CLI ve 5 grup daha.
 `;
 

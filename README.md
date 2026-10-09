@@ -1,8 +1,8 @@
-# Cmd Deck
+# Cmdkit
 
 Durum çubuğundaki tek bir öğeyle sık kullandığın terminal komutlarına iki tıkla ulaş.
 
-`Cmd Deck` → komut grubu → komut → terminalde çalışır. Gruplar `cmd-deck-groups.json`
+`Cmdkit` → komut grubu → komut → terminalde çalışır. Gruplar `cmdkit-groups.json`
 dosyasında düzenlenir, `.vscode/settings.json` içine uygulanır; dosyayı commit'leyip
 ekibinle paylaşabilirsin.
 
@@ -11,8 +11,8 @@ ekibinle paylaşabilirsin.
 ```bash
 npm install
 npm run build
-npm run package            # cmd-deck-0.2.0.vsix üretir
-code --install-extension cmd-deck-0.2.0.vsix
+npm run package            # cmdkit-0.2.0.vsix üretir
+code --install-extension cmdkit-0.2.0.vsix
 ```
 
 Geliştirirken VSCode'da bu klasörü açıp <kbd>F5</kbd> ile Extension Development Host başlat.
@@ -23,15 +23,15 @@ Geliştirirken VSCode'da bu klasörü açıp <kbd>F5</kbd> ile Extension Develop
 | --------------------------------------- | ------------------------------------------------------------------------ |
 | Komut çalıştır                          | Durum çubuğundaki **grup ikonuna** tıkla → komut (grup seviyesi atlanır) |
 | Tüm gruplardan seç                      | Durum çubuğundaki `Cmd` düğmesine tıkla → grup → komut                   |
-| Komut listesini düzenle                 | `Cmd Deck: Komut Listesini Düzenle` → JSON dosyası açılır, düzenle       |
-| Hazır grup ekle (Docker, Go, k8s, Surge…) | `Cmd Deck: Hazır Grup Ekle` → kütüphaneden seç                          |
-| Grup sil                                | `Cmd Deck: Grup Kaldır` → gruplardan seç                                 |
-| Grup seviyesine inmeden ara             | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `Cmd Deck: Tüm Komutlarda Ara`            |
-| Son komutu tekrarla                     | `Cmd Deck: Son Komutu Tekrar Çalıştır`                                   |
-| Windows uyumluluğunu denetle            | `Cmd Deck: Platform Uyumluluğunu Kontrol Et`                             |
-| Kullanılabilir ikonları gör             | `Cmd Deck: İkon Kataloğu`                                                |
-| Komut dosyasını nasıl kullanacağımı gör | `Cmd Deck: Komut Dosyası Nasıl Kullanılır`                               |
-| Durum çubuğunda hangi gruplar görünsün  | `Cmd Deck: Durum Çubuğu Düğmelerini Seç` (çoklu seçim, işaretle)         |
+| Komut listesini düzenle                 | `Cmdkit: Komut Listesini Düzenle` → JSON dosyası açılır, düzenle       |
+| Hazır grup ekle (Docker, Go, k8s, Surge…) | `Cmdkit: Hazır Grup Ekle` → kütüphaneden seç                          |
+| Grup sil                                | `Cmdkit: Grup Kaldır` → gruplardan seç                                 |
+| Grup seviyesine inmeden ara             | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `Cmdkit: Tüm Komutlarda Ara`            |
+| Son komutu tekrarla                     | `Cmdkit: Son Komutu Tekrar Çalıştır`                                   |
+| Windows uyumluluğunu denetle            | `Cmdkit: Platform Uyumluluğunu Kontrol Et`                             |
+| Kullanılabilir ikonları gör             | `Cmdkit: İkon Kataloğu`                                                |
+| Komut dosyasını nasıl kullanacağımı gör | `Cmdkit: Komut Dosyası Nasıl Kullanılır`                               |
+| Durum çubuğunda hangi gruplar görünsün  | `Cmdkit: Durum Çubuğu Düğmelerini Seç` (çoklu seçim, işaretle)         |
 
 Komut listesinde **en çok kullandıkların üstte** çıkar; sayı eşitse `settings.json` sırası korunur.
 Grubun kendi sırası hep ayardaki gibi kalır.
@@ -47,16 +47,16 @@ doğrudan açılır. `Cmd` düğmesi tüm grupları tek listeden açar. İkisi d
 
 | Ayar                              | Varsayılan | Açıklama                                                                                                                                                                                 |
 | --------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cmdDeck.groupFile`               | `""`       | Komut dosyasının yolu — bkz. yukarıdaki bölüm                                                                                                                                            |
-| `cmdDeck.statusBar.showGroups`    | `true`     | Her grup için ayrı düğme gösterir                                                                                                                                                        |
-| `cmdDeck.statusBar.showMaster`    | `true`     | `Cmd` düğmesini gösterir                                                                                                                                                                 |
-| `cmdDeck.statusBar.maxGroupItems` | `3`        | Çubukta **başlangıçta** kaç grup düğmesi görünür. Fazlası oluşturulur ama gizli başlar: durum çubuğunda sağ tık → `Hide Status Bar Items` → **Show** ile açabilirsin. **`0` = sınırsız** |
-| `cmdDeck.statusBar.hiddenGroups`  | `[]`       | Görünmeyecek grup adları: `["Python"]`                                                                                                                                                   |
-| `cmdDeck.statusBar.groupLabel`    | `""`       | `"always"` ise ikonun yanına grup adını da yazar                                                                                                                                         |
-| `cmdDeck.statusBar.icon`          | `terminal` | `Cmd` düğmesinin ikonu. `"zap"` veya `"$(zap)"` yazılabilir                                                                                                                              |
-| `cmdDeck.statusBar.color`         | `""`       | Ön plan rengi: `#4EC9B0` gibi hex ya da `charts.red` gibi tema rengi                                                                                                                     |
-| `cmdDeck.statusBar.background`    | `""`       | Arka plan rengi, aynı biçim                                                                                                                                                              |
-| `cmdDeck.statusBar.priority`      | `250`      | Düğmelerin sırası (yüksek = daha sol). Başka eklentiyle çakışırsa kaydır                                                                                                                 |
+| `cmdkit.groupFile`               | `""`       | Komut dosyasının yolu — bkz. yukarıdaki bölüm                                                                                                                                            |
+| `cmdkit.statusBar.showGroups`    | `true`     | Her grup için ayrı düğme gösterir                                                                                                                                                        |
+| `cmdkit.statusBar.showMaster`    | `true`     | `Cmd` düğmesini gösterir                                                                                                                                                                 |
+| `cmdkit.statusBar.maxGroupItems` | `3`        | Çubukta **başlangıçta** kaç grup düğmesi görünür. Fazlası oluşturulur ama gizli başlar: durum çubuğunda sağ tık → `Hide Status Bar Items` → **Show** ile açabilirsin. **`0` = sınırsız** |
+| `cmdkit.statusBar.hiddenGroups`  | `[]`       | Görünmeyecek grup adları: `["Python"]`                                                                                                                                                   |
+| `cmdkit.statusBar.groupLabel`    | `""`       | `"always"` ise ikonun yanına grup adını da yazar                                                                                                                                         |
+| `cmdkit.statusBar.icon`          | `terminal` | `Cmd` düğmesinin ikonu. `"zap"` veya `"$(zap)"` yazılabilir                                                                                                                              |
+| `cmdkit.statusBar.color`         | `""`       | Ön plan rengi: `#4EC9B0` gibi hex ya da `charts.red` gibi tema rengi                                                                                                                     |
+| `cmdkit.statusBar.background`    | `""`       | Arka plan rengi, aynı biçim                                                                                                                                                              |
+| `cmdkit.statusBar.priority`      | `250`      | Düğmelerin sırası (yüksek = daha sol). Başka eklentiyle çakışırsa kaydır                                                                                                                 |
 
 Grup düğmesinin tooltip'inde grup adı, komut sayısı ve **en çok kullanılan komut**
 (`En çok: test (×5)`) görünür. Renk ayarı tüm düğmelere birden uygulanır; boş bırakılırsa
@@ -67,7 +67,7 @@ onlarca ikon eklemek okunmaz hale gelir. Bu yüzden **ilk kurulumda 3** grup dü
 
 Bu bir sınır değil, başlangıç değeri: ilk kurulumda 3 grup görünür, beşinci gruplar **gizli**
 başlar — düğmeleri yine oluşturulur, bu yüzden durum çubuğunda **sağ tık → `Hide Status Bar Items`
-→ `Cmd Deck: Git` / `Cmd Deck: Firebase` işaretine basınca açılırlar**. Açtığın gruplar bir sonraki
+→ `Cmdkit: Git` / `Cmdkit: Firebase` işaretine basınca açılırlar**. Açtığın gruplar bir sonraki
 komut çalıştırmasında gizlenmez; sadece ayarı değiştirdiğinde sınırlama yeniden uygulanır.
 
 Kalıcı ayar istersen `maxGroupItems: 0` (**sınırsız**) veya `hiddenGroups` ile bazılarını tamamen
@@ -83,27 +83,27 @@ yükleme gerekmez. VSCode'un durum çubuğu sağ tık menüsünden de gizleyebil
 düğme ayrı ayrı listelenir:
 
 ```
-Cmd Deck: Tüm Gruplar
-Cmd Deck: Python
-Cmd Deck: Flutter
-Cmd Deck: Node.js
+Cmdkit: Tüm Gruplar
+Cmdkit: Python
+Cmdkit: Flutter
+Cmdkit: Node.js
 ```
 
 Bunun çalışması için iki şey gerekiyor (ikisi de yapıldı):
 
 - **Kimlik:** `createStatusBarItem(id, ...)` ile her düğmeye ayrı id veriliyor
-  (`cmd-deck.cmd`, `cmd-deck.group.Python`, …). Kimlik verilmezse hepsi eklenti kimliğine
+  (`cmdkit.cmd`, `cmdkit.group.Python`, …). Kimlik verilmezse hepsi eklenti kimliğine
   düşüyor, menüde tek kalem oluyor ve biri gizlenince hepsi gizleniyor.
 - **Ad:** `StatusBarItem.name` set ediliyor. Bu alan menüde görünen etiket; boş bırakılırsa
-  menüde her öğe "Cmd Deck (extension)" olarak aynı görünür.
+  menüde her öğe "Cmdkit (extension)" olarak aynı görünür.
 
 **Sıralama çakışması:** VSCode durum çubuğunu tüm eklentilerin öncelik değerlerine göre sıralar,
 yani başka bir eklenti aynı sayıyı kullanırsa düğmelerimizin arasına girer (Live Server `100`
 kullandığı için `Cmd` ile grup ikonları arasına girmişti). Kurulu eklentilerin tarandığı değerler
 `-1, 0, 1, 100, 1000` çıktı; varsayılan **250** seçildi (200–259 bandı boş). Yine de çakışma
-görürsen `cmdDeck.statusBar.priority` değerini kaydır.
+görürsen `cmdkit.statusBar.priority` değerini kaydır.
 
-**Cmd Deck: İkon Kataloğu** komutu ~120 doğrulanmış kodikonu kategoriler halinde listeler,
+**Cmdkit: İkon Kataloğu** komutu ~120 doğrulanmış kodikonu kategoriler halinde listeler,
 ikonları canlı çizer; seçtiğin ad panoya kopyalanır — sonra `statusBar.icon` ya da grup/komut
 `icon` alanına yapıştırırsın.
 
@@ -154,7 +154,7 @@ aynı komutlar Komut Paleti'nde de duruyor.
 Kurulumla gelen 5 grubun dışında **11 hazır grup** daha var; hepsi tek komutla
 eklenir:
 
-`Cmd Deck: Hazır Grup Ekle` → kütüphaneden seç → hedefi sorar → yazar.
+`Cmdkit: Hazır Grup Ekle` → kütüphaneden seç → hedefi sorar → yazar.
 
 | Grup                           | Komut |     | Grup                                      | Komut |
 | ------------------------------ | ----- | --- | ----------------------------------------- | ----- |
@@ -182,10 +182,10 @@ benzersizliğini ve **yıkıcı komutların onay istediğini** otomatik denetler
 
 ## Komutlarını tanımlama
 
-`settings.json` içinde `cmdDeck.groups`:
+`settings.json` içinde `cmdkit.groups`:
 
 ```jsonc
-"cmdDeck.groups": [
+"cmdkit.groups": [
   {
     "name": "Git",
     "icon": "$(source-control)",
@@ -205,7 +205,7 @@ benzersizliğini ve **yıkıcı komutların onay istediğini** otomatik denetler
 | `command`     | evet    | Çalıştırılacak shell komutu                                                                                                                   |
 | `description` | hayır   | Sağda gri metin olarak görünür                                                                                                                |
 | `icon`        | hayır   | Kodikon, varsayılan `$(terminal)`. Düz ad da olur (`zap`)                                                                                     |
-| `color`       | hayır   | Durum çubuğundaki **bu grubun** rengi: `#4B8BBE` ya da `charts.blue`. Boşsa `cmdDeck.statusBar.color` uygulanır                               |
+| `color`       | hayır   | Durum çubuğundaki **bu grubun** rengi: `#4B8BBE` ya da `charts.blue`. Boşsa `cmdkit.statusBar.color` uygulanır                               |
 | `confirm`     | hayır   | `true` veya metin → çalıştırmadan önce onay                                                                                                   |
 | `argsPrompt`  | hayır   | Çalıştırmadan önce girdi ister                                                                                                                |
 | `argsSingle`  | hayır   | **true ise girdinin tamamı tek argüman olur**, boşluktan bölünmez. `git commit -m`, `psql -c` gibi serbest metin bekleyen bayraklar için şart |
@@ -213,7 +213,7 @@ benzersizliğini ve **yıkıcı komutların onay istediğini** otomatik denetler
 
 Kurulumda 5 hazır grup gelir: **Python**, **Flutter**, **Node.js**, **Git**, **Firebase**
 (toplam 61 komut).
-Kendi ayarını yazarsan hazır grupların yerini alır — silmek istersen `"cmdDeck.groups": []`.
+Kendi ayarını yazarsan hazır grupların yerini alır — silmek istersen `"cmdkit.groups": []`.
 
 61 komutun **hepsinde** anlamlı bir ikon var (`$(beaker)` test, `$(shield)` lint,
 `$(cloud-download)` kurulum, `$(trash)` silme, `$(paintcan)` format…). Tek kaynak
@@ -233,37 +233,37 @@ getirilebilir.
 | Firebase | `$(broadcast)`          | `#FFCA28` | 10    |
 
 Grup `color` alanı yalnızca durum çubuğu ikonunu boyar (menüde renk gösterilemez, `QuickPickItem`
-renk desteklemiyor). Öncelik: grubun kendi `color`'ı → yoksa `cmdDeck.statusBar.color`.
+renk desteklemiyor). Öncelik: grubun kendi `color`'ı → yoksa `cmdkit.statusBar.color`.
 
 ## Komut ekleme / silme / düzenleme
 
-Komutlar `cmdDeck.groups` ayarında durur, ama elle düzenlemek için düzenleme
+Komutlar `cmdkit.groups` ayarında durur, ama elle düzenlemek için düzenleme
 dosyası kullanılır: **VSCode'da açılır, şemayla doğrulanır, sonra ayarlara uygulanır.**
 
 ```
-Cmd Deck: Komut Listesini Düzenle     →  cmd-deck-groups.json açılır (yoksa ayarlardan yazılır)
+Cmdkit: Komut Listesini Düzenle     →  cmdkit-groups.json açılır (yoksa ayarlardan yazılır)
    ... düzenle, Ctrl+S ...
-Cmd Deck: Komut Dosyasını Uygula      →  özet gösterir, onaylar, settings.json'a yazar
+Cmdkit: Komut Dosyasını Uygula      →  özet gösterir, onaylar, settings.json'a yazar
 ```
 
 | Komut                                 | Ne yapar                                                                                                                                   |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Cmd Deck: Komut Listesini Düzenle`   | Dosyayı açar. **Soru sormaz.** Dosya yoksa mevcut ayarlardan oluşturulur; varsa **üzerine yazılmaz** (kaydedilmemiş düzenlemen bozulmasın) |
-| `Cmd Deck: Komut Dosyasını Uygula`    | Dosyayı okur, **ne değişeceğini özetler**, onay ister, sonra hedefi seçip yazar                                                            |
-| `Cmd Deck: Dosyayı Ayarlardan Yenile` | Dosyayı ayarlardaki güncel liste ile **üzerine yazar** — düzenlemeyi sıfırlamanın yolu                                                     |
+| `Cmdkit: Komut Listesini Düzenle`   | Dosyayı açar. **Soru sormaz.** Dosya yoksa mevcut ayarlardan oluşturulur; varsa **üzerine yazılmaz** (kaydedilmemiş düzenlemen bozulmasın) |
+| `Cmdkit: Komut Dosyasını Uygula`    | Dosyayı okur, **ne değişeceğini özetler**, onay ister, sonra hedefi seçip yazar                                                            |
+| `Cmdkit: Dosyayı Ayarlardan Yenile` | Dosyayı ayarlardaki güncel liste ile **üzerine yazar** — düzenlemeyi sıfırlamanın yolu                                                     |
 
-Dosya yolu hatırlanır (proje bazlı). Varsayılanı **`.vscode/cmd-deck-groups.json`** —
+Dosya yolu hatırlanır (proje bazlı). Varsayılanı **`.vscode/cmdkit-groups.json`** —
 dosyanın uygulandığı yer de `.vscode/settings.json`, kaynak ve hedef aynı yerde.
 Proje açık değilse ev dizinine düşer. Hatırlanan yol yoksa **Komut Dosyasını Uygula**
 bir kez dosya seçtirir — böylece başkasının gönderdiği listeyi de alabilirsin.
 
 | Ayar                | Varsayılan | Açıklama                                                                                                                                                        |
 | ------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cmdDeck.groupFile` | `""`       | Düzenleme dosyasının yolu. Monorepo'da alt pakete yönlendirmek için: `"packages/api/cmd-deck-groups.json"`. Göreli yollar ilk çalışma alanı köküne göre çözülür |
+| `cmdkit.groupFile` | `""`       | Düzenleme dosyasının yolu. Monorepo'da alt pakete yönlendirmek için: `"packages/api/cmdkit-groups.json"`. Göreli yollar ilk çalışma alanı köküne göre çözülür |
 
 Dosyada **yorum serbest** (JSONC — `//` satır, `/* */` blok), otomatik tamamlama
 ve şema doğrulaması çalışır:
-`schemas/cmd-deck-groups.json` hem `name`/`command` zorunluluğunu hem de yazım
+`schemas/cmdkit-groups.json` hem `name`/`command` zorunluluğunu hem de yazım
 hatalarını (`descrition` gibi) kırmızı gösterir. Bilinmeyen alan reddedilir.
 
 Dosyayı elle düzenlediğin için dışa aktarım **normalize edilmiş** hâli değil ham
@@ -274,7 +274,7 @@ ayarladığın alanlar durur — 61 komutta `confirm: false` ve `clear: false` b
 hiçbir ayar kaybolmaz.
 
 > `settings.json`'ı elle düzenlemen gerekmiyor; ekip arkadaşın `Komut Dosyasını
-Uygula` ile kendi dosyasına alsın. Paylaşılacak dosya `cmd-deck-groups.json`.
+Uygula` ile kendi dosyasına alsın. Paylaşılacak dosya `cmdkit-groups.json`.
 
 ### Uygulama (import)
 
@@ -302,7 +302,7 @@ Listede gerçekten hiçbir şey değişmiyorsa dosyaya hiç dokunulmaz — "hiç
 bildirimi çıkar. (Özet normalize edilmiş alanları karşılaştırdığı için, yalnızca
 biçimsel farkları bu adım yakalamaz.)
 
-Dosya biçimi `cmdDeck.groups` ile birebir aynıdır ve platform belirteçlerini
+Dosya biçimi `cmdkit.groups` ile birebir aynıdır ve platform belirteçlerini
 (`{venv}`, `{rm}` …) olduğu gibi korur. Panoya kopyalama yolu kaldırıldı: listeyi
 paylaşmak için ya dosyayı commit'le (ekip arkadaşın `Komut Dosyasını Uygula` ile
 kendi ayarlarına alsın) ya da uyguladıktan sonra `.vscode/settings.json`'u commit'le.

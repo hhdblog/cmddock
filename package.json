@@ -1,9 +1,9 @@
 {
-  "name": "cmd-deck",
-  "displayName": "Cmd Deck",
+  "name": "cmdkit",
+  "displayName": "Cmdkit",
   "description": "Sık kullanılan terminal komutlarını gruplayan durum çubuğu paneli.",
   "version": "0.2.0",
-  "publisher": "cmd-deck",
+  "publisher": "cmdkit",
   "license": "MIT",
   "engines": {
     "vscode": "^1.90.0"
@@ -25,80 +25,80 @@
   "contributes": {
     "commands": [
       {
-        "command": "cmd-deck.open",
+        "command": "cmdkit.open",
         "title": "Komutlar",
-        "category": "Cmd Deck",
+        "category": "Cmdkit",
         "icon": "$(terminal)"
       },
       {
-        "command": "cmd-deck.search",
+        "command": "cmdkit.search",
         "title": "Tüm Komutlarda Ara",
-        "category": "Cmd Deck",
+        "category": "Cmdkit",
         "icon": "$(search)"
       },
       {
-        "command": "cmd-deck.runLast",
+        "command": "cmdkit.runLast",
         "title": "Son Komutu Tekrar Çalıştır",
-        "category": "Cmd Deck",
+        "category": "Cmdkit",
         "icon": "$(debug-rerun)"
       },
       {
-        "command": "cmd-deck.reload",
+        "command": "cmdkit.reload",
         "title": "Dosyayı Ayarlardan Yenile",
-        "category": "Cmd Deck",
+        "category": "Cmdkit",
         "icon": "$(refresh)"
       },
       {
-        "command": "cmd-deck.checkPlatform",
+        "command": "cmdkit.checkPlatform",
         "title": "Platform Uyumluluğunu Kontrol Et",
-        "category": "Cmd Deck",
+        "category": "Cmdkit",
         "icon": "$(check)"
       },
       {
-        "command": "cmd-deck.export",
+        "command": "cmdkit.export",
         "title": "Komut Listesini Düzenle",
-        "category": "Cmd Deck",
+        "category": "Cmdkit",
         "icon": "$(json)"
       },
       {
-        "command": "cmd-deck.import",
+        "command": "cmdkit.import",
         "title": "Komut Dosyasını Uygula",
-        "category": "Cmd Deck",
+        "category": "Cmdkit",
         "icon": "$(sync)"
       },
       {
-        "command": "cmd-deck.statusBarItems",
+        "command": "cmdkit.statusBarItems",
         "title": "Durum Çubuğu Düğmelerini Seç",
-        "category": "Cmd Deck",
+        "category": "Cmdkit",
         "icon": "$(list-selection)"
       },
       {
-        "command": "cmd-deck.iconCatalog",
+        "command": "cmdkit.iconCatalog",
         "title": "İkon Kataloğu",
-        "category": "Cmd Deck",
+        "category": "Cmdkit",
         "icon": "$(paintcan)"
       },
       {
-        "command": "cmd-deck.addGroup",
+        "command": "cmdkit.addGroup",
         "title": "Hazır Grup Ekle",
-        "category": "Cmd Deck",
+        "category": "Cmdkit",
         "icon": "$(new-folder)"
       },
       {
-        "command": "cmd-deck.removeGroup",
+        "command": "cmdkit.removeGroup",
         "title": "Grup Kaldır",
-        "category": "Cmd Deck",
+        "category": "Cmdkit",
         "icon": "$(trash)"
       },
       {
-        "command": "cmd-deck.usage",
+        "command": "cmdkit.usage",
         "title": "Komut Dosyası Nasıl Kullanılır",
-        "category": "Cmd Deck",
+        "category": "Cmdkit",
         "icon": "$(markdown)"
       }
     ],
     "configurationDefaults": {
-      "cmdDeck.groups": [
+      "cmdkit.groups": [
         {
           "name": "Python",
           "icon": "$(snake)",
@@ -530,15 +530,15 @@
     "jsonValidation": [
       {
         "fileMatch": [
-          "cmd-deck-groups.json"
+          "cmdkit-groups.json"
         ],
-        "url": "./schemas/cmd-deck-groups.json"
+        "url": "./schemas/cmdkit-groups.json"
       }
     ],
     "configuration": {
-      "title": "Cmd Deck",
+      "title": "Cmdkit",
       "properties": {
-        "cmdDeck.groups": {
+        "cmdkit.groups": {
           "type": "array",
           "default": [],
           "description": "Durum çubuğu menüsünde gösterilecek komut grupları. Boş bırakılırsa eklentinin varsayılan grupları (Python, Flutter, Node.js) kullanılır.",
@@ -560,7 +560,7 @@
               },
               "color": {
                 "type": "string",
-                "description": "Durum çubuğundaki bu grup düğmesinin ön plan rengi. \"#4B8BBE\" gibi hex ya da \"charts.blue\" gibi tema rengi adı. Boş bırakılırsa cmdDeck.statusBar.color uygulanır."
+                "description": "Durum çubuğundaki bu grup düğmesinin ön plan rengi. \"#4B8BBE\" gibi hex ya da \"charts.blue\" gibi tema rengi adı. Boş bırakılırsa cmdkit.statusBar.color uygulanır."
               },
               "commands": {
                 "type": "array",
@@ -618,42 +618,42 @@
             }
           }
         },
-        "cmdDeck.groupFile": {
+        "cmdkit.groupFile": {
           "type": "string",
           "default": "",
-          "description": "Komut listesinin düzenlendiği dosyanın yolu. Göreli yollar ilk çalışma alanı köküne göre çözülür. Boş bırakılırsa .vscode/cmd-deck-groups.json kullanılır. Monorepo'da alt paketi göstermek için: \"packages/api/cmd-deck-groups.json\"."
+          "description": "Komut listesinin düzenlendiği dosyanın yolu. Göreli yollar ilk çalışma alanı köküne göre çözülür. Boş bırakılırsa .vscode/cmdkit-groups.json kullanılır. Monorepo'da alt paketi göstermek için: \"packages/api/cmdkit-groups.json\"."
         },
-        "cmdDeck.statusBar.icon": {
+        "cmdkit.statusBar.icon": {
           "type": "string",
           "default": "terminal",
-          "description": "Durum çubuğu düğmesinin ikonu. Kodikon adı (\"zap\") veya \"$(zap)\" biçiminde yazılabilir. Adaylar: \"Cmd Deck: İkon Kataloğu\"."
+          "description": "Durum çubuğu düğmesinin ikonu. Kodikon adı (\"zap\") veya \"$(zap)\" biçiminde yazılabilir. Adaylar: \"Cmdkit: İkon Kataloğu\"."
         },
-        "cmdDeck.statusBar.color": {
+        "cmdkit.statusBar.color": {
           "type": "string",
           "default": "",
           "description": "Durum çubuğu düğmesinin ön plan rengi. Boş bırakılırsa tema rengi kullanılır. \"#4EC9B0\" gibi hex ya da \"charts.red\", \"statusBarItem.errorBackground\" gibi tema rengi adı."
         },
-        "cmdDeck.statusBar.background": {
+        "cmdkit.statusBar.background": {
           "type": "string",
           "default": "",
           "description": "Durum çubuğu düğmesinin arka plan rengi. Aynı biçim: hex veya tema rengi adı. Boş bırakılırsa arka plan şeffaf kalır."
         },
-        "cmdDeck.statusBar.showGroups": {
+        "cmdkit.statusBar.showGroups": {
           "type": "boolean",
           "default": true,
           "description": "Her grup için durum çubuğunda ayrı bir düğme gösterir. Tıklanınca grup seviyesi atlanır ve o grubun komutları açılır."
         },
-        "cmdDeck.statusBar.showMaster": {
+        "cmdkit.statusBar.showMaster": {
           "type": "boolean",
           "default": true,
           "description": "\"cmd\" düğmesini gösterir: tüm gruplar tek listeden seçilir."
         },
-        "cmdDeck.statusBar.maxGroupItems": {
+        "cmdkit.statusBar.maxGroupItems": {
           "type": "number",
           "default": 3,
-          "description": "Durum çubuğunda en fazla kaç grup düğmesi gösterilsin. Fazlası yalnızca Cmd düğmesi ve arama üzerinden erişilebilir. 0 yazarsan sınırsız olur, tüm gruplar gösterilir. Hiç grup düğmesi istemiyorsan cmdDeck.statusBar.showGroups = false."
+          "description": "Durum çubuğunda en fazla kaç grup düğmesi gösterilsin. Fazlası yalnızca Cmd düğmesi ve arama üzerinden erişilebilir. 0 yazarsan sınırsız olur, tüm gruplar gösterilir. Hiç grup düğmesi istemiyorsan cmdkit.statusBar.showGroups = false."
         },
-        "cmdDeck.statusBar.groupLabel": {
+        "cmdkit.statusBar.groupLabel": {
           "type": "string",
           "default": "",
           "enum": [
@@ -662,7 +662,7 @@
           ],
           "description": "\"always\" ise grup düğmelerinde ikonun yanına grup adı da yazılır. Boş bırakılırsa yalnızca ikon görünür."
         },
-        "cmdDeck.statusBar.hiddenGroups": {
+        "cmdkit.statusBar.hiddenGroups": {
           "type": "array",
           "items": {
             "type": "string"
@@ -670,7 +670,7 @@
           "default": [],
           "description": "Durum çubuğunda gösterilmeyecek grup adları. Örn. [\"Python\", \"Node.js\"]."
         },
-        "cmdDeck.statusBar.priority": {
+        "cmdkit.statusBar.priority": {
           "type": "number",
           "default": 250,
           "description": "Durum çubuğu düğmelerinin sırası. Yüksek değer daha sola gelir; grup düğmeleri bundan 1, 2, 3 azalır. Başka bir eklenti aynı değeri kullanırsa düğmelerimizin arasına girer, o durumda bu değeri değiştir. Bu makinede kullanılan değerler: -1, 0, 1, 100, 1000."

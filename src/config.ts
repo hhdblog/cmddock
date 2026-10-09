@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { DeckGroup, normalizeGroups } from './normalize';
 
-export const CONFIG_SECTION = 'cmdDeck';
+export const CONFIG_SECTION = 'cmdkit';
 export const GROUPS_KEY = 'groups';
 
 /**

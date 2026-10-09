@@ -40,7 +40,7 @@ function context() {
 }
 
 function groupFile(): string {
-  return join(dir, '.vscode', 'cmd-deck-groups.json');
+  return join(dir, '.vscode', 'cmdkit-groups.json');
 }
 
 function read(): string {
@@ -57,7 +57,7 @@ const USER = { target: ConfigurationTarget.Global };
 
 beforeEach(() => {
   resetConfiguration();
-  dir = mkdtempSync(join(tmpdir(), 'cmd-deck-test-'));
+  dir = mkdtempSync(join(tmpdir(), 'cmdkit-test-'));
   setWorkspaceFolders(dir);
 });
 
@@ -67,7 +67,7 @@ afterEach(() => {
 
 describe('editGroupFile', () => {
   beforeEach(() => {
-    setConfiguration('cmdDeck', { groups: ONE_GROUP });
+    setConfiguration('cmdkit', { groups: ONE_GROUP });
   });
 
   it('dosya yoksa ayarlardan yazıp açar', async () => {
@@ -97,7 +97,7 @@ describe('editGroupFile', () => {
 
     await editGroupFile(ctx as never);
 
-    expect(ctx.workspaceState.get('cmdDeck.groupFilePath')).toBe(groupFile());
+    expect(ctx.workspaceState.get('cmdkit.groupFilePath')).toBe(groupFile());
   });
 
   it('dosya silinmişse yeniden oluşturur', async () => {
@@ -111,7 +111,7 @@ describe('editGroupFile', () => {
   });
 
   it('ayarlarda komut yoksa uyarır ve dosya yazmaz', async () => {
-    setConfiguration('cmdDeck', { groups: [] });
+    setConfiguration('cmdkit', { groups: [] });
 
     await editGroupFile(context() as never);
 
@@ -122,7 +122,7 @@ describe('editGroupFile', () => {
 
 describe('reloadGroupFile', () => {
   beforeEach(() => {
-    setConfiguration('cmdDeck', { groups: ONE_GROUP });
+    setConfiguration('cmdkit', { groups: ONE_GROUP });
   });
 
   it('dosya yoksa önce düzenlemeyi ister', async () => {
@@ -155,7 +155,7 @@ describe('reloadGroupFile', () => {
 
 describe('applyGroupFile', () => {
   beforeEach(() => {
-    setConfiguration('cmdDeck', { groups: ONE_GROUP });
+    setConfiguration('cmdkit', { groups: ONE_GROUP });
   });
 
   function withFile(contents: string) {
@@ -163,7 +163,7 @@ describe('applyGroupFile', () => {
     writeFileSync(groupFile(), contents, 'utf8');
     const ctx = context();
     // Yol hatırlanmış olmalı, yoksa applyGroupFile dosya seçtirmek ister.
-    void ctx.workspaceState.update('cmdDeck.groupFilePath', groupFile());
+    void ctx.workspaceState.update('cmdkit.groupFilePath', groupFile());
     return ctx;
   }
 
@@ -195,7 +195,7 @@ describe('applyGroupFile', () => {
     await applyGroupFile(ctx as never);
 
     expect(writes).toHaveLength(1);
-    expect(ctx.workspaceState.get('cmdDeck.groupFilePath')).toBe(groupFile());
+    expect(ctx.workspaceState.get('cmdkit.groupFilePath')).toBe(groupFile());
   });
 
   it('geçersiz içerikte hata verir ve yazmaz', async () => {
@@ -309,7 +309,7 @@ describe('applyGroupFile', () => {
 });
 describe('addLibraryGroup', () => {
   beforeEach(() => {
-    setConfiguration('cmdDeck', { groups: ONE_GROUP });
+    setConfiguration('cmdkit', { groups: ONE_GROUP });
   });
 
   function libraryPick(name: string) {
@@ -341,7 +341,7 @@ describe('addLibraryGroup', () => {
   });
 
   it('zaten ekili olan grubu seçicide göstermez', async () => {
-    setConfiguration('cmdDeck', {
+    setConfiguration('cmdkit', {
       groups: [...ONE_GROUP, { name: 'Docker', commands: [{ name: 'x', command: 'y' }] }],
     });
     libraryPick('Go');
@@ -357,7 +357,7 @@ describe('addLibraryGroup', () => {
   });
 
   it('seçilen grubu mevcut grupların sonuna ekler', async () => {
-    setConfiguration('cmdDeck', {
+    setConfiguration('cmdkit', {
       groups: [...ONE_GROUP, { name: 'Docker', commands: [{ name: 'x', command: 'y' }] }],
     });
     libraryPick('Go');
@@ -371,7 +371,7 @@ describe('addLibraryGroup', () => {
   });
 
   it('hepsi ekliyse uyarır ve yazmaz', async () => {
-    setConfiguration('cmdDeck', {
+    setConfiguration('cmdkit', {
       groups: LIBRARY_GROUPS.map((group) => ({
         name: group.name,
         commands: [{ name: 'x', command: 'y' }],
@@ -472,7 +472,7 @@ function queuePickByLabel(name: string): void {
 
 describe('kütüphane ekledikten sonra düzenleme dosyası senkronlanır', () => {
   beforeEach(() => {
-    setConfiguration('cmdDeck', { groups: ONE_GROUP });
+    setConfiguration('cmdkit', { groups: ONE_GROUP });
   });
 
   /** Dosyayı oluşturur, yolu hatırlatır ve ayarlarla aynı içerikle doldurur. */
@@ -523,7 +523,7 @@ describe('kütüphane ekledikten sonra düzenleme dosyası senkronlanır', () =>
   it('dosyada uygulanmamış düzenleme varsa dokunmaz ve uyarır', async () => {
     const ctx = await inSyncFile();
     writeFileSync(groupFile(), JSON.stringify(ONE_GROUP), 'utf8');
-    setConfiguration('cmdDeck', {
+    setConfiguration('cmdkit', {
       groups: [...ONE_GROUP, { name: 'Docker', commands: [{ name: 'x', command: 'y' }] }],
     });
     queuePickByLabel('Go');
@@ -562,7 +562,7 @@ describe('kütüphane ekledikten sonra düzenleme dosyası senkronlanır', () =>
 
 describe('removeGroup', () => {
   beforeEach(() => {
-    setConfiguration('cmdDeck', {
+    setConfiguration('cmdkit', {
       groups: [...ONE_GROUP, { name: 'Docker', commands: [{ name: 'x', command: 'y' }] }],
     });
   });
@@ -627,7 +627,7 @@ describe('removeGroup', () => {
   });
 
   it('grup yoksa uyarır', async () => {
-    setConfiguration('cmdDeck', { groups: [] });
+    setConfiguration('cmdkit', { groups: [] });
 
     await removeGroup(context() as never);
 
@@ -636,7 +636,7 @@ describe('removeGroup', () => {
   });
 
   it('son grubu silmeyi reddeder', async () => {
-    setConfiguration('cmdDeck', { groups: ONE_GROUP });
+    setConfiguration('cmdkit', { groups: ONE_GROUP });
     const group = normalizeGroups(ONE_GROUP)[0];
     queueQuickPick({ label: `${group!.icon} ${group!.name}`, description: '1 komut', group });
 
@@ -687,7 +687,7 @@ describe('removeGroup', () => {
 
 describe('düzenleme dosyasının yeri', () => {
   beforeEach(() => {
-    setConfiguration('cmdDeck', { groups: ONE_GROUP });
+    setConfiguration('cmdkit', { groups: ONE_GROUP });
   });
 
   it('varsayılan .vscode/ altında', async () => {
@@ -704,20 +704,20 @@ describe('düzenleme dosyasının yeri', () => {
     expect(existsSync(join(dir, '.vscode'))).toBe(true);
   });
 
-  it('cmdDeck.groupFile göreli yolu ilk klasörün köküne göre çözer', async () => {
-    setConfiguration('cmdDeck', {
+  it('cmdkit.groupFile göreli yolu ilk klasörün köküne göre çözer', async () => {
+    setConfiguration('cmdkit', {
       groups: ONE_GROUP,
-      groupFile: 'packages/api/cmd-deck-groups.json',
+      groupFile: 'packages/api/cmdkit-groups.json',
     });
 
     await editGroupFile(context() as never);
 
-    expect(existsSync(join(dir, 'packages', 'api', 'cmd-deck-groups.json'))).toBe(true);
+    expect(existsSync(join(dir, 'packages', 'api', 'cmdkit-groups.json'))).toBe(true);
   });
 
-  it('cmdDeck.groupFile mutlak yolu olduğu gibi kullanır', async () => {
+  it('cmdkit.groupFile mutlak yolu olduğu gibi kullanır', async () => {
     const absolute = join(dir, 'ozel', 'liste.json');
-    setConfiguration('cmdDeck', { groups: ONE_GROUP, groupFile: absolute });
+    setConfiguration('cmdkit', { groups: ONE_GROUP, groupFile: absolute });
 
     await editGroupFile(context() as never);
 
@@ -725,14 +725,14 @@ describe('düzenleme dosyasının yeri', () => {
   });
 
   it('yol hatırlanmışsa ayar değişikliği yerine o yol kullanılır', async () => {
-    const first = join(dir, '.vscode', 'cmd-deck-groups.json');
+    const first = join(dir, '.vscode', 'cmdkit-groups.json');
     const ctx = context();
     await editGroupFile(ctx as never);
-    expect(ctx.workspaceState.get('cmdDeck.groupFilePath')).toBe(first);
+    expect(ctx.workspaceState.get('cmdkit.groupFilePath')).toBe(first);
 
-    setConfiguration('cmdDeck', {
+    setConfiguration('cmdkit', {
       groups: ONE_GROUP,
-      groupFile: 'packages/api/cmd-deck-groups.json',
+      groupFile: 'packages/api/cmdkit-groups.json',
     });
     await editGroupFile(ctx as never);
 

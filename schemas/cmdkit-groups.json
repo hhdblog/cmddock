@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Cmd Deck komut listesi",
-  "description": "cmd-deck-groups.json dosyasının içeriği. `settings.json` içindeki `cmdDeck.groups` ile aynı biçimdedir. JSONC: `//` ve `/* */` yorumları kullanılabilir. Platform belirteçleri ({python}, {venv}, {venvpy}, {rm}) çalıştırma anında çözülür, burada olduğu gibi yazılır.",
+  "title": "Cmdkit komut listesi",
+  "description": "cmdkit-groups.json dosyasının içeriği. `settings.json` içindeki `cmdkit.groups` ile aynı biçimdedir. JSONC: `//` ve `/* */` yorumları kullanılabilir. Platform belirteçleri ({python}, {venv}, {venvpy}, {rm}) çalıştırma anında çözülür, burada olduğu gibi yazılır.",
   "type": "array",
   "items": {
     "type": "object",

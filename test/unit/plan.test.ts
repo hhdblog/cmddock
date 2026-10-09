@@ -187,11 +187,11 @@ describe('planItems', () => {
     const ids = planItems(groups, unlimited).map((entry) => entry.statusBarId);
 
     expect(new Set(ids).size).toBe(ids.length);
-    expect(ids[0]).toBe('cmd-deck.cmd');
+    expect(ids[0]).toBe('cmdkit.cmd');
     expect(ids.slice(1)).toEqual([
-      'cmd-deck.group.Python',
-      'cmd-deck.group.Flutter',
-      'cmd-deck.group.Node.js',
+      'cmdkit.group.Python',
+      'cmdkit.group.Flutter',
+      'cmdkit.group.Node.js',
     ]);
   });
 
@@ -203,8 +203,8 @@ describe('planItems', () => {
     const ids = planItems(duplicated, base).map((entry) => entry.statusBarId);
 
     expect(new Set(ids).size).toBe(ids.length);
-    expect(ids).toContain('cmd-deck.group.A');
-    expect(ids).toContain('cmd-deck.group.A#2');
+    expect(ids).toContain('cmdkit.group.A');
+    expect(ids).toContain('cmdkit.group.A#2');
   });
 
   it('grup rengini düğmeye taşır', () => {
@@ -241,14 +241,14 @@ describe('planItems', () => {
   });
 
   it('menüde görünecek adlar ayrı ayrı', () => {
-    // name set edilmezse menüde tüm öğeler "Cmd Deck (extension)" görünür.
+    // name set edilmezse menüde tüm öğeler "Cmdkit (extension)" görünür.
     const names = planItems(groups, unlimited).map((entry) => entry.name);
 
     expect(names).toEqual([
-      'Cmd Deck: Tüm Gruplar',
-      'Cmd Deck: Python',
-      'Cmd Deck: Flutter',
-      'Cmd Deck: Node.js',
+      'Cmdkit: Tüm Gruplar',
+      'Cmdkit: Python',
+      'Cmdkit: Flutter',
+      'Cmdkit: Node.js',
     ]);
   });
 

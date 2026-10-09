@@ -10,7 +10,7 @@ export interface ImportPlan {
 }
 
 /**
- * Aynı şema: doğrudan `cmdDeck.groups` içine yapıştırılabilir.
+ * Aynı şema: doğrudan `cmdkit.groups` içine yapıştırılabilir.
  * Belirteçler ({venv}, {venvpy}, {rm}, {python}) olduğu gibi korunur,
  * platforma göre çözümleme çalıştırma anında olur.
  */

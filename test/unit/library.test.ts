@@ -186,7 +186,7 @@ describe('hazır grup kütüphanesi', () => {
     }
   });
 
-  it('kütüphane doğrudan cmdDeck.groups biçimine çevrilebiliyor', () => {
+  it('kütüphane doğrudan cmdkit.groups biçimine çevrilebiliyor', () => {
     const converted = normalizeGroups(
       LIBRARY_GROUPS.map((group) => ({
         name: group.name,

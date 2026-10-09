@@ -18,13 +18,13 @@ import {
 
 const WRITE_LABEL = 'Yaz';
 
-const DEFAULT_FILE_NAME = 'cmd-deck-groups.json';
+const DEFAULT_FILE_NAME = 'cmdkit-groups.json';
 
 /**
  * Düzenleme dosyasının yolu. Proje bazlı tutuluyor (workspaceState) çünkü dosya
  * genelde proje kökünde; globalState'de tutulsaydı başka projeye de taşınırdı.
  */
-const FILE_PATH_KEY = 'cmdDeck.groupFilePath';
+const FILE_PATH_KEY = 'cmdkit.groupFilePath';
 
 async function recallPath(context: vscode.ExtensionContext): Promise<string | undefined> {
   const value = context.workspaceState.get<string>(FILE_PATH_KEY);
@@ -55,7 +55,7 @@ async function writeFile(target: string, text: string): Promise<boolean> {
     return true;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    void vscode.window.showErrorMessage(`cmd-deck: dosyaya yazılamadı — ${message}`);
+    void vscode.window.showErrorMessage(`cmdkit: dosyaya yazılamadı — ${message}`);
     return false;
   }
 }
@@ -124,7 +124,7 @@ function targetName(target: vscode.ConfigurationTarget): string {
  * hedef aynı klasörde durunca ikisi aynı commit'te yaşar ve "ekipte nasıl
  * paylaşıyorum" sorusu tek yere düşer. Depo kökü izlenmeyen dosya bırakıyordu.
  *
- * `cmdDeck.groupFile` ile monorepo gibi durumlarda alt pakete yönlendirilebilir;
+ * `cmdkit.groupFile` ile monorepo gibi durumlarda alt pakete yönlendirilebilir;
  * göreli yollar ilk çalışma alanı köküne göre çözülür.
  */
 function defaultFilePath(): string {
@@ -167,11 +167,11 @@ function exportPayload(): string {
  *
  * Soru sormaz. Dosya varsa **üzerine yazılmaz** — kullanıcının kaydedilmemiş
  * düzenlemesi bozulur. Üzerine yazmak isteyen için ayrı bir komut var
- * (`cmd-deck.reload`).
+ * (`cmdkit.reload`).
  */
 export async function editGroupFile(context: vscode.ExtensionContext): Promise<void> {
   if (getGroups().length === 0) {
-    void vscode.window.showWarningMessage('cmd-deck: düzenlenecek komut yok.');
+    void vscode.window.showWarningMessage('cmdkit: düzenlenecek komut yok.');
     return;
   }
 
@@ -193,14 +193,14 @@ export async function reloadGroupFile(context: vscode.ExtensionContext): Promise
 
   if (!target) {
     void vscode.window.showInformationMessage(
-      'cmd-deck: önce "Komut Listesini Düzenle" ile dosyayı oluştur.'
+      'cmdkit: önce "Komut Listesini Düzenle" ile dosyayı oluştur.'
     );
     return;
   }
 
   const groups = getGroups();
   if (groups.length === 0) {
-    void vscode.window.showWarningMessage('cmd-deck: ayarlarda komut yok.');
+    void vscode.window.showWarningMessage('cmdkit: ayarlarda komut yok.');
     return;
   }
 
@@ -214,7 +214,7 @@ export async function reloadGroupFile(context: vscode.ExtensionContext): Promise
   await openFile(target);
 
   void vscode.window.showInformationMessage(
-    `cmd-deck: ${path.basename(target)} ayarlardaki listeyle yenilendi.`
+    `cmdkit: ${path.basename(target)} ayarlardaki listeyle yenilendi.`
   );
 }
 
@@ -240,14 +240,14 @@ export async function applyGroupFile(context: vscode.ExtensionContext): Promise<
     text = await fs.readFile(source, 'utf8');
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    void vscode.window.showErrorMessage(`cmd-deck: dosya okunamadı — ${message}`);
+    void vscode.window.showErrorMessage(`cmdkit: dosya okunamadı — ${message}`);
     return;
   }
 
   const incoming = parseGroups(text);
   if (!incoming) {
     void vscode.window.showErrorMessage(
-      `cmd-deck: içerik okunamadı — ${parseFailureReason(text) ?? 'beklenmeyen biçim.'}`
+      `cmdkit: içerik okunamadı — ${parseFailureReason(text) ?? 'beklenmeyen biçim.'}`
     );
     return;
   }
@@ -260,7 +260,7 @@ export async function applyGroupFile(context: vscode.ExtensionContext): Promise<
 
   const plan = planImport(current, incoming, mode);
   if (plan.result.length === 0) {
-    void vscode.window.showErrorMessage('cmd-deck: uygulanacak geçerli grup kalmadı.');
+    void vscode.window.showErrorMessage('cmdkit: uygulanacak geçerli grup kalmadı.');
     return;
   }
 
@@ -268,7 +268,7 @@ export async function applyGroupFile(context: vscode.ExtensionContext): Promise<
   // değişmiyorsa ayarlar dosyasını yeniden biçimlendirmenin anlamı yok.
   if (serializeGroups(current) === serializeGroups(plan.result)) {
     void vscode.window.showInformationMessage(
-      'cmd-deck: dosyadaki liste ayarlarla aynı, hiçbir şey yazılmadı.'
+      'cmdkit: dosyadaki liste ayarlarla aynı, hiçbir şey yazılmadı.'
     );
     return;
   }
@@ -302,7 +302,7 @@ export async function applyGroupFile(context: vscode.ExtensionContext): Promise<
   await rememberPath(context, source);
 
   void vscode.window.showInformationMessage(
-    `cmd-deck: ${plan.result.length} grup, ${countCommands(plan.result)} komut ` +
+    `cmdkit: ${plan.result.length} grup, ${countCommands(plan.result)} komut ` +
       `${targetName(destination)} yazıldı.`
   );
 }
@@ -323,11 +323,11 @@ export async function pickStatusBarItems(): Promise<void> {
   const groups = getGroups();
 
   if (groups.length === 0) {
-    void vscode.window.showWarningMessage('cmd-deck: komut grubu yok.');
+    void vscode.window.showWarningMessage('cmdkit: komut grubu yok.');
     return;
   }
 
-  const config = vscode.workspace.getConfiguration('cmdDeck.statusBar');
+  const config = vscode.workspace.getConfiguration('cmdkit.statusBar');
   const masterVisible = config.get<boolean>('showMaster') !== false;
   const hidden = config.get<unknown>('hiddenGroups');
   const hiddenGroups = Array.isArray(hidden)
@@ -380,7 +380,7 @@ export async function pickStatusBarItems(): Promise<void> {
   );
 
   void vscode.window.showInformationMessage(
-    `cmd-deck: durum çubuğunda ${picked.length} düğme açık ` +
+    `cmdkit: durum çubuğunda ${picked.length} düğme açık ` +
       `(${newHidden.length} grup gizlendi) — kullanıcı ayarlarına yazıldı.`
   );
 }
@@ -439,7 +439,7 @@ export async function addLibraryGroup(context: vscode.ExtensionContext): Promise
 
   if (available.length === 0) {
     void vscode.window.showInformationMessage(
-      `cmd-deck: kütüphanedeki ${LIBRARY_GROUPS.length} grubun hepsi zaten ekli.`
+      `cmdkit: kütüphanedeki ${LIBRARY_GROUPS.length} grubun hepsi zaten ekli.`
     );
     return;
   }
@@ -467,7 +467,7 @@ export async function addLibraryGroup(context: vscode.ExtensionContext): Promise
 
   const chosen = picked.group;
   const current = getGroups();
-  // Kütüphane girdisi cmdDeck.groups ile aynı şema; normalizeGroups alan
+  // Kütüphane girdisi cmdkit.groups ile aynı şema; normalizeGroups alan
   // eşlemesinin tamamını yapıyor, elle yazmaya gerek yok.
   const incoming = normalizeGroups([
     {
@@ -502,13 +502,13 @@ export async function addLibraryGroup(context: vscode.ExtensionContext): Promise
 
   await applyFileSync(
     plan,
-    'cmd-deck: düzenleme dosyası ayarlarla aynı değil (kaydedilmemiş ya da ' +
+    'cmdkit: düzenleme dosyası ayarlarla aynı değil (kaydedilmemiş ya da ' +
       'uygulanmamış düzenleme var) — dosyaya dokunulmadı. Yeni grup dosyada yok; ' +
       '"Komut Listesini Düzenle" ile açıp ekle.'
   );
 
   void vscode.window.showInformationMessage(
-    `cmd-deck: "${chosen.name}" eklendi — ${added} komut, ${targetName(destination)}.`
+    `cmdkit: "${chosen.name}" eklendi — ${added} komut, ${targetName(destination)}.`
   );
 }
 
@@ -566,7 +566,7 @@ export async function removeGroup(context: vscode.ExtensionContext): Promise<voi
   const current = getGroups();
 
   if (current.length === 0) {
-    void vscode.window.showWarningMessage('cmd-deck: silinecek grup yok.');
+    void vscode.window.showWarningMessage('cmdkit: silinecek grup yok.');
     return;
   }
 
@@ -592,7 +592,7 @@ export async function removeGroup(context: vscode.ExtensionContext): Promise<voi
   // kullanıcıya anlamsız bir adım attırıyor.
   if (remaining.length === 0) {
     void vscode.window.showWarningMessage(
-      'cmd-deck: tek grup varken silinemez — komut çalıştıracak bir şey kalmaz. ' +
+      'cmdkit: tek grup varken silinemez — komut çalıştıracak bir şey kalmaz. ' +
         'Önce "Hazır Grup Ekle" ile başka bir grup ekle.'
     );
     return;
@@ -622,12 +622,12 @@ export async function removeGroup(context: vscode.ExtensionContext): Promise<voi
 
   const synced = await applyFileSync(
     plan,
-    `cmd-deck: "${doomed.name}" ayarlardan silindi ama düzenleme dosyasında hâlâ var. ` +
+    `cmdkit: "${doomed.name}" ayarlardan silindi ama düzenleme dosyasında hâlâ var. ` +
       'Dosyadan da silmezsen sonraki "Komut Dosyasını Uygula" adımında geri gelir.'
   );
 
   void vscode.window.showInformationMessage(
-    `cmd-deck: "${doomed.name}" silindi — ${doomed.commands.length} komut, ` +
+    `cmdkit: "${doomed.name}" silindi — ${doomed.commands.length} komut, ` +
       `${targetName(destination)}.` +
       (synced ? '' : ' Düzenleme dosyası güncellenmedi.')
   );

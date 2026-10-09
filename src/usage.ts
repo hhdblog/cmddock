@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import { DeckCommand, DeckGroup } from './normalize';
 
-const USAGE_KEY = 'cmdDeck.usage';
-const LAST_KEY = 'cmdDeck.last';
+const USAGE_KEY = 'cmdkit.usage';
+const LAST_KEY = 'cmdkit.last';
 
 export interface UsageRecord {
   readonly count: number;

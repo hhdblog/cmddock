@@ -20,20 +20,20 @@ const manifest = readJson('../../package.json') as {
   };
 };
 
-const schema = readJson('../../schemas/cmd-deck-groups.json') as Schema;
+const schema = readJson('../../schemas/cmdkit-groups.json') as Schema;
 
-// package.json: properties["cmdDeck.groups"] → dizi, items → grup, grup.commands.items → komut
-const groupsSetting = manifest.contributes.configuration.properties['cmdDeck.groups'];
+// package.json: properties["cmdkit.groups"] → dizi, items → grup, grup.commands.items → komut
+const groupsSetting = manifest.contributes.configuration.properties['cmdkit.groups'];
 const groupInManifest = groupsSetting?.items;
 const commandInManifest = groupInManifest?.properties?.commands?.items;
 
-// schemas/cmd-deck-groups.json: dizi → items grup → properties.commands.items komut
+// schemas/cmdkit-groups.json: dizi → items grup → properties.commands.items komut
 const groupInSchema = schema.items;
 const groupCommands = groupInSchema?.properties?.commands;
 const commandInSchema = groupCommands?.items;
 
 /**
- * `cmdDeck.groups` ayarının şeması package.json içinde, düzenleme dosyasının şeması
+ * `cmdkit.groups` ayarının şeması package.json içinde, düzenleme dosyasının şeması
  * ise schemas/ altında duruyor — VSCode bir ayar şemasını bağımsız dosyalara
  * uygulayamıyor. İki kopya elle tutulduğu için ayrışmaları burada yakalıyoruz.
  */
@@ -42,8 +42,8 @@ describe('şema senkronu', () => {
     const validation = manifest.contributes.jsonValidation ?? [];
 
     expect(validation).toHaveLength(1);
-    expect(validation[0].url).toBe('./schemas/cmd-deck-groups.json');
-    expect(validation[0].fileMatch).toEqual(['cmd-deck-groups.json']);
+    expect(validation[0].url).toBe('./schemas/cmdkit-groups.json');
+    expect(validation[0].fileMatch).toEqual(['cmdkit-groups.json']);
   });
 
   it('her iki yer de komut dizisi bekliyor', () => {

@@ -4,7 +4,7 @@ import { buildCommandLine, splitArgs } from './args';
 import { DeckCommand, DeckGroup } from './normalize';
 import { expandTokens } from './tokens';
 
-const TASK_SOURCE = 'cmd-deck';
+const TASK_SOURCE = 'cmdkit';
 const RUN_LABEL = 'Çalıştır';
 
 function errorText(error: unknown): string {
@@ -111,7 +111,7 @@ export async function runCommand(
     return true;
   } catch (error) {
     void vscode.window.showErrorMessage(
-      `cmd-deck: "${command.name}" başlatılamadı — ${errorText(error)}`
+      `cmdkit: "${command.name}" başlatılamadı — ${errorText(error)}`
     );
     return false;
   }

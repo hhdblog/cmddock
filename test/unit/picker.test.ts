@@ -79,7 +79,7 @@ describe('pickCommand — grup listesi', () => {
   it('uyarı hangi ayarın düzenleneceğini söyler', async () => {
     await pickCommand([]);
 
-    expect(messages.at(-1)?.text).toContain('cmdDeck.groups');
+    expect(messages.at(-1)?.text).toContain('cmdkit.groups');
   });
 
   it('her grubu ikonu ve komut sayısıyla listeler', async () => {
@@ -125,12 +125,12 @@ describe('pickCommand — grup listesi', () => {
 
 describe('pickCommand — seçim sonucu', () => {
   it('yardımcı menü seçilirse eylem döner', async () => {
-    const item = shownItemsLike({ actionId: 'cmd-deck.search' });
+    const item = shownItemsLike({ actionId: 'cmdkit.search' });
     queueQuickPick(item);
 
     const result = await pickCommand([group()]);
 
-    expect(result).toEqual({ kind: 'action', id: 'cmd-deck.search' });
+    expect(result).toEqual({ kind: 'action', id: 'cmdkit.search' });
   });
 
   it('grup seçilirse ikinci menü açılır', async () => {

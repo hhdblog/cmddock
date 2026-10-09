@@ -1,6 +1,6 @@
 /**
  * src/library.json içindeki `defaults` listesini package.json içindeki
- * `contributes.configurationDefaults["cmdDeck.groups"]` ile eşitler.
+ * `contributes.configurationDefaults["cmdkit.groups"]` ile eşitler.
  *
  * Tek kaynak budur: kütüphane ve ilk kurulum listesi aynı dosyadan gelir.
  * `summary` yalnızca kütüphane seçicisi içindir, manifestte anlamı yok — atılır.
@@ -57,7 +57,7 @@ const configurationDefaults =
   contributes.configurationDefaults ?? (contributes.configurationDefaults = {});
 
 // summary kütüphaneye özgü; Settings arayüzünde anlamsız bir alan olurdu.
-configurationDefaults['cmdDeck.groups'] = selected.map(({ summary, ...rest }) => rest);
+configurationDefaults['cmdkit.groups'] = selected.map(({ summary, ...rest }) => rest);
 
 writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
 

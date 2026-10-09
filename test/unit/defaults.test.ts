@@ -20,7 +20,7 @@ const manifest = readJson('package.json') as {
   contributes: { configurationDefaults: Record<string, unknown> };
 };
 
-const defaults = manifest.contributes.configurationDefaults['cmdDeck.groups'];
+const defaults = manifest.contributes.configurationDefaults['cmdkit.groups'];
 
 /** Kütüphanedeki varsayılan işaretli gruplar — manifestin kaynağı. */
 const examples = library.defaults.map(

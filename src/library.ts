@@ -1,7 +1,7 @@
 import data from './library.json';
 
 /**
- * Hazır grup kütüphanesi — `Cmd Deck: Hazır Grup Ekle` ile kullanıcıya sunulur.
+ * Hazır grup kütüphanesi — `Cmdkit: Hazır Grup Ekle` ile kullanıcıya sunulur.
  *
  * Varsayılanlar `configurationDefaults` içinde olduğu için her kuruluma geliyor;
  * 61 komuttan sonra listeyi büyütmek herkese her şeyi yüklerdi. Kütüphane

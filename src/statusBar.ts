@@ -5,8 +5,8 @@ import { DEFAULT_MAX_GROUP_ITEMS, MASTER_ID, MASTER_PRIORITY, planItems, StatusB
 import { ColorSpec, parseColor, parseIcon } from './style';
 import { countOf, readLast, readUsage, UsageMap } from './usage';
 
-const OPEN_COMMAND = 'cmd-deck.open';
-const OPEN_GROUP_COMMAND = 'cmd-deck.openGroup';
+const OPEN_COMMAND = 'cmdkit.open';
+const OPEN_GROUP_COMMAND = 'cmdkit.openGroup';
 const DEFAULT_ICON = 'terminal';
 
 export interface StatusBarHandle {
@@ -15,7 +15,7 @@ export interface StatusBarHandle {
 }
 
 function setting(key: string): unknown {
-  return vscode.workspace.getConfiguration('cmdDeck.statusBar').get(key);
+  return vscode.workspace.getConfiguration('cmdkit.statusBar').get(key);
 }
 
 function applyColor(value: ColorSpec): string | vscode.ThemeColor | undefined {
@@ -80,7 +80,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
         entry.priority
       );
       // Menüde ("Hide Status Bar Items") görünecek ad; set edilmezse menüde
-      // "Cmd Deck (extension)" yazar ve tüm düğmeler aynı görünür.
+      // "Cmdkit (extension)" yazar ve tüm düğmeler aynı görünür.
       item.name = entry.name;
       item.command =
         entry.kind === 'group'
@@ -160,7 +160,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
       const lines =
         entry.kind === 'master' && !empty
           ? [
-              `**Cmd Deck** — ${groups.length} grup, ${countCommands(groups)} komut`,
+              `**Cmdkit** — ${groups.length} grup, ${countCommands(groups)} komut`,
               ...omittedNote(plan, groups.length),
               last
                 ? `Son: ${resolveLastLabel(groups, last.group, last.name) ?? 'artık ayarlarda yok'}`
@@ -170,7 +170,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
               'Tıkla: grup seç → komut çalıştır',
             ]
           : empty
-            ? ['Cmd Deck — "cmdDeck.groups" boş, komut yok']
+            ? ['Cmdkit — "cmdkit.groups" boş, komut yok']
             : entry.tooltipLines;
 
       const tooltip = new vscode.MarkdownString(lines.join('\n\n'));
@@ -187,7 +187,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
 
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((event) => {
-      if (event.affectsConfiguration('cmdDeck')) {
+      if (event.affectsConfiguration('cmdkit')) {
         refresh();
       }
     })

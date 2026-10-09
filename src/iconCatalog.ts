@@ -32,7 +32,7 @@ export async function showIconCatalog(): Promise<void> {
 
   await vscode.env.clipboard.writeText(picked.iconName);
   void vscode.window.showInformationMessage(
-    `cmd-deck: "${picked.iconName}" panoya kopyalandı — ` +
-      'cmdDeck.statusBar.icon veya grup/komut icon alanına yaz.'
+    `cmdkit: "${picked.iconName}" panoya kopyalandı — ` +
+      'cmdkit.statusBar.icon veya grup/komut icon alanına yaz.'
   );
 }

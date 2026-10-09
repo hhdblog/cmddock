@@ -5,6 +5,6 @@ dist/
 out/
 .vscode-test/
 
-# Cmd Deck düzenleme dosyası (Komut Listesini Düzenle üretir).
-# Kök dizine sabitleniyor: schemas/cmd-deck-groups.json yoksayılmasın.
-/cmd-deck-groups.json
+# Cmdkit düzenleme dosyası (Komut Listesini Düzenle üretir).
+# Kök dizine sabitleniyor: schemas/cmdkit-groups.json yoksayılmasın.
+/cmdkit-groups.json
