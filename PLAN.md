@@ -727,7 +727,24 @@ MySQL yok (Postgres ile aynı kalıp), Make yok (proje-özel), Helm yok (kubectl
 6. **Yalnızca ekleme, silme yok.** Silme zaten `Komut Dosyasını Uygula` →
    `Listeyi değiştir` ile yapılıyor; ikinci bir silme yolu karışıklık yaratır.
 
-### Uygulama adımları
+### Uygulama durumu
+
+Uygulandı. Kütüphane `src/library.json` içinde; `library.ts` ince bir sarmalayıcı.
+İlk kurulum listesi de aynı dosyanın `defaults` dizisinden üretiliyor — böylece
+silinen bir varsayılan grup `Hazır Grup Ekle` ile geri getirilebiliyor.
+
+| Grup | Komut | | Grup | Komut |
+|---|---|---|---|---|
+| Python · Flutter · Node.js | 12/12/12 | | Rust | 10 |
+| Git | 15 | | Kubernetes | 10 |
+| Firebase | 10 | | Java (Maven/Gradle) | 8 |
+| Docker | 9 | | Redis | 6 |
+| GitHub CLI | 12 | | Android | 6 |
+| PostgreSQL | 7 | | Vercel | 5 |
+
+15 grup, 144 komut. İlk kurulumda gelen 5 grup, kalan 10 seçime açık.
+
+### Uygulama adımları (tamamlandı)
 
 - [x] `src/library.ts` — 10 grup, tipler, `normalizeLibrary()`
 - [x] `test/unit/library.test.ts` — 22 test: ikon katalogda mı, grup/komut adları
@@ -753,6 +770,53 @@ sayıyordu (`psql -U postgres` öyle).
 - [x] Ayarlara normalize dolguları yazılmaz (birim testi)
 - [ ] Uçtan uca elle deneme: eklenen grubun menüde ve durum çubuğunda görünmesi
 
+## 7.13 Dosya tabanlı düzenleme, kütüphane ve veri kaybı zinciri
+
+**Uygulandı.** 2026-10-09.
+
+### Neden dosya tabanlı düzenleme
+
+Dışa/içe aktarım ikişerli seçiciyle çalışıyordu (panoya mı dosyaya mı) ve panoya
+kopyalama yolu elle yapıştırılan JSON'u gereksiz yere bozuyordu. Artık tek bir
+düzenleme dosyası var: `cmd-deck-groups.json`.
+
+- **Komut Listesini Düzenle** — dosyayı açar, soru sormaz; yoksa ayarlardan yazar,
+  varsa üzerine yazmaz
+- **Komut Dosyasını Uygula** — özet + onay + hedef; kaynak seçicisi kalktı
+- **Dosyayı Ayarlardan Yenile** — dosyayı ayarlardaki liste ile üzerine yazar
+
+### Neden `.vscode/` altında
+
+Dosya proje köküne açılıyordu ama uygulandığı yer `.vscode/settings.json` —
+kaynak ve hedef ayrı yerlerde. Sonuç: repoda izlenmeyen dosya, monorepo'da yanlış
+kapsam, çok köklü alanda keyfî konum. Varsayılan artık `.vscode/` altında.
+
+`cmdDeck.groupFile` ayarı eklendi (monorepo için alt pakete yönlendirme).
+
+### Kapatılan veri kaybı yolları
+
+| Yol | Durum |
+|---|---|
+| Özet, tamamen silinen grupları hiç bildirmiyordu | Her silinen grup ayrı satırda, geri alınamaz uyarısıyla |
+| Birleştirme grup ikon/rengini güncellemiyordu | Dosyadaki görünüm değişikliği uygulanıyor |
+| Kütüphane eklemesi dosyayı bayat bırakıyordu | Dosya senkronlanıyor (uygulanmamış düzenleme varsa dokunmuyor) |
+| Grup silmek elle JSON düzenlemek gerektiriyordu | `Grup Kaldır` hedefli siliyor |
+| Varsayılan grup geri getirilemiyordu | `library.json` tek kaynak oldu, `Hazır Grup Ekle` 15 grubu de görüyor |
+| Komutsuz grup sessizce yok sayılıyordu | Şemaya `minItems`, mesaj ayrımı |
+
+### Kullanım kılavuzu
+
+`Cmd Deck: Komut Dosyası Nasıl Kullanılır` kılavuzu önizlenebilir Markdown olarak
+açıyor. Alan listesi şemadan, belirteçler `tokens.ts`'ten okunuyor — yeni alan
+eklenirse kılavuzda geçmiyorsa test düşüyor. Kılavuzdaki her JSON bloğu ayrıştırılıyor.
+
+### Menü bölümleri
+
+Yardımcı menü dört bölüme ayrıldı, sıra **kullanım sıklığına** göre:
+`run` / `edit` / `view` / `help`.
+
+---
+
 ## 8. Doğrulama (Definition of Done)
 
 - [x] `tsc --noEmit` ve `esbuild --bundle` hatasız
@@ -769,13 +833,36 @@ sayıyordu (`psql -U postgres` öyle).
 - [ ] Ayar değişikliğinde menünün yeniden yükleme olmadan güncellenmesi elle denenmedi
 - [ ] Terminal görevi reddedilirse `showErrorMessage` görünümü elle denenmedi
 
-## 9. Sonraki adımlar (kapsam dışı, sonra)
+## 9. Sonraki adımlar
+
+**Bilinen borç (2026-10-09 itibarıyla)**
+
+- `picker.ts` ve `runner.ts` hâlâ test dışı — hata barındıran katman
+- Son silinen grubu geri al: kütüphane kütüphane gruplarını kapsıyor ama kullanıcının
+  kendi yazdığı grubu silmişse kurtarmanın yolu yok
+- JSONC yorum desteği: editör yoruma izin veriyor, `parseGroups` reddediyor.
+  Kullanım kılavuzunda uyarı var ama kökten çözülmedi
+- Bu planın §2/§3/§4 kısımları 3 gruplu/48 testli eski durumu anlatıyor;
+  gerçek: 15 grup, 320 test. `README.md` doğru olan belge
+
+**Fikir (kapsam dışı)**
 
 - Keybinding'ler: `keybindings.json` içinde grup/komut ID'lerine doğrudan atama
 - Panodan sonuç: `registerTerminalProfileProvider`
 - Komut geçmişi ve tekrar çalıştırma (Ctrl+R benzeri)
 - Ekstra hedef: seçili metne uygulama, aktif editöre komut gönderme
 - Webview tabanlı tek tek komut düzenleyici (kullanıcı şimdilik istemedi)
+
+**Ders notu (testler hakkında)**
+
+Bu oturumda bulunan yedi hatanın altısı kullanıcı elle kullanırken çıktı; testler
+yeşildi. Hepsi aynı sınıftı: fonksiyon doğru dönüş değerini veriyordu ama
+**kullanıcının gördüğü yanlıştı** — sessiz düşürme, eksik mesaj, görünmeyen
+bayrak. Testler dönüş değerlerini doğruluyor, görüneni değil.
+
+Bundan sonra yeni testler önce kullanıcıdan beklenen davranış yazılarak yazılacak:
+hangi metin görünecek, hangi bayrak açık olacak. Mevcut guard'lar bu yönde
+genişletildi (mesaj metinleri, `supportThemeIcons`, şema senkronu).
 
 ## 10. Dağıtım öncesi yapılacaklar
 
