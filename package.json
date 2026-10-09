@@ -1,7 +1,7 @@
 {
   "name": "cmdkit",
   "displayName": "Cmdkit",
-  "description": "Group frequently used terminal commands and run them from the status bar. Ships with a library of 164 commands in 16 groups.",
+  "description": "Group frequently used terminal commands and run them from the status bar. Ships with a library of 165 commands in 16 groups.",
   "version": "0.2.0",
   "publisher": "cmdkit",
   "license": "MIT",
@@ -255,6 +255,13 @@
               "command": "flutter upgrade",
               "icon": "$(cloud-upload)",
               "description": "updates the SDK"
+            },
+            {
+              "name": "upgrade force",
+              "command": "flutter upgrade --force",
+              "icon": "$(cloud-download)",
+              "confirm": "Local changes in your Flutter checkout will be ERASED. This cannot be undone. Continue?",
+              "description": "upgrade even with local changes — throws them away"
             },
             {
               "name": "stable channel",

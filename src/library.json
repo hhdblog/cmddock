@@ -167,6 +167,13 @@
           "description": "updates the SDK"
         },
         {
+          "name": "upgrade force",
+          "command": "flutter upgrade --force",
+          "icon": "$(cloud-download)",
+          "confirm": "Local changes in your Flutter checkout will be ERASED. This cannot be undone. Continue?",
+          "description": "upgrade even with local changes — throws them away"
+        },
+        {
           "name": "stable channel",
           "command": "flutter channel stable && flutter upgrade",
           "icon": "$(sync)",

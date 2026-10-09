@@ -767,7 +767,7 @@ silinen bir varsayılan grup `Hazır Grup Ekle` ile geri getirilebiliyor.
 | PostgreSQL | 7 | | Vercel | 5 |
 | Surge | 15 | | | |
 
-16 grup, 164 komut. İlk kurulumda gelen 5 grup, kalan 11 seçime açık.
+16 grup, 165 komut. İlk kurulumda gelen 5 grup, kalan 11 seçime açık.
 
 ### Uygulama adımları (tamamlandı)
 

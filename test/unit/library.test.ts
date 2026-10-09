@@ -137,6 +137,8 @@ describe('hazır grup kütüphanesi', () => {
       // Global ayar değiştiriyor: yalnızca bu makinedeki gelecekteki tüm
       // repoları etkiler, geri alma yolu kullanıcıya bağlı.
       'git config --global',
+      // Yerel değişiklikleri siliyor; geri alma yolu yok.
+      'flutter upgrade --force',
     ];
 
     // `surge <dizin> <alan adı>` yayınlıyor ve komut metni tek başına `surge`.

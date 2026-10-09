@@ -65,7 +65,7 @@ describe('varsayılan komut listesi', () => {
   });
 
   it('toplam komut sayısı', () => {
-    expect(groups.reduce((sum, group) => sum + group.commands.length, 0)).toBe(66);
+    expect(groups.reduce((sum, group) => sum + group.commands.length, 0)).toBe(67);
   });
 
   it('grup adları benzersiz', () => {
