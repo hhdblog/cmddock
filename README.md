@@ -353,4 +353,4 @@ Tasarım kararları ve uygulama günlüğü: `PLAN.md` (depo kökünde).
 
 MIT
 
-git deneme amaçlı değiştirdim...
+git deneme amaçlı değişti.
