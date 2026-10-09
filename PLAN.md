@@ -894,11 +894,11 @@ genişletildi (mesaj metinleri, `supportThemeIcons`, şema senkronu).
 Sürüm **dağıtımın en sonunda** ilerletilecek; yeni özellikler eklendikçe commit'lenip
 test edilecek, sürüm atlaması dağıtım günü yapılacak.
 
-- [ ] `package.json` → `version`: `0.1.0` → **`0.2.0`** (menü etiketleri değişti,
+- [x] `package.json` → `version`: `0.1.0` → **`0.2.0`** (menü etiketleri değişti,
       iki komut yeniden yazıldı, şema eklendi, içe/dışa aktarım akışı değişti —
-      geriye uyumlu bir hata düzeltmesi değil)
-- [ ] `npm run package` → `cmd-deck-0.2.0.vsix`
-- [ ] `code --install-extension ... --force` (kurulu sürüm de `0.1.0`)
+      geriye uyumlu bir hata düzeltmesi değil) — `4bb8b50`
+- [x] `npm run package` → `cmd-deck-0.2.0.vsix` (9 dosya, 60.76 KB)
+- [x] `code --install-extension ... --force` — kurulu: `cmd-deck@0.2.0`
 - [x] `README.md` sürüm/ekran görüntüsü tazelemesi — sürüm `0.2.0`, grup sayısı
       16, hazır grup 11, Surge tabloya eklendi, test sayısı 332, kütüphane kaynağı
       `library.json` olarak düzeltildi (eski metin `library.ts` diyordu).
