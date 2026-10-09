@@ -294,6 +294,7 @@
           "command": "git commit -m",
           "icon": "$(git-commit)",
           "argsPrompt": "commit mesajı",
+          "argsSingle": true,
           "description": "mesajla commit"
         },
         {
@@ -609,6 +610,7 @@
           "command": "psql -c",
           "icon": "$(search)",
           "argsPrompt": "SQL (örn. SELECT * FROM users LIMIT 10)",
+          "argsSingle": true,
           "description": "tek sorgu çalıştırıp çıkar"
         },
         {
@@ -763,6 +765,7 @@
           "command": "cargo add",
           "icon": "$(cloud-download)",
           "argsPrompt": "crate (örn. serde --features derive)",
+          "argsSingle": true,
           "description": "bağımlılık ekler"
         },
         {
@@ -830,6 +833,7 @@
           "command": "kubectl port-forward",
           "icon": "$(link)",
           "argsPrompt": "pod/servis ve port (örn. svc/api 8080:80)",
+          "argsSingle": true,
           "description": "yerel port yönlendirmesi"
         },
         {
@@ -993,6 +997,7 @@
           "command": "adb reverse",
           "icon": "$(link)",
           "argsPrompt": "port (örn. tcp:8080 tcp:8080)",
+          "argsSingle": true,
           "description": "cihazdan makineye port yönlendirmesi"
         },
         {

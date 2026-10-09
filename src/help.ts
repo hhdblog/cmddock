@@ -138,6 +138,7 @@ yazıldığı için 61 komutta ~100 satır gürültü olur.
 | \`description\` | hayır | boş | Menüde sağda gri metin |
 | \`confirm\` | hayır | \`false\` | \`true\` ise veya metin verirsen çalıştırmadan önce onay ister |
 | \`argsPrompt\` | hayır | — | Çalıştırmadan önce kullanıcıdan değer sorar |
+| \`argsSingle\` | hayır | \`false\` | **true ise girdinin tamamı tek argüman olur**, boşluktan bölünmez. \`git commit -m\`, \`psql -c\` gibi serbest metin bekleyen bayraklar için şart |
 | \`clear\` | hayır | \`false\` | \`true\` ise terminal temizlenerek çalışır |
 
 **Örnek:**

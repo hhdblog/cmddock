@@ -61,6 +61,11 @@
               "type": "string",
               "description": "Çalıştırmadan önce kullanıcıdan argüman sorulur."
             },
+            "argsSingle": {
+              "type": "boolean",
+              "default": false,
+              "description": "true ise soruda yazdığın değerin tamamı TEK argüman olur, boşluklardan bölünmez. Serbest metin bekleyen bayraklar için gerekir: git commit -m, psql -c, kubectl port-forward. Varsayılan false: değer boşluktan bölünür."
+            },
             "clear": {
               "type": "boolean",
               "description": "true ise terminal temizlenerek çalıştırılır."

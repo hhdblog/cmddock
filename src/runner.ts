@@ -37,7 +37,20 @@ async function promptArgs(command: DeckCommand): Promise<string[] | undefined> {
     ignoreFocusOut: true,
   });
 
-  return answer === undefined ? undefined : splitArgs(answer);
+  if (answer === undefined) {
+    return undefined;
+  }
+
+  // argsSingle: girdinin tamamı tek argüman. `git commit -m` gibi bir bayrak
+  // serbest metin bekliyorsa bölmek yanlış: "fix: yaz düzeltmesi" üç parçaya
+  // ayrılır, mesaj "fix:" olur, gerisi pathspec olur. VSCode dizi elemanını
+  // kendisi tırnaklıyor, tırnak eklememize gerek yok.
+  if (command.argsSingle) {
+    const trimmed = answer.trim();
+    return trimmed.length > 0 ? [trimmed] : [];
+  }
+
+  return splitArgs(answer);
 }
 
 export async function runCommand(

@@ -7,6 +7,8 @@ export interface DeckCommand {
   readonly icon: string;
   readonly confirm: string | false;
   readonly argsPrompt?: string;
+  /** true ise argsPrompt girdisi bölünmez, tek argüman olarak geçer. */
+  readonly argsSingle?: boolean;
   readonly clear: boolean;
 }
 
@@ -65,6 +67,7 @@ export function normalizeCommand(raw: unknown): DeckCommand | undefined {
     icon: parseIcon(r.icon),
     confirm,
     argsPrompt,
+    argsSingle: r.argsSingle === true ? true : undefined,
     clear: r.clear === true,
   };
 }

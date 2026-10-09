@@ -382,6 +382,7 @@
               "command": "git commit -m",
               "icon": "$(git-commit)",
               "argsPrompt": "commit mesajı",
+              "argsSingle": true,
               "description": "mesajla commit"
             },
             {
@@ -600,6 +601,11 @@
                     "argsPrompt": {
                       "type": "string",
                       "description": "Çalıştırmadan önce kullanıcıdan argüman sorulur."
+                    },
+                    "argsSingle": {
+                      "type": "boolean",
+                      "default": false,
+                      "description": "true ise soruda yazdığın değerin tamamı TEK argüman olur, boşluklardan bölünmez. Serbest metin bekleyen bayraklar için gerekir: git commit -m, psql -c, kubectl port-forward."
                     },
                     "clear": {
                       "type": "boolean",

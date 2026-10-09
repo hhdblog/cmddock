@@ -140,3 +140,15 @@ describe('countCommands', () => {
     expect(countCommands([])).toBe(0);
   });
 });
+
+describe('argsSingle', () => {
+  it('yalnızca true iken işaretlenir', () => {
+    expect(normalizeCommand({ name: 'a', command: 'b', argsSingle: true })?.argsSingle).toBe(true);
+    expect(normalizeCommand({ name: 'a', command: 'b', argsSingle: false })?.argsSingle).toBeUndefined();
+    expect(normalizeCommand({ name: 'a', command: 'b' })?.argsSingle).toBeUndefined();
+  });
+
+  it('gerçek dışında her şeyi yutuyor', () => {
+    expect(normalizeCommand({ name: 'a', command: 'b', argsSingle: 'evet' })?.argsSingle).toBeUndefined();
+  });
+});

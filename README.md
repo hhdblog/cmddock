@@ -19,19 +19,19 @@ Geliştirirken VSCode'da bu klasörü açıp <kbd>F5</kbd> ile Extension Develop
 
 ## Kullanım
 
-| Yapmak istediğin | Ne yapmalısın |
-|---|---|
-| Komut çalıştır | Durum çubuğundaki **grup ikonuna** tıkla → komut (grup seviyesi atlanır) |
-| Tüm gruplardan seç | Durum çubuğundaki `Cmd` düğmesine tıkla → grup → komut |
-| Komut listesini düzenle | `Cmd Deck: Komut Listesini Düzenle` → JSON dosyası açılır, düzenle |
-| Hazır grup ekle (Docker, Go, k8s…) | `Cmd Deck: Hazır Grup Ekle` → kütüphaneden seç |
-| Grup sil | `Cmd Deck: Grup Kaldır` → gruplardan seç |
-| Grup seviyesine inmeden ara | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `Cmd Deck: Tüm Komutlarda Ara` |
-| Son komutu tekrarla | `Cmd Deck: Son Komutu Tekrar Çalıştır` |
-| Windows uyumluluğunu denetle | `Cmd Deck: Platform Uyumluluğunu Kontrol Et` |
-| Kullanılabilir ikonları gör | `Cmd Deck: İkon Kataloğu` |
-| Komut dosyasını nasıl kullanacağımı gör | `Cmd Deck: Komut Dosyası Nasıl Kullanılır` |
-| Durum çubuğunda hangi gruplar görünsün | `Cmd Deck: Durum Çubuğu Düğmelerini Seç` (çoklu seçim, işaretle) |
+| Yapmak istediğin                        | Ne yapmalısın                                                            |
+| --------------------------------------- | ------------------------------------------------------------------------ |
+| Komut çalıştır                          | Durum çubuğundaki **grup ikonuna** tıkla → komut (grup seviyesi atlanır) |
+| Tüm gruplardan seç                      | Durum çubuğundaki `Cmd` düğmesine tıkla → grup → komut                   |
+| Komut listesini düzenle                 | `Cmd Deck: Komut Listesini Düzenle` → JSON dosyası açılır, düzenle       |
+| Hazır grup ekle (Docker, Go, k8s…)      | `Cmd Deck: Hazır Grup Ekle` → kütüphaneden seç                           |
+| Grup sil                                | `Cmd Deck: Grup Kaldır` → gruplardan seç                                 |
+| Grup seviyesine inmeden ara             | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `Cmd Deck: Tüm Komutlarda Ara`            |
+| Son komutu tekrarla                     | `Cmd Deck: Son Komutu Tekrar Çalıştır`                                   |
+| Windows uyumluluğunu denetle            | `Cmd Deck: Platform Uyumluluğunu Kontrol Et`                             |
+| Kullanılabilir ikonları gör             | `Cmd Deck: İkon Kataloğu`                                                |
+| Komut dosyasını nasıl kullanacağımı gör | `Cmd Deck: Komut Dosyası Nasıl Kullanılır`                               |
+| Durum çubuğunda hangi gruplar görünsün  | `Cmd Deck: Durum Çubuğu Düğmelerini Seç` (çoklu seçim, işaretle)         |
 
 Komut listesinde **en çok kullandıkların üstte** çıkar; sayı eşitse `settings.json` sırası korunur.
 Grubun kendi sırası hep ayardaki gibi kalır.
@@ -45,18 +45,18 @@ doğrudan açılır. `Cmd` düğmesi tüm grupları tek listeden açar. İkisi d
 [⌨ Cmd] [🐍] [📱] [⚙]     ← Cmd + Python, Flutter, Node.js ikonları
 ```
 
-| Ayar | Varsayılan | Açıklama |
-|---|---|---|
-| `cmdDeck.groupFile` | `""` | Komut dosyasının yolu — bkz. yukarıdaki bölüm |
-| `cmdDeck.statusBar.showGroups` | `true` | Her grup için ayrı düğme gösterir |
-| `cmdDeck.statusBar.showMaster` | `true` | `Cmd` düğmesini gösterir |
-| `cmdDeck.statusBar.maxGroupItems` | `3` | Çubukta **başlangıçta** kaç grup düğmesi görünür. Fazlası oluşturulur ama gizli başlar: durum çubuğunda sağ tık → `Hide Status Bar Items` → **Show** ile açabilirsin. **`0` = sınırsız** |
-| `cmdDeck.statusBar.hiddenGroups` | `[]` | Görünmeyecek grup adları: `["Python"]` |
-| `cmdDeck.statusBar.groupLabel` | `""` | `"always"` ise ikonun yanına grup adını da yazar |
-| `cmdDeck.statusBar.icon` | `terminal` | `Cmd` düğmesinin ikonu. `"zap"` veya `"$(zap)"` yazılabilir |
-| `cmdDeck.statusBar.color` | `""` | Ön plan rengi: `#4EC9B0` gibi hex ya da `charts.red` gibi tema rengi |
-| `cmdDeck.statusBar.background` | `""` | Arka plan rengi, aynı biçim |
-| `cmdDeck.statusBar.priority` | `250` | Düğmelerin sırası (yüksek = daha sol). Başka eklentiyle çakışırsa kaydır |
+| Ayar                              | Varsayılan | Açıklama                                                                                                                                                                                 |
+| --------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cmdDeck.groupFile`               | `""`       | Komut dosyasının yolu — bkz. yukarıdaki bölüm                                                                                                                                            |
+| `cmdDeck.statusBar.showGroups`    | `true`     | Her grup için ayrı düğme gösterir                                                                                                                                                        |
+| `cmdDeck.statusBar.showMaster`    | `true`     | `Cmd` düğmesini gösterir                                                                                                                                                                 |
+| `cmdDeck.statusBar.maxGroupItems` | `3`        | Çubukta **başlangıçta** kaç grup düğmesi görünür. Fazlası oluşturulur ama gizli başlar: durum çubuğunda sağ tık → `Hide Status Bar Items` → **Show** ile açabilirsin. **`0` = sınırsız** |
+| `cmdDeck.statusBar.hiddenGroups`  | `[]`       | Görünmeyecek grup adları: `["Python"]`                                                                                                                                                   |
+| `cmdDeck.statusBar.groupLabel`    | `""`       | `"always"` ise ikonun yanına grup adını da yazar                                                                                                                                         |
+| `cmdDeck.statusBar.icon`          | `terminal` | `Cmd` düğmesinin ikonu. `"zap"` veya `"$(zap)"` yazılabilir                                                                                                                              |
+| `cmdDeck.statusBar.color`         | `""`       | Ön plan rengi: `#4EC9B0` gibi hex ya da `charts.red` gibi tema rengi                                                                                                                     |
+| `cmdDeck.statusBar.background`    | `""`       | Arka plan rengi, aynı biçim                                                                                                                                                              |
+| `cmdDeck.statusBar.priority`      | `250`      | Düğmelerin sırası (yüksek = daha sol). Başka eklentiyle çakışırsa kaydır                                                                                                                 |
 
 Grup düğmesinin tooltip'inde grup adı, komut sayısı ve **en çok kullanılan komut**
 (`En çok: test (×5)`) görünür. Renk ayarı tüm düğmelere birden uygulanır; boş bırakılırsa
@@ -156,13 +156,13 @@ eklenir:
 
 `Cmd Deck: Hazır Grup Ekle` → kütüphaneden seç → hedefi sorar → yazar.
 
-| Grup | Komut | | Grup | Komut |
-|---|---|---|---|---|
-| `$(package)` Docker | 9 | | `$(vm)` Kubernetes | 10 |
-| `$(source-control)` GitHub CLI | 12 | | `$(symbol-interface)` Java (Maven/Gradle) | 8 |
-| `$(database)` PostgreSQL | 7 | | `$(server)` Redis | 6 |
-| `$(server-environment)` Go | 10 | | `$(device-mobile)` Android | 6 |
-| `$(gear)` Rust | 10 | | `$(rocket)` Vercel | 5 |
+| Grup                           | Komut |     | Grup                                      | Komut |
+| ------------------------------ | ----- | --- | ----------------------------------------- | ----- |
+| `$(package)` Docker            | 9     |     | `$(vm)` Kubernetes                        | 10    |
+| `$(source-control)` GitHub CLI | 12    |     | `$(symbol-interface)` Java (Maven/Gradle) | 8     |
+| `$(database)` PostgreSQL       | 7     |     | `$(server)` Redis                         | 6     |
+| `$(server-environment)` Go     | 10    |     | `$(device-mobile)` Android                | 6     |
+| `$(gear)` Rust                 | 10    |     | `$(rocket)` Vercel                        | 5     |
 
 Kurulumda gelenler `configurationDefaults` içinde olduğu için **herkese** gelir;
 onu büyütmek istemeyenin menüsünü şişirmemek için bunlar kütüphanede duruyor.
@@ -188,23 +188,24 @@ otomatik denetler.
     "color": "#8BC34A",
     "commands": [
       { "name": "status", "command": "git status", "description": "Çalışma ağacı" },
-      { "name": "commit", "command": "git commit -m", "argsPrompt": "mesaj" },
+      { "name": "commit", "command": "git commit -m", "argsPrompt": "mesaj", "argsSingle": true },
       { "name": "reset",  "command": "git reset --hard", "confirm": "Geri alınamaz!" }
     ]
   }
 ]
 ```
 
-| Alan | Zorunlu | Açıklama |
-|---|---|---|
-| `name` | evet | Menüde görünen ad |
-| `command` | evet | Çalıştırılacak shell komutu |
-| `description` | hayır | Sağda gri metin olarak görünür |
-| `icon` | hayır | Kodikon, varsayılan `$(terminal)`. Düz ad da olur (`zap`) |
-| `color` | hayır | Durum çubuğundaki **bu grubun** rengi: `#4B8BBE` ya da `charts.blue`. Boşsa `cmdDeck.statusBar.color` uygulanır |
-| `confirm` | hayır | `true` veya metin → çalıştırmadan önce onay |
-| `argsPrompt` | hayır | Çalıştırmadan önce girdi ister |
-| `clear` | hayır | `true` → terminal temizlenerek çalışır |
+| Alan          | Zorunlu | Açıklama                                                                                                        |
+| ------------- | ------- | --------------------------------------------------------------------------------------------------------------- |
+| `name`        | evet    | Menüde görünen ad                                                                                               |
+| `command`     | evet    | Çalıştırılacak shell komutu                                                                                     |
+| `description` | hayır   | Sağda gri metin olarak görünür                                                                                  |
+| `icon`        | hayır   | Kodikon, varsayılan `$(terminal)`. Düz ad da olur (`zap`)                                                       |
+| `color`       | hayır   | Durum çubuğundaki **bu grubun** rengi: `#4B8BBE` ya da `charts.blue`. Boşsa `cmdDeck.statusBar.color` uygulanır |
+| `confirm`     | hayır   | `true` veya metin → çalıştırmadan önce onay                                                                     |
+| `argsPrompt`  | hayır   | Çalıştırmadan önce girdi ister                                                                                  |
+| `argsSingle`  | hayır   | **true ise girdinin tamamı tek argüman olur**, boşluktan bölünmez. `git commit -m`, `psql -c` gibi serbest metin bekleyen bayraklar için şart |
+| `clear`       | hayır   | `true` → terminal temizlenerek çalışır                                                                          |
 
 Kurulumda 5 hazır grup gelir: **Python**, **Flutter**, **Node.js**, **Git**, **Firebase**
 (toplam 61 komut).
@@ -219,13 +220,13 @@ Aynı dosyada `defaults` (ilk kurulumda gelen 5 grup) ve `groups` (kütüphanede
 yan yana durur — böylece silinen bir varsayılan grup `Hazır Grup Ekle` ile geri
 getirilebilir.
 
-| Grup | İkon | Renk | Komut |
-|---|---|---|---|
-| Python | `$(snake)` | `#4B8BBE` | 12 |
-| Flutter | `$(device-mobile)` | `#47C5FB` | 12 |
-| Node.js | `$(server-environment)` | `#83CD29` | 12 |
-| Git | `$(source-control)` | `#F14E32` | 15 |
-| Firebase | `$(broadcast)` | `#FFCA28` | 10 |
+| Grup     | İkon                    | Renk      | Komut |
+| -------- | ----------------------- | --------- | ----- |
+| Python   | `$(snake)`              | `#4B8BBE` | 12    |
+| Flutter  | `$(device-mobile)`      | `#47C5FB` | 12    |
+| Node.js  | `$(server-environment)` | `#83CD29` | 12    |
+| Git      | `$(source-control)`     | `#F14E32` | 15    |
+| Firebase | `$(broadcast)`          | `#FFCA28` | 10    |
 
 Grup `color` alanı yalnızca durum çubuğu ikonunu boyar (menüde renk gösterilemez, `QuickPickItem`
 renk desteklemiyor). Öncelik: grubun kendi `color`'ı → yoksa `cmdDeck.statusBar.color`.
@@ -241,20 +242,20 @@ Cmd Deck: Komut Listesini Düzenle     →  cmd-deck-groups.json açılır (yoks
 Cmd Deck: Komut Dosyasını Uygula      →  özet gösterir, onaylar, settings.json'a yazar
 ```
 
-| Komut | Ne yapar |
-|---|---|
-| `Cmd Deck: Komut Listesini Düzenle` | Dosyayı açar. **Soru sormaz.** Dosya yoksa mevcut ayarlardan oluşturulur; varsa **üzerine yazılmaz** (kaydedilmemiş düzenlemen bozulmasın) |
-| `Cmd Deck: Komut Dosyasını Uygula` | Dosyayı okur, **ne değişeceğini özetler**, onay ister, sonra hedefi seçip yazar |
-| `Cmd Deck: Dosyayı Ayarlardan Yenile` | Dosyayı ayarlardaki güncel liste ile **üzerine yazar** — düzenlemeyi sıfırlamanın yolu |
+| Komut                                 | Ne yapar                                                                                                                                   |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Cmd Deck: Komut Listesini Düzenle`   | Dosyayı açar. **Soru sormaz.** Dosya yoksa mevcut ayarlardan oluşturulur; varsa **üzerine yazılmaz** (kaydedilmemiş düzenlemen bozulmasın) |
+| `Cmd Deck: Komut Dosyasını Uygula`    | Dosyayı okur, **ne değişeceğini özetler**, onay ister, sonra hedefi seçip yazar                                                            |
+| `Cmd Deck: Dosyayı Ayarlardan Yenile` | Dosyayı ayarlardaki güncel liste ile **üzerine yazar** — düzenlemeyi sıfırlamanın yolu                                                     |
 
 Dosya yolu hatırlanır (proje bazlı). Varsayılanı **`.vscode/cmd-deck-groups.json`** —
 dosyanın uygulandığı yer de `.vscode/settings.json`, kaynak ve hedef aynı yerde.
 Proje açık değilse ev dizinine düşer. Hatırlanan yol yoksa **Komut Dosyasını Uygula**
 bir kez dosya seçtirir — böylece başkasının gönderdiği listeyi de alabilirsin.
 
-| Ayar | Varsayılan | Açıklama |
-|---|---|---|
-| `cmdDeck.groupFile` | `""` | Düzenleme dosyasının yolu. Monorepo'da alt pakete yönlendirmek için: `"packages/api/cmd-deck-groups.json"`. Göreli yollar ilk çalışma alanı köküne göre çözülür |
+| Ayar                | Varsayılan | Açıklama                                                                                                                                                        |
+| ------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `cmdDeck.groupFile` | `""`       | Düzenleme dosyasının yolu. Monorepo'da alt pakete yönlendirmek için: `"packages/api/cmd-deck-groups.json"`. Göreli yollar ilk çalışma alanı köküne göre çözülür |
 
 Dosyada **yorum serbest** (JSONC), otomatik tamamlama ve şema doğrulaması çalışır:
 `schemas/cmd-deck-groups.json` hem `name`/`command` zorunluluğunu hem de yazım
@@ -268,7 +269,7 @@ ayarladığın alanlar durur — 61 komutta `confirm: false` ve `clear: false` b
 hiçbir ayar kaybolmaz.
 
 > `settings.json`'ı elle düzenlemen gerekmiyor; ekip arkadaşın `Komut Dosyasını
-> Uygula` ile kendi dosyasına alsın. Paylaşılacak dosya `cmd-deck-groups.json`.
+Uygula` ile kendi dosyasına alsın. Paylaşılacak dosya `cmd-deck-groups.json`.
 
 ### Uygulama (import)
 
@@ -306,12 +307,12 @@ kendi ayarlarına alsın) ya da uyguladıktan sonra `.vscode/settings.json`'u co
 
 Varsayılan gruplar tek metinde yazılı; yol ve silme komutu çalışma anında platforma göre çözülür.
 
-| Belirteç | macOS / Linux | Windows |
-|---|---|---|
-| `{python}` | `python3` | `python` |
-| `{venv}` | `.venv/bin/` | `.venv\Scripts\` |
+| Belirteç   | macOS / Linux      | Windows                    |
+| ---------- | ------------------ | -------------------------- |
+| `{python}` | `python3`          | `python`                   |
+| `{venv}`   | `.venv/bin/`       | `.venv\Scripts\`           |
 | `{venvpy}` | `.venv/bin/python` | `.venv\Scripts\python.exe` |
-| `{rm}` | `rm -rf` | `cmd /c rmdir /s /q` |
+| `{rm}`     | `rm -rf`           | `cmd /c rmdir /s /q`       |
 
 ```jsonc
 { "name": "test", "command": "{venvpy} -m pytest" }
@@ -351,3 +352,5 @@ Tasarım kararları ve uygulama günlüğü: `PLAN.md` (depo kökünde).
 ## Lisans
 
 MIT
+
+git deneme amaçlı değiştirdim

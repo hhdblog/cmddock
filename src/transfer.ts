@@ -30,6 +30,7 @@ interface LooseCommand {
   description?: string;
   confirm?: string | false;
   argsPrompt?: string;
+  argsSingle?: boolean;
   clear?: boolean;
 }
 
@@ -78,6 +79,9 @@ export function slimGroups(groups: readonly DeckGroup[]): LooseGroup[] {
       }
       if (command.argsPrompt) {
         entry.argsPrompt = command.argsPrompt;
+      }
+      if (command.argsSingle) {
+        entry.argsSingle = true;
       }
       if (command.clear) {
         entry.clear = true;
@@ -270,6 +274,7 @@ function isSameCommand(a: DeckCommand, b: DeckCommand): boolean {
     a.description === b.description &&
     a.confirm === b.confirm &&
     a.argsPrompt === b.argsPrompt &&
+    a.argsSingle === b.argsSingle &&
     a.clear === b.clear &&
     a.icon === b.icon
   );

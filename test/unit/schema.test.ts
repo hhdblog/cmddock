@@ -76,6 +76,12 @@ describe('şema senkronu', () => {
     expect(commandInSchema?.properties?.confirm?.type).toEqual(['string', 'boolean']);
   });
 
+  it('argsSingle alanı boolean', () => {
+    // Serbest metin bekleyen bayraklar (git commit -m, psql -c) için gerekli:
+    // bölünürse mesaj parçalanır ve gerisi pathspec olur.
+    expect(commandInSchema?.properties?.argsSingle?.type).toBe('boolean');
+  });
+
   it('clear alanı boolean', () => {
     expect(commandInSchema?.properties?.clear?.type).toBe('boolean');
   });
