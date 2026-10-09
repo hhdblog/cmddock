@@ -14,37 +14,37 @@
       "color": "#4B8BBE",
       "commands": [
         {
-          "name": "venv oluştur",
+          "name": "create venv",
           "command": "{python} -m venv .venv",
           "icon": "$(folder)",
-          "description": "Sanal ortamı kur"
+          "description": "creates a virtual environment"
         },
         {
-          "name": "bağımlılıkları kur",
+          "name": "install dependencies",
           "command": "{venv}pip install -r requirements.txt",
           "icon": "$(cloud-download)",
-          "description": "requirements.txt'ten kur"
+          "description": "install from requirements.txt"
         },
         {
-          "name": "requirements üret",
+          "name": "freeze to requirements.txt",
           "command": "{venv}pip freeze > requirements.txt",
           "icon": "$(archive)",
-          "confirm": "requirements.txt üzerine yazılacak. Devam?",
-          "description": "freeze çıktısını dosyaya yaz"
+          "confirm": "requirements.txt will be overwritten. Continue?",
+          "description": "writes the freeze output to a file"
         },
         {
-          "name": "paket kur",
+          "name": "install package",
           "command": "{venv}pip install",
           "icon": "$(cloud-download)",
-          "argsPrompt": "paket adı (örn. requests==2.32.0)",
-          "description": "tek paket kur"
+          "argsPrompt": "package name (e.g. requests==2.32.0)",
+          "description": "installs a single package"
         },
         {
-          "name": "dosya çalıştır",
+          "name": "run file",
           "command": "{venvpy}",
           "icon": "$(play)",
-          "argsPrompt": "dosya yolu (örn. main.py)",
-          "description": "belirtilen scripti çalıştır"
+          "argsPrompt": "file path (e.g. main.py)",
+          "description": "runs the given script"
         },
         {
           "name": "test",
@@ -65,7 +65,7 @@
           "description": "ruff"
         },
         {
-          "name": "tip kontrolü",
+          "name": "type check",
           "command": "{venvpy} -m mypy .",
           "icon": "$(symbol-key)",
           "description": "mypy"
@@ -74,16 +74,16 @@
           "name": "Jupyter Lab",
           "command": "{venv}jupyter lab",
           "icon": "$(book)",
-          "description": "notebook sunucusu (Ctrl+C ile durur)"
+          "description": "notebook server (Ctrl+C to stop)"
         },
         {
-          "name": "bağımlılık listesi",
+          "name": "list dependencies",
           "command": "{venv}pip list",
           "icon": "$(list-ordered)",
-          "description": "kurulu paketler"
+          "description": "installed packages"
         },
         {
-          "name": "güncel olmayanlar",
+          "name": "outdated",
           "command": "{venv}pip list --outdated",
           "icon": "$(clock)",
           "description": "outdated"
@@ -100,46 +100,46 @@
           "name": "pub get",
           "command": "flutter pub get",
           "icon": "$(cloud-download)",
-          "description": "bağımlılıkları indir"
+          "description": "download dependencies"
         },
         {
-          "name": "çalıştır",
+          "name": "run",
           "command": "flutter run",
           "icon": "$(play)",
-          "description": "hot reload aktif, Ctrl+C ile durur"
+          "description": "hot reload is on, Ctrl+C to stop"
         },
         {
           "name": "build apk",
           "command": "flutter build apk --release",
           "icon": "$(package)",
           "clear": true,
-          "description": "APK çıktısı"
+          "description": "APK output"
         },
         {
           "name": "build web",
           "command": "flutter build web",
           "icon": "$(globe)",
           "clear": true,
-          "description": "web çıktısı"
+          "description": "web output"
         },
         {
           "name": "build ios",
           "command": "flutter build ios --release",
           "icon": "$(device-desktop)",
           "clear": true,
-          "description": "macOS + Xcode gerekir"
+          "description": "requires macOS + Xcode"
         },
         {
           "name": "analyze",
           "command": "flutter analyze",
           "icon": "$(search)",
-          "description": "statik analiz"
+          "description": "static analysis"
         },
         {
           "name": "test",
           "command": "flutter test",
           "icon": "$(beaker)",
-          "description": "testler"
+          "description": "tests"
         },
         {
           "name": "format",
@@ -148,81 +148,81 @@
           "description": "dart formatter"
         },
         {
-          "name": "cihazlar",
+          "name": "devices",
           "command": "flutter devices",
           "icon": "$(device-mobile)",
-          "description": "bağlı cihazlar"
+          "description": "connected devices"
         },
         {
-          "name": "temizle",
+          "name": "clean",
           "command": "flutter clean",
           "icon": "$(discard)",
-          "confirm": "Derleme önbelleği silinecek. Devam?",
-          "description": "build klasörlerini siler"
+          "confirm": "The build cache will be deleted. Continue?",
+          "description": "deletes the build directories"
         },
         {
           "name": "upgrade",
           "command": "flutter upgrade",
           "icon": "$(cloud-upload)",
-          "description": "SDK güncelle"
+          "description": "updates the SDK"
         },
         {
-          "name": "stable kanal",
+          "name": "stable channel",
           "command": "flutter channel stable && flutter upgrade",
           "icon": "$(sync)",
-          "description": "kanala geç ve güncelle"
+          "description": "switch to the channel and update"
         }
       ]
     },
     {
       "name": "Node.js",
-      "summary": "kur, build, test, lint",
+      "summary": "install, build, test, lint",
       "icon": "$(server-environment)",
       "color": "#83CD29",
       "commands": [
         {
-          "name": "kur",
+          "name": "install",
           "command": "npm install",
           "icon": "$(cloud-download)",
-          "description": "bağımlılıkları kur"
+          "description": "install dependencies"
         },
         {
-          "name": "temiz kur",
+          "name": "clean install",
           "command": "npm ci",
           "icon": "$(cloud-download)",
           "clear": true,
-          "description": "lock dosyasından birebir kur"
+          "description": "installs exactly from the lock file"
         },
         {
-          "name": "derle",
+          "name": "build",
           "command": "npm run build",
           "icon": "$(tools)",
           "clear": true,
           "description": "production build"
         },
         {
-          "name": "başlat",
+          "name": "init",
           "command": "npm start",
           "icon": "$(play)",
-          "description": "start scripti"
+          "description": "the start script"
         },
         {
           "name": "dev",
           "command": "npm run dev",
           "icon": "$(watch)",
-          "description": "watch modu (Ctrl+C ile durur)"
+          "description": "watch mode (Ctrl+C to stop)"
         },
         {
           "name": "test",
           "command": "npm test",
           "icon": "$(beaker)",
-          "description": "testler"
+          "description": "tests"
         },
         {
           "name": "typecheck",
           "command": "npx --no-install tsc --noEmit",
           "icon": "$(symbol-interface)",
-          "description": "yerel TypeScript ile tip kontrolü (kurulu değilse uyarır)"
+          "description": "type check with the local TypeScript (warns if not installed)"
         },
         {
           "name": "lint",
@@ -234,207 +234,207 @@
           "name": "outdated",
           "command": "npm outdated",
           "icon": "$(clock)",
-          "description": "güncel olmayanlar"
+          "description": "outdated"
         },
         {
-          "name": "güvenlik açığı düzelt",
+          "name": "audit fix",
           "command": "npm audit fix",
           "icon": "$(shield)",
-          "confirm": "paket sürümleri değişecek. Devam?",
+          "confirm": "Package versions will change. Continue?",
           "description": "audit fix"
         },
         {
-          "name": "node_modules temizle",
+          "name": "clean node_modules",
           "command": "{rm} node_modules",
           "icon": "$(trash)",
-          "confirm": "node_modules silinecek, yeniden kurulum gerekir. Devam?",
-          "description": "bağımlılık klasörünü sil"
+          "confirm": "node_modules will be deleted, a reinstall will be needed. Continue?",
+          "description": "deletes the dependency folder"
         },
         {
-          "name": "global bağla",
+          "name": "link global",
           "command": "npm link",
           "icon": "$(link)",
-          "argsPrompt": "paket adı (örn. my-lib)",
+          "argsPrompt": "package name (e.g. my-lib)",
           "description": "link"
         }
       ]
     },
     {
       "name": "Git",
-      "summary": "durum, dallar, commit, push",
+      "summary": "status, branches, commit, push",
       "icon": "$(source-control)",
       "color": "#F14E32",
       "commands": [
         {
-          "name": "durum",
+          "name": "status",
           "command": "git status",
           "icon": "$(source-control)",
-          "description": "çalışma ağacı"
+          "description": "working tree"
         },
         {
-          "name": "fark",
+          "name": "diff",
           "command": "git diff",
           "icon": "$(git-compare)",
-          "description": "değişiklikleri göster"
+          "description": "shows the changes"
         },
         {
           "name": "log",
           "command": "git log --oneline --graph -20",
           "icon": "$(history)",
-          "description": "son 20 commit"
+          "description": "last 20 commits"
         },
         {
-          "name": "hepsini ekle",
+          "name": "stage all",
           "command": "git add -A",
           "icon": "$(cloud-download)",
-          "description": "tüm değişiklikleri sahneye al"
+          "description": "stages every change"
         },
         {
           "name": "commit",
           "command": "git commit -m",
           "icon": "$(git-commit)",
-          "argsPrompt": "commit mesajı",
+          "argsPrompt": "commit message",
           "argsSingle": true,
-          "description": "mesajla commit"
+          "description": "commit with a message"
         },
         {
           "name": "push",
           "command": "git push",
           "icon": "$(cloud-upload)",
-          "confirm": "Değişiklikler uzak depoya gönderilecek. Devam?",
-          "description": "uzak depoya gönder"
+          "confirm": "Changes will be pushed to the remote. Continue?",
+          "description": "push to the remote"
         },
         {
           "name": "pull",
           "command": "git pull",
           "icon": "$(cloud-download)",
-          "confirm": "Yerel değişikliklerle çakışabilir. Devam?",
-          "description": "uzaktan çek"
+          "confirm": "May conflict with local changes. Continue?",
+          "description": "fetch from the remote"
         },
         {
           "name": "fetch",
           "command": "git fetch --all --prune",
           "icon": "$(sync)",
-          "description": "uzakları tazele, silinen dalları at"
+          "description": "refresh remotes, drop deleted branches"
         },
         {
-          "name": "dallar",
+          "name": "branches",
           "command": "git branch -a",
           "icon": "$(git-branch)",
-          "description": "yerel ve uzak dallar"
+          "description": "local and remote branches"
         },
         {
-          "name": "dala geç",
+          "name": "switch branch",
           "command": "git checkout",
           "icon": "$(git-branch)",
-          "argsPrompt": "dal veya dosya adı",
-          "description": "dal değiştir / dosyayı geri al"
+          "argsPrompt": "branch or file name",
+          "description": "switch branch / restore file"
         },
         {
-          "name": "yeni dal",
+          "name": "new branch",
           "command": "git checkout -b",
           "icon": "$(git-branch)",
-          "argsPrompt": "yeni dal adı",
-          "description": "dal oluştur ve geç"
+          "argsPrompt": "new branch name",
+          "description": "create and switch to a branch"
         },
         {
           "name": "stash",
           "command": "git stash",
           "icon": "$(git-stash)",
-          "description": "değişiklikleri sakla"
+          "description": "stashes the changes"
         },
         {
-          "name": "stash geri al",
+          "name": "unstash",
           "command": "git stash pop",
           "icon": "$(git-stash)",
-          "description": "saklananı geri yükle"
+          "description": "restores the stash"
         },
         {
-          "name": "son commit'i geri al",
+          "name": "undo last commit",
           "command": "git reset --soft HEAD~1",
           "icon": "$(debug-rerun)",
-          "confirm": "Son commit geri alınacak (dosyalar korunur). Devam?",
+          "confirm": "The last commit will be undone (files are kept). Continue?",
           "description": "soft reset"
         },
         {
-          "name": "klonla",
+          "name": "clone",
           "command": "git clone",
           "icon": "$(repo)",
-          "argsPrompt": "depo adresi",
-          "description": "uzaktan klonla"
+          "argsPrompt": "repository URL",
+          "description": "clone from the remote"
         }
       ]
     },
     {
       "name": "Firebase",
-      "summary": "login, deploy, emülatörler",
+      "summary": "login, deploy, emulators",
       "icon": "$(broadcast)",
       "color": "#FFCA28",
       "commands": [
         {
-          "name": "giriş yap",
+          "name": "log in",
           "command": "firebase login",
           "icon": "$(account)",
-          "description": "tarayıcıda oturum açar"
+          "description": "opens a browser session"
         },
         {
-          "name": "çıkış yap",
+          "name": "log out",
           "command": "firebase logout",
           "icon": "$(sign-out)",
-          "description": "oturumu kapat"
+          "description": "closes the session"
         },
         {
-          "name": "projeleri listele",
+          "name": "list projects",
           "command": "firebase projects:list",
           "icon": "$(list-ordered)",
-          "description": "hesabındaki projeler"
+          "description": "projects on the account"
         },
         {
-          "name": "projeye bağlan",
+          "name": "link project",
           "command": "firebase use",
           "icon": "$(link)",
-          "argsPrompt": "proje adı",
-          "description": "klasörü projeye bağlar"
+          "argsPrompt": "project ID",
+          "description": "links the folder to a project"
         },
         {
-          "name": "hosting deploy",
+          "name": "deploy hosting",
           "command": "firebase deploy --only hosting",
           "icon": "$(cloud-upload)",
-          "confirm": "Hosting canlıya yayınlanacak. Devam?",
-          "description": "statik siteyi yayınla"
+          "confirm": "Hosting will be published to production. Continue?",
+          "description": "publishes the static site"
         },
         {
-          "name": "functions deploy",
+          "name": "deploy functions",
           "command": "firebase deploy --only functions",
           "icon": "$(rocket)",
-          "confirm": "Functions canlıya yayınlanacak. Devam?",
-          "description": "sunucu fonksiyonlarını yayınla"
+          "confirm": "Functions will be published to production. Continue?",
+          "description": "publishes the server functions"
         },
         {
-          "name": "kuralları deploy",
+          "name": "deploy rules",
           "command": "firebase deploy --only firestore:rules",
           "icon": "$(shield)",
-          "confirm": "Firestore kuralları yayınlanacak. Devam?",
+          "confirm": "Firestore rules will be published. Continue?",
           "description": "rules + indexes"
         },
         {
-          "name": "emülatörler",
+          "name": "emulators",
           "command": "firebase emulators:start",
           "icon": "$(beaker)",
-          "description": "yerel emülatörler (Ctrl+C ile durur)"
+          "description": "local emulators (Ctrl+C to stop)"
         },
         {
-          "name": "fonksiyon logları",
+          "name": "function logs",
           "command": "firebase functions:log",
           "icon": "$(history)",
-          "description": "canlı fonksiyon logları"
+          "description": "live function logs"
         },
         {
-          "name": "başlat",
+          "name": "init",
           "command": "firebase init",
           "icon": "$(gear)",
-          "confirm": "Klasörde firebase.json oluşturulacak/yazılacak. Devam?",
-          "description": "yapılandırma (interaktif)"
+          "confirm": "firebase.json will be created or written in this folder. Continue?",
+          "description": "configuration (interactive)"
         }
       ]
     },
@@ -442,64 +442,64 @@
       "name": "Docker",
       "icon": "$(package)",
       "color": "#2496ED",
-      "summary": "derle, başlat, logla, temizle",
+      "summary": "build, start, logs, clean",
       "commands": [
         {
-          "name": "derle",
+          "name": "build",
           "command": "docker compose build",
           "icon": "$(package)",
-          "description": "imajları derler"
+          "description": "builds the images"
         },
         {
-          "name": "başlat",
+          "name": "init",
           "command": "docker compose up -d",
           "icon": "$(play)",
-          "description": "arka planda başlatır"
+          "description": "starts in the background"
         },
         {
-          "name": "durdur",
+          "name": "down",
           "command": "docker compose down",
           "icon": "$(discard)",
-          "description": "kapları indirir"
+          "description": "stops and removes the containers"
         },
         {
-          "name": "loglar",
+          "name": "logs",
           "command": "docker compose logs -f",
           "icon": "$(output)",
-          "description": "logları canlı izle (Ctrl+C ile durur)"
+          "description": "follow the logs live (Ctrl+C to stop)"
         },
         {
-          "name": "çalışanlar",
+          "name": "running",
           "command": "docker ps",
           "icon": "$(server)",
-          "description": "çalışan kaplar"
+          "description": "running containers"
         },
         {
-          "name": "kabuğa gir",
+          "name": "shell",
           "command": "docker compose exec",
           "icon": "$(terminal)",
-          "argsPrompt": "servis adı (örn. api)",
-          "description": "servisin içine shell"
+          "argsPrompt": "service name (e.g. api)",
+          "description": "opens a shell inside a service"
         },
         {
-          "name": "imajlar",
+          "name": "images",
           "command": "docker images",
           "icon": "$(files)",
-          "description": "yerel imajlar"
+          "description": "local images"
         },
         {
-          "name": "temizle",
+          "name": "clean",
           "command": "docker compose down -v --remove-orphans",
           "icon": "$(trash)",
-          "confirm": "Sistemdeki kaplar, hacimler ve ağlar silinecek. Devam?",
-          "description": "kapları ve hacimleri siler"
+          "confirm": "The project containers, volumes and networks will be deleted. Continue?",
+          "description": "deletes the containers and volumes"
         },
         {
-          "name": "sistemi temizle",
+          "name": "prune system",
           "command": "docker system prune -a",
           "icon": "$(warning)",
-          "confirm": "Kullanılmayan tüm imajlar, kaplar ve ağlar silinecek. Bu geri alınamaz. Devam?",
-          "description": "tüm kullanılmayan kaynakları siler"
+          "confirm": "All unused images, containers and networks will be deleted. This cannot be undone. Continue?",
+          "description": "deletes every unused resource"
         }
       ]
     },
@@ -507,83 +507,83 @@
       "name": "GitHub CLI",
       "icon": "$(source-control)",
       "color": "#8B949E",
-      "summary": "PR, issue ve çalışmalar",
+      "summary": "PRs, issues and runs",
       "commands": [
         {
-          "name": "durum",
+          "name": "status",
           "command": "gh status",
           "icon": "$(source-control)",
-          "description": "PR ve issue özeti"
+          "description": "PR and issue summary"
         },
         {
-          "name": "PR listele",
+          "name": "list PRs",
           "command": "gh pr list",
           "icon": "$(git-pull-request)",
-          "description": "açık PR'lar"
+          "description": "open PRs"
         },
         {
-          "name": "PR aç",
+          "name": "create PR",
           "command": "gh pr create",
           "icon": "$(git-pull-request)",
-          "description": "yeni PR oluşturur"
+          "description": "opens a new PR"
         },
         {
-          "name": "PR görüntüle",
+          "name": "view PR",
           "command": "gh pr view",
           "icon": "$(git-compare)",
-          "description": "mevcut PR'ı açar"
+          "description": "opens an existing PR"
         },
         {
-          "name": "PR indir",
+          "name": "checkout PR",
           "command": "gh pr checkout",
           "icon": "$(cloud-download)",
-          "argsPrompt": "dal veya PR numarası",
-          "description": "PR'ın dalına geç"
+          "argsPrompt": "branch name or PR number",
+          "description": "checks out the branch of a PR"
         },
         {
-          "name": "issue aç",
+          "name": "create issue",
           "command": "gh issue create",
           "icon": "$(edit)",
-          "description": "yeni issue"
+          "description": "a new issue"
         },
         {
-          "name": "issue listele",
+          "name": "list issues",
           "command": "gh issue list",
           "icon": "$(list-ordered)",
-          "description": "açık issue'lar"
+          "description": "open issues"
         },
         {
-          "name": "depoyu görüntüle",
+          "name": "view repository",
           "command": "gh repo view",
           "icon": "$(repo)",
-          "description": "depo bilgisi"
+          "description": "repository details"
         },
         {
-          "name": "çalışmalar",
+          "name": "runs",
           "command": "gh run list",
           "icon": "$(history)",
-          "description": "Actions çalışmaları"
+          "description": "Actions workflow runs"
         },
         {
-          "name": "çalışma izle",
+          "name": "watch run",
           "command": "gh run watch",
           "icon": "$(watch)",
-          "argsPrompt": "çalışma numarası",
-          "description": "çalışmayı canlı izle"
+          "argsPrompt": "run number",
+          "description": "follow a run live"
         },
         {
-          "name": "sürüm oluştur",
+          "name": "create release",
           "command": "gh release create",
           "icon": "$(tag)",
-          "argsPrompt": "sürüm etiketi (örn. v1.0.0)",
-          "confirm": "Sürüm yayınlanacak. Devam?",
-          "description": "yeni sürüm oluşturur"
+          "argsPrompt": "release tag (e.g. v1.0.0)",
+          "confirm": "The release will be published. Continue?",
+          "description": "creates a new release"
         },
         {
-          "name": "oturum",
+          "name": "session",
           "command": "gh auth status",
           "icon": "$(account)",
-          "description": "giriş durumu"
+          "description": "login status"
         }
       ]
     },
@@ -591,53 +591,53 @@
       "name": "PostgreSQL",
       "icon": "$(database)",
       "color": "#4169E1",
-      "summary": "bağlan, sorgula, yedekle",
+      "summary": "connect, query, back up",
       "commands": [
         {
-          "name": "bağlan",
+          "name": "connect",
           "command": "psql -U postgres",
           "icon": "$(terminal)",
-          "description": "psql kabuğu (Ctrl+C ile çık)"
+          "description": "psql shell (Ctrl+C to exit)"
         },
         {
-          "name": "veritabanları",
+          "name": "databases",
           "command": "psql -l",
           "icon": "$(list-ordered)",
-          "description": "veritabanlarını listeler"
+          "description": "lists the databases"
         },
         {
-          "name": "sorgu çalıştır",
+          "name": "run query",
           "command": "psql -c",
           "icon": "$(search)",
-          "argsPrompt": "SQL (örn. SELECT * FROM users LIMIT 10)",
+          "argsPrompt": "SQL (e.g. SELECT * FROM users LIMIT 10)",
           "argsSingle": true,
-          "description": "tek sorgu çalıştırıp çıkar"
+          "description": "runs a single query then exits"
         },
         {
-          "name": "yedek al",
+          "name": "back up",
           "command": "pg_dump",
           "icon": "$(archive)",
-          "argsPrompt": "veritabanı adı",
-          "description": "SQL dökümü alır"
+          "argsPrompt": "database name",
+          "description": "takes a SQL dump"
         },
         {
-          "name": "geri yükle",
+          "name": "restore",
           "command": "psql -f",
           "icon": "$(cloud-upload)",
-          "argsPrompt": "SQL dosyası",
-          "description": "SQL dosyasını çalıştırır"
+          "argsPrompt": "SQL file",
+          "description": "runs a SQL file"
         },
         {
-          "name": "tablo boyutları",
+          "name": "table sizes",
           "command": "psql -c \"\\dt+\"",
           "icon": "$(table)",
-          "description": "tablolar ve boyutları"
+          "description": "tables and their sizes"
         },
         {
-          "name": "kilitleri izle",
+          "name": "watch locks",
           "command": "psql -c \"SELECT * FROM pg_stat_activity\"",
           "icon": "$(clock)",
-          "description": "açık sorgular ve kilitler"
+          "description": "open queries and locks"
         }
       ]
     },
@@ -645,50 +645,50 @@
       "name": "Go",
       "icon": "$(server-environment)",
       "color": "#00ADD8",
-      "summary": "test, derle, mod düzenle",
+      "summary": "test, build, mod tidy",
       "commands": [
         {
           "name": "test",
           "command": "go test ./...",
           "icon": "$(beaker)",
-          "description": "tüm testler"
+          "description": "all tests"
         },
         {
-          "name": "derle",
+          "name": "build",
           "command": "go build ./...",
           "icon": "$(package)",
-          "description": "derler"
+          "description": "compiles"
         },
         {
-          "name": "çalıştır",
+          "name": "run",
           "command": "go run",
           "icon": "$(play)",
-          "argsPrompt": "dosya yolu (örn. ./cmd/api)",
-          "description": "çalıştırır (Ctrl+C ile durur)"
+          "argsPrompt": "file path (e.g. ./cmd/api)",
+          "description": "runs it (Ctrl+C to stop)"
         },
         {
           "name": "mod tidy",
           "command": "go mod tidy",
           "icon": "$(sync)",
-          "description": "bağımlılıkları düzenler"
+          "description": "tidies the dependencies"
         },
         {
           "name": "vet",
           "command": "go vet ./...",
           "icon": "$(shield)",
-          "description": "statik kontrol"
+          "description": "static checks"
         },
         {
-          "name": "biçim kontrol",
+          "name": "check format",
           "command": "gofmt -l .",
           "icon": "$(check)",
-          "description": "biçimsiz dosyaları listeler"
+          "description": "lists the files that need formatting"
         },
         {
-          "name": "biçim yaz",
+          "name": "write format",
           "command": "gofmt -w .",
           "icon": "$(paintcan)",
-          "description": "biçimi uygular"
+          "description": "applies the formatting"
         },
         {
           "name": "lint",
@@ -697,18 +697,18 @@
           "description": "golangci-lint"
         },
         {
-          "name": "paket ekle",
+          "name": "add package",
           "command": "go get",
           "icon": "$(cloud-download)",
-          "argsPrompt": "paket (örn. github.com/gin-gonic/gin@latest)",
-          "description": "bağımlılık ekler"
+          "argsPrompt": "package (e.g. github.com/gin-gonic/gin@latest)",
+          "description": "adds a dependency"
         },
         {
-          "name": "önbellek temizle",
+          "name": "clear cache",
           "command": "go clean -cache",
           "icon": "$(trash)",
-          "confirm": "Derleme önbelleği silinecek. Devam?",
-          "description": "önbelleği boşaltır"
+          "confirm": "The build cache will be deleted. Continue?",
+          "description": "empties the cache"
         }
       ]
     },
@@ -722,25 +722,25 @@
           "name": "test",
           "command": "cargo test",
           "icon": "$(beaker)",
-          "description": "tüm testler"
+          "description": "all tests"
         },
         {
-          "name": "derle",
+          "name": "build",
           "command": "cargo build",
           "icon": "$(package)",
-          "description": "debug derleme"
+          "description": "debug build"
         },
         {
-          "name": "sürüm derle",
+          "name": "release build",
           "command": "cargo build --release",
           "icon": "$(rocket)",
-          "description": "optimize derleme"
+          "description": "optimised build"
         },
         {
-          "name": "çalıştır",
+          "name": "run",
           "command": "cargo run",
           "icon": "$(play)",
-          "description": "çalıştırır (Ctrl+C ile durur)"
+          "description": "runs it (Ctrl+C to stop)"
         },
         {
           "name": "clippy",
@@ -749,36 +749,36 @@
           "description": "linter"
         },
         {
-          "name": "biçim",
+          "name": "format",
           "command": "cargo fmt",
           "icon": "$(paintcan)",
-          "description": "biçimlendirir"
+          "description": "formats the code"
         },
         {
-          "name": "kontrol",
+          "name": "check",
           "command": "cargo check",
           "icon": "$(check)",
-          "description": "derlemeden kontrol eder"
+          "description": "type checks without building"
         },
         {
-          "name": "bağımlılık ekle",
+          "name": "add crate",
           "command": "cargo add",
           "icon": "$(cloud-download)",
-          "argsPrompt": "crate ve isteğe bağlı bayraklar (örn. serde --features derive)",
-          "description": "bağımlılık ekler"
+          "argsPrompt": "crate and optional flags (e.g. serde --features derive)",
+          "description": "adds a dependency"
         },
         {
-          "name": "güncelle",
+          "name": "update",
           "command": "cargo update",
           "icon": "$(sync)",
-          "description": "bağımlılıkları günceller"
+          "description": "updates the dependencies"
         },
         {
-          "name": "temizle",
+          "name": "clean",
           "command": "cargo clean",
           "icon": "$(trash)",
-          "confirm": "target/ klasörü silinecek, sonraki derleme yavaş olacak. Devam?",
-          "description": "derleme çıktılarını siler"
+          "confirm": "The target/ directory will be deleted and the next build will be slow. Continue?",
+          "description": "deletes the build outputs"
         }
       ]
     },
@@ -786,74 +786,74 @@
       "name": "Kubernetes",
       "icon": "$(vm)",
       "color": "#326CE5",
-      "summary": "pod, log, exec, apply",
+      "summary": "pods, logs, exec, apply",
       "commands": [
         {
-          "name": "pod listele",
+          "name": "list pods",
           "command": "kubectl get pods",
           "icon": "$(list-ordered)",
-          "description": "pod'ları listeler"
+          "description": "lists the pods"
         },
         {
-          "name": "servis listele",
+          "name": "list services",
           "command": "kubectl get svc",
           "icon": "$(server)",
-          "description": "servisleri listeler"
+          "description": "lists the services"
         },
         {
-          "name": "tümü",
+          "name": "everything",
           "command": "kubectl get all -A",
           "icon": "$(list-selection)",
-          "description": "tüm kaynaklar, tüm ns"
+          "description": "all resources, all namespaces"
         },
         {
-          "name": "pod açıkla",
+          "name": "describe pod",
           "command": "kubectl describe pod",
           "icon": "$(symbol-class)",
-          "argsPrompt": "pod adı",
-          "description": "pod detayları ve olaylar"
+          "argsPrompt": "pod name",
+          "description": "pod details and events"
         },
         {
-          "name": "log izle",
+          "name": "follow logs",
           "command": "kubectl logs -f",
           "icon": "$(output)",
-          "argsPrompt": "pod adı",
-          "description": "logları canlı izle"
+          "argsPrompt": "pod name",
+          "description": "follow the logs live"
         },
         {
-          "name": "kabuk",
+          "name": "shell",
           "command": "kubectl exec -it",
           "icon": "$(terminal)",
-          "argsPrompt": "pod adı",
-          "description": "pod içinde shell"
+          "argsPrompt": "pod name",
+          "description": "opens a shell inside a pod"
         },
         {
-          "name": "port yönlendir",
+          "name": "port forward",
           "command": "kubectl port-forward",
           "icon": "$(link)",
-          "argsPrompt": "kaynak ve port (örn. svc/api 8080:80)",
-          "description": "yerel port yönlendirmesi"
+          "argsPrompt": "resource and ports (e.g. svc/api 8080:80)",
+          "description": "local port forwarding"
         },
         {
-          "name": "uygula",
+          "name": "apply",
           "command": "kubectl apply -f",
           "icon": "$(cloud-upload)",
-          "argsPrompt": "manifest dosyası",
-          "description": "manifesti uygular"
+          "argsPrompt": "manifest file",
+          "description": "applies a manifest"
         },
         {
-          "name": "sil",
+          "name": "delete",
           "command": "kubectl delete -f",
           "icon": "$(trash)",
-          "argsPrompt": "manifest dosyası",
-          "confirm": "Manifestteki kaynaklar silinecek. Devam?",
-          "description": "manifesti siler"
+          "argsPrompt": "manifest file",
+          "confirm": "The resources in the manifest will be deleted. Continue?",
+          "description": "deletes a manifest"
         },
         {
-          "name": "aktif context",
+          "name": "current context",
           "command": "kubectl config current-context",
           "icon": "$(globe)",
-          "description": "aktif context ve cluster"
+          "description": "active context and cluster"
         }
       ]
     },
@@ -861,56 +861,56 @@
       "name": "Java (Maven/Gradle)",
       "icon": "$(symbol-interface)",
       "color": "#E76F00",
-      "summary": "derle, test, paketle",
+      "summary": "build, test, package",
       "commands": [
         {
-          "name": "derle",
+          "name": "build",
           "command": "mvn clean install",
           "icon": "$(package)",
-          "description": "derleyip kurar"
+          "description": "compiles and installs"
         },
         {
           "name": "test",
           "command": "mvn test",
           "icon": "$(beaker)",
-          "description": "testler"
+          "description": "tests"
         },
         {
-          "name": "paketle",
+          "name": "package",
           "command": "mvn package",
           "icon": "$(archive)",
-          "description": "jar/war üretir"
+          "description": "produces a jar/war"
         },
         {
-          "name": "çalıştır",
+          "name": "run",
           "command": "mvn spring-boot:run",
           "icon": "$(play)",
-          "description": "uygulamayı başlatır (Ctrl+C ile durur)"
+          "description": "starts the application (Ctrl+C to stop)"
         },
         {
-          "name": "tek test",
+          "name": "single test",
           "command": "mvn -Dtest=",
           "icon": "$(search)",
-          "argsPrompt": "sınıf adı (örn. UserServiceTest#findById)",
-          "description": "tek testi çalıştırır"
+          "argsPrompt": "class name (e.g. UserServiceTest#findById)",
+          "description": "runs a single test"
         },
         {
-          "name": "sarmalayıcıyla",
+          "name": "with wrapper",
           "command": "./mvnw clean install",
           "icon": "$(tools)",
-          "description": "projedeki Maven sarmalayıcısıyla"
+          "description": "with the project Maven wrapper"
         },
         {
-          "name": "gradle derle",
+          "name": "gradle build",
           "command": "gradle build",
           "icon": "$(layers)",
-          "description": "Gradle derleme"
+          "description": "Gradle build"
         },
         {
           "name": "gradle test",
           "command": "gradle test",
           "icon": "$(beaker)",
-          "description": "Gradle testleri"
+          "description": "Gradle tests"
         }
       ]
     },
@@ -918,44 +918,44 @@
       "name": "Redis",
       "icon": "$(server)",
       "color": "#DC382C",
-      "summary": "bağlan, izle, flushall",
+      "summary": "connect, monitor, flushall",
       "commands": [
         {
-          "name": "bağlan",
+          "name": "connect",
           "command": "redis-cli",
           "icon": "$(terminal)",
-          "description": "Redis kabuğu (Ctrl+C ile çık)"
+          "description": "Redis shell (Ctrl+C to exit)"
         },
         {
           "name": "ping",
           "command": "redis-cli ping",
           "icon": "$(check)",
-          "description": "sunucu yanıt veriyor mu"
+          "description": "is the server responding"
         },
         {
-          "name": "bilgi",
+          "name": "info",
           "command": "redis-cli info",
           "icon": "$(symbol-variable)",
-          "description": "sunucu bilgileri"
+          "description": "server information"
         },
         {
-          "name": "izle",
+          "name": "monitor",
           "command": "redis-cli monitor",
           "icon": "$(debug-console)",
-          "description": "komutları canlı izle (Ctrl+C ile durur)"
+          "description": "watch the commands live (Ctrl+C to stop)"
         },
         {
-          "name": "anahtarlar",
+          "name": "keys",
           "command": "redis-cli keys '*'",
           "icon": "$(list-ordered)",
-          "description": "tüm anahtarlar (büyük kümede yavaş)"
+          "description": "all keys (slow on a large database)"
         },
         {
           "name": "flushall",
           "command": "redis-cli flushall",
           "icon": "$(trash)",
-          "confirm": "TÜM anahtarlar silinecek. Bu geri alınamaz. Devam?",
-          "description": "tüm verileri siler"
+          "confirm": "ALL keys will be deleted. This cannot be undone. Continue?",
+          "description": "deletes all the data"
         }
       ]
     },
@@ -963,47 +963,47 @@
       "name": "Android",
       "icon": "$(device-mobile)",
       "color": "#3DDC84",
-      "summary": "cihazlar, logcat, apk kur",
+      "summary": "devices, logcat, install APK",
       "commands": [
         {
-          "name": "cihazlar",
+          "name": "devices",
           "command": "adb devices",
           "icon": "$(device-mobile)",
-          "description": "bağlı cihazlar"
+          "description": "connected devices"
         },
         {
           "name": "shell",
           "command": "adb shell",
           "icon": "$(terminal)",
-          "description": "cihaz kabuğu (Ctrl+C ile çık)"
+          "description": "device shell (Ctrl+C to exit)"
         },
         {
           "name": "logcat",
           "command": "adb logcat",
           "icon": "$(output)",
-          "description": "cihaz logları (Ctrl+C ile durur)"
+          "description": "device logs (Ctrl+C to stop)"
         },
         {
-          "name": "apk kur",
+          "name": "install APK",
           "command": "adb install",
           "icon": "$(package)",
-          "argsPrompt": "apk dosyası",
-          "description": "APK yükler"
+          "argsPrompt": "apk file",
+          "description": "installs an APK"
         },
         {
-          "name": "port yönlendir",
+          "name": "port forward",
           "command": "adb reverse",
           "icon": "$(link)",
-          "argsPrompt": "uzak ve yerel port (örn. tcp:8080 tcp:8080)",
-          "description": "cihazdan makineye port yönlendirmesi"
+          "argsPrompt": "remote and local port (e.g. tcp:8080 tcp:8080)",
+          "description": "forwards a port from the device to the machine"
         },
         {
-          "name": "kaldır",
+          "name": "uninstall",
           "command": "adb uninstall",
           "icon": "$(trash)",
-          "argsPrompt": "paket adı (örn. com.ornek.uygulama)",
-          "confirm": "Uygulama ve verileri cihazdan silinecek. Devam?",
-          "description": "uygulamayı kaldırır"
+          "argsPrompt": "package name (e.g. com.example.app)",
+          "confirm": "The app and its data will be removed from the device. This cannot be undone. Continue?",
+          "description": "uninstalls an app"
         }
       ]
     },
@@ -1011,39 +1011,39 @@
       "name": "Vercel",
       "icon": "$(rocket)",
       "color": "#FF4A4A",
-      "summary": "dev sunucu, log, yayınla",
+      "summary": "dev server, logs, deploy",
       "commands": [
         {
-          "name": "geliştirici sunucusu",
+          "name": "dev server",
           "command": "vercel dev --yes",
           "icon": "$(play)",
-          "description": "yerel sunucu (Ctrl+C ile durur)"
+          "description": "local server (Ctrl+C to stop)"
         },
         {
-          "name": "derle",
+          "name": "build",
           "command": "vercel build",
           "icon": "$(package)",
-          "description": "üretim derlemesi"
+          "description": "production build"
         },
         {
-          "name": "loglar",
+          "name": "logs",
           "command": "vercel logs",
           "icon": "$(history)",
-          "argsPrompt": "dağıtım URL'si veya ID'si",
-          "description": "çalışma zamanı logları (Ctrl+C ile durur)"
+          "argsPrompt": "deployment URL or ID",
+          "description": "runtime logs (Ctrl+C to stop)"
         },
         {
-          "name": "ortam değişkenleri",
+          "name": "env vars",
           "command": "vercel env ls",
           "icon": "$(symbol-key)",
-          "description": "tanımlı ortam değişkenleri"
+          "description": "defined environment variables"
         },
         {
-          "name": "yayınla",
+          "name": "deploy",
           "command": "vercel --prod",
           "icon": "$(rocket)",
-          "confirm": "Üretim ortamına yayınlanacak. Devam?",
-          "description": "canlıya çıkarır"
+          "confirm": "It will be published to the production environment. Continue?",
+          "description": "publishes to production"
         }
       ]
     },
@@ -1051,110 +1051,110 @@
       "name": "Surge",
       "icon": "$(zap)",
       "color": "#E8A317",
-      "summary": "statik yayın, sürüm, DNS, SSL",
+      "summary": "static publishing, revisions, DNS, SSL",
       "commands": [
         {
-          "name": "oturum",
+          "name": "session",
           "command": "surge whoami",
           "icon": "$(account)",
-          "description": "etkin oturumu gösterir"
+          "description": "shows the active session"
         },
         {
-          "name": "giriş",
+          "name": "log in",
           "command": "surge login",
           "icon": "$(symbol-key)",
-          "description": "oturum açar"
+          "description": "opens a session"
         },
         {
-          "name": "çıkış",
+          "name": "log out",
           "command": "surge logout",
           "icon": "$(sign-out)",
-          "description": "oturumu kapatır, jetonu geçersizleştirir"
+          "description": "closes the session and expires the token"
         },
         {
-          "name": "e-posta doğrula",
+          "name": "verify email",
           "command": "surge verify",
           "icon": "$(verified)",
-          "description": "hesap e-postasını doğrular"
+          "description": "verifies the account email"
         },
         {
-          "name": "projeler",
+          "name": "projects",
           "command": "surge list",
           "icon": "$(list-ordered)",
-          "description": "hesaptaki tüm projeler"
+          "description": "every project on the account"
         },
         {
-          "name": "yayınla",
+          "name": "deploy",
           "command": "surge",
           "icon": "$(rocket)",
-          "argsPrompt": "dizin ve alan adı (örn. ./dist site.com)",
-          "confirm": "Üretime yayınlanacak. Devam?",
-          "description": "dizini alan adına yayınlar"
+          "argsPrompt": "directory and domain (e.g. ./dist site.com)",
+          "confirm": "It will be published to production. Continue?",
+          "description": "publishes the directory to a domain"
         },
         {
-          "name": "CNAME ile yayınla",
+          "name": "publish with CNAME",
           "command": "surge publish",
           "icon": "$(cloud-upload)",
-          "confirm": "Üretime yayınlanacak. Devam?",
-          "description": "CNAME dosyasındaki alan adına yayınlar"
+          "confirm": "It will be published to production. Continue?",
+          "description": "publishes to the domain in the CNAME file"
         },
         {
-          "name": "önizleme yayını",
+          "name": "preview",
           "command": "surge --preview",
           "icon": "$(preview)",
-          "argsPrompt": "dizin ve alan adı (örn. ./dist site.com)",
-          "description": "üretime dokunmadan önizleme yayınlar"
+          "argsPrompt": "directory and domain (e.g. ./dist site.com)",
+          "description": "publishes a preview without touching production"
         },
         {
-          "name": "sürümler",
+          "name": "revisions",
           "command": "surge revs",
           "icon": "$(history)",
-          "argsPrompt": "alan adı",
-          "description": "projenin sürüm geçmişi"
+          "argsPrompt": "domain",
+          "description": "revision history of the project"
         },
         {
           "name": "geri al",
           "command": "surge rollback",
           "icon": "$(debug-rerun)",
-          "argsPrompt": "alan adı",
-          "confirm": "Canlı sürüm değiştirilecek. Devam?",
-          "description": "önceki sürüme döner"
+          "argsPrompt": "domain",
+          "confirm": "The live revision will change. Continue?",
+          "description": "rolls back to the previous revision"
         },
         {
-          "name": "ayarlar",
+          "name": "config",
           "command": "surge config",
           "icon": "$(tools)",
-          "argsPrompt": "alan adı",
-          "description": "proje yapılandırması"
+          "argsPrompt": "domain",
+          "description": "project configuration"
         },
         {
-          "name": "istatistik",
+          "name": "stats",
           "command": "surge stats",
           "icon": "$(watch)",
-          "argsPrompt": "alan adı",
-          "description": "trafik ve kullanım analitiği"
+          "argsPrompt": "domain",
+          "description": "traffic and usage analytics"
         },
         {
           "name": "DNS",
           "command": "surge dns",
           "icon": "$(globe)",
-          "argsPrompt": "alan adı",
-          "description": "DNS kayıtlarını yönetir"
+          "argsPrompt": "domain",
+          "description": "manages the DNS records"
         },
         {
           "name": "SSL",
           "command": "surge ssl",
           "icon": "$(shield)",
-          "argsPrompt": "alan adı",
-          "description": "sertifika işlemleri"
+          "argsPrompt": "domain",
+          "description": "certificate operations"
         },
         {
-          "name": "projeyi kaldır",
+          "name": "teardown",
           "command": "surge teardown",
           "icon": "$(trash)",
-          "argsPrompt": "alan adı",
-          "confirm": "Proje kalıcı olarak silinecek, geri alınamaz. Devam?",
-          "description": "yayınlanmış projeyi kaldırır"
+          "argsPrompt": "domain",
+          "confirm": "The project will be permanently deleted and cannot be restored. Continue?",
+          "description": "removes a published project"
         }
       ]
     }

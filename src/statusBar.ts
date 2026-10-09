@@ -47,7 +47,7 @@ function hiddenGroups(): readonly string[] {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
 }
 
-/** Gruptaki en çok kullanılan komut — tooltip'te "En çok: X (×5)" olarak görünür. */
+/** The most used command of a group — shown in the tooltip as "Most used: X (×5)". */
 function topCommandFactory(usage: UsageMap) {
   return (group: Group): { name: string; count: number } | undefined => {
     let best: { name: string; count: number } | undefined;
@@ -86,7 +86,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
         entry.kind === 'group'
           ? {
               command: OPEN_GROUP_COMMAND,
-              title: `${entry.id} komutları`,
+              title: `${entry.id} commands`,
               arguments: [entry.id],
             }
           : OPEN_COMMAND;
@@ -160,17 +160,17 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
       const lines =
         entry.kind === 'master' && !empty
           ? [
-              `**Cmdkit** — ${groups.length} grup, ${countCommands(groups)} komut`,
+              `**Cmdkit** — ${groups.length} groups, ${countCommands(groups)} commands`,
               ...omittedNote(plan, groups.length),
               last
-                ? `Son: ${resolveLastLabel(groups, last.group, last.name) ?? 'artık ayarlarda yok'}`
-                : 'Son: henüz çalıştırılmadı',
-              `${totalRuns(usage)} çalıştırma`,
+                ? `Last: ${resolveLastLabel(groups, last.group, last.name) ?? 'no longer in your settings'}`
+                : 'Last: nothing has been run yet',
+              `${totalRuns(usage)} runs`,
               '',
-              'Tıkla: grup seç → komut çalıştır',
+              'Click: pick a group → run a command',
             ]
           : empty
-            ? ['Cmdkit — "cmdkit.groups" boş, komut yok']
+            ? ['Cmdkit — "cmdkit.groups" is empty, no commands']
             : entry.tooltipLines;
 
       const tooltip = new vscode.MarkdownString(lines.join('\n\n'));
@@ -210,7 +210,7 @@ function omittedNote(plan: StatusBarPlanItem[], totalGroups: number): string[] {
 
   return omitted > 0
     ? [
-        `${omitted} grup düğmesi gizli (sağ tık → Show ile açılabilir, ${shown}/${totalGroups} görünür)`,
+        `${omitted} group buttons hidden (right click → Show to reveal, ${shown}/${totalGroups} visible)`,
       ]
     : [];
 }

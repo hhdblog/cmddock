@@ -44,7 +44,7 @@ describe('normalizeCommand', () => {
   it('confirm: true otomatik metne dönüşür', () => {
     const command = normalizeCommand({ name: 'rm', command: 'rm -rf /', confirm: true });
 
-    expect(command?.confirm).toBe("'rm -rf /' çalıştırılsın mı?");
+    expect(command?.confirm).toBe("'rm -rf /' to run?");
   });
 
   it('confirm metni aynen korunur', () => {

@@ -117,7 +117,7 @@ describe('varsayılan komut listesi', () => {
       .map((command) => command.name);
 
     expect(confirmed).toEqual(
-      expect.arrayContaining(['push', 'pull', "son commit'i geri al"])
+      expect.arrayContaining(['push', 'pull', 'undo last commit'])
     );
   });
 

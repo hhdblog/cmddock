@@ -1,7 +1,7 @@
 {
   "name": "cmdkit",
   "displayName": "Cmdkit",
-  "description": "Sık kullanılan terminal komutlarını gruplayan durum çubuğu paneli.",
+  "description": "Group frequently used terminal commands and run them from the status bar. Ships with a library of 159 commands in 16 groups.",
   "version": "0.2.0",
   "publisher": "cmdkit",
   "license": "MIT",
@@ -26,73 +26,73 @@
     "commands": [
       {
         "command": "cmdkit.open",
-        "title": "Komutlar",
+        "title": "Commands",
         "category": "Cmdkit",
         "icon": "$(terminal)"
       },
       {
         "command": "cmdkit.search",
-        "title": "Tüm Komutlarda Ara",
+        "title": "Search All Commands",
         "category": "Cmdkit",
         "icon": "$(search)"
       },
       {
         "command": "cmdkit.runLast",
-        "title": "Son Komutu Tekrar Çalıştır",
+        "title": "Run Last Command Again",
         "category": "Cmdkit",
         "icon": "$(debug-rerun)"
       },
       {
         "command": "cmdkit.reload",
-        "title": "Dosyayı Ayarlardan Yenile",
+        "title": "Reload File From Settings",
         "category": "Cmdkit",
         "icon": "$(refresh)"
       },
       {
         "command": "cmdkit.checkPlatform",
-        "title": "Platform Uyumluluğunu Kontrol Et",
+        "title": "Check Platform Compatibility",
         "category": "Cmdkit",
         "icon": "$(check)"
       },
       {
         "command": "cmdkit.export",
-        "title": "Komut Listesini Düzenle",
+        "title": "Edit Command List",
         "category": "Cmdkit",
         "icon": "$(json)"
       },
       {
         "command": "cmdkit.import",
-        "title": "Komut Dosyasını Uygula",
+        "title": "Apply Command File",
         "category": "Cmdkit",
         "icon": "$(sync)"
       },
       {
         "command": "cmdkit.statusBarItems",
-        "title": "Durum Çubuğu Düğmelerini Seç",
+        "title": "Choose Status Bar Items",
         "category": "Cmdkit",
         "icon": "$(list-selection)"
       },
       {
         "command": "cmdkit.iconCatalog",
-        "title": "İkon Kataloğu",
+        "title": "Icon Catalog",
         "category": "Cmdkit",
         "icon": "$(paintcan)"
       },
       {
         "command": "cmdkit.addGroup",
-        "title": "Hazır Grup Ekle",
+        "title": "Add Built-in Group",
         "category": "Cmdkit",
         "icon": "$(new-folder)"
       },
       {
         "command": "cmdkit.removeGroup",
-        "title": "Grup Kaldır",
+        "title": "Remove Group",
         "category": "Cmdkit",
         "icon": "$(trash)"
       },
       {
         "command": "cmdkit.usage",
-        "title": "Komut Dosyası Nasıl Kullanılır",
+        "title": "How to Use the Command File",
         "category": "Cmdkit",
         "icon": "$(markdown)"
       }
@@ -105,37 +105,37 @@
           "color": "#4B8BBE",
           "commands": [
             {
-              "name": "venv oluştur",
+              "name": "create venv",
               "command": "{python} -m venv .venv",
               "icon": "$(folder)",
-              "description": "Sanal ortamı kur"
+              "description": "creates a virtual environment"
             },
             {
-              "name": "bağımlılıkları kur",
+              "name": "install dependencies",
               "command": "{venv}pip install -r requirements.txt",
               "icon": "$(cloud-download)",
-              "description": "requirements.txt'ten kur"
+              "description": "install from requirements.txt"
             },
             {
-              "name": "requirements üret",
+              "name": "freeze to requirements.txt",
               "command": "{venv}pip freeze > requirements.txt",
               "icon": "$(archive)",
-              "confirm": "requirements.txt üzerine yazılacak. Devam?",
-              "description": "freeze çıktısını dosyaya yaz"
+              "confirm": "requirements.txt will be overwritten. Continue?",
+              "description": "writes the freeze output to a file"
             },
             {
-              "name": "paket kur",
+              "name": "install package",
               "command": "{venv}pip install",
               "icon": "$(cloud-download)",
-              "argsPrompt": "paket adı (örn. requests==2.32.0)",
-              "description": "tek paket kur"
+              "argsPrompt": "package name (e.g. requests==2.32.0)",
+              "description": "installs a single package"
             },
             {
-              "name": "dosya çalıştır",
+              "name": "run file",
               "command": "{venvpy}",
               "icon": "$(play)",
-              "argsPrompt": "dosya yolu (örn. main.py)",
-              "description": "belirtilen scripti çalıştır"
+              "argsPrompt": "file path (e.g. main.py)",
+              "description": "runs the given script"
             },
             {
               "name": "test",
@@ -156,7 +156,7 @@
               "description": "ruff"
             },
             {
-              "name": "tip kontrolü",
+              "name": "type check",
               "command": "{venvpy} -m mypy .",
               "icon": "$(symbol-key)",
               "description": "mypy"
@@ -165,16 +165,16 @@
               "name": "Jupyter Lab",
               "command": "{venv}jupyter lab",
               "icon": "$(book)",
-              "description": "notebook sunucusu (Ctrl+C ile durur)"
+              "description": "notebook server (Ctrl+C to stop)"
             },
             {
-              "name": "bağımlılık listesi",
+              "name": "list dependencies",
               "command": "{venv}pip list",
               "icon": "$(list-ordered)",
-              "description": "kurulu paketler"
+              "description": "installed packages"
             },
             {
-              "name": "güncel olmayanlar",
+              "name": "outdated",
               "command": "{venv}pip list --outdated",
               "icon": "$(clock)",
               "description": "outdated"
@@ -190,46 +190,46 @@
               "name": "pub get",
               "command": "flutter pub get",
               "icon": "$(cloud-download)",
-              "description": "bağımlılıkları indir"
+              "description": "download dependencies"
             },
             {
-              "name": "çalıştır",
+              "name": "run",
               "command": "flutter run",
               "icon": "$(play)",
-              "description": "hot reload aktif, Ctrl+C ile durur"
+              "description": "hot reload is on, Ctrl+C to stop"
             },
             {
               "name": "build apk",
               "command": "flutter build apk --release",
               "icon": "$(package)",
               "clear": true,
-              "description": "APK çıktısı"
+              "description": "APK output"
             },
             {
               "name": "build web",
               "command": "flutter build web",
               "icon": "$(globe)",
               "clear": true,
-              "description": "web çıktısı"
+              "description": "web output"
             },
             {
               "name": "build ios",
               "command": "flutter build ios --release",
               "icon": "$(device-desktop)",
               "clear": true,
-              "description": "macOS + Xcode gerekir"
+              "description": "requires macOS + Xcode"
             },
             {
               "name": "analyze",
               "command": "flutter analyze",
               "icon": "$(search)",
-              "description": "statik analiz"
+              "description": "static analysis"
             },
             {
               "name": "test",
               "command": "flutter test",
               "icon": "$(beaker)",
-              "description": "testler"
+              "description": "tests"
             },
             {
               "name": "format",
@@ -238,29 +238,29 @@
               "description": "dart formatter"
             },
             {
-              "name": "cihazlar",
+              "name": "devices",
               "command": "flutter devices",
               "icon": "$(device-mobile)",
-              "description": "bağlı cihazlar"
+              "description": "connected devices"
             },
             {
-              "name": "temizle",
+              "name": "clean",
               "command": "flutter clean",
               "icon": "$(discard)",
-              "confirm": "Derleme önbelleği silinecek. Devam?",
-              "description": "build klasörlerini siler"
+              "confirm": "The build cache will be deleted. Continue?",
+              "description": "deletes the build directories"
             },
             {
               "name": "upgrade",
               "command": "flutter upgrade",
               "icon": "$(cloud-upload)",
-              "description": "SDK güncelle"
+              "description": "updates the SDK"
             },
             {
-              "name": "stable kanal",
+              "name": "stable channel",
               "command": "flutter channel stable && flutter upgrade",
               "icon": "$(sync)",
-              "description": "kanala geç ve güncelle"
+              "description": "switch to the channel and update"
             }
           ]
         },
@@ -270,48 +270,48 @@
           "color": "#83CD29",
           "commands": [
             {
-              "name": "kur",
+              "name": "install",
               "command": "npm install",
               "icon": "$(cloud-download)",
-              "description": "bağımlılıkları kur"
+              "description": "install dependencies"
             },
             {
-              "name": "temiz kur",
+              "name": "clean install",
               "command": "npm ci",
               "icon": "$(cloud-download)",
               "clear": true,
-              "description": "lock dosyasından birebir kur"
+              "description": "installs exactly from the lock file"
             },
             {
-              "name": "derle",
+              "name": "build",
               "command": "npm run build",
               "icon": "$(tools)",
               "clear": true,
               "description": "production build"
             },
             {
-              "name": "başlat",
+              "name": "init",
               "command": "npm start",
               "icon": "$(play)",
-              "description": "start scripti"
+              "description": "the start script"
             },
             {
               "name": "dev",
               "command": "npm run dev",
               "icon": "$(watch)",
-              "description": "watch modu (Ctrl+C ile durur)"
+              "description": "watch mode (Ctrl+C to stop)"
             },
             {
               "name": "test",
               "command": "npm test",
               "icon": "$(beaker)",
-              "description": "testler"
+              "description": "tests"
             },
             {
               "name": "typecheck",
               "command": "npx --no-install tsc --noEmit",
               "icon": "$(symbol-interface)",
-              "description": "yerel TypeScript ile tip kontrolü (kurulu değilse uyarır)"
+              "description": "type check with the local TypeScript (warns if not installed)"
             },
             {
               "name": "lint",
@@ -323,27 +323,27 @@
               "name": "outdated",
               "command": "npm outdated",
               "icon": "$(clock)",
-              "description": "güncel olmayanlar"
+              "description": "outdated"
             },
             {
-              "name": "güvenlik açığı düzelt",
+              "name": "audit fix",
               "command": "npm audit fix",
               "icon": "$(shield)",
-              "confirm": "paket sürümleri değişecek. Devam?",
+              "confirm": "Package versions will change. Continue?",
               "description": "audit fix"
             },
             {
-              "name": "node_modules temizle",
+              "name": "clean node_modules",
               "command": "{rm} node_modules",
               "icon": "$(trash)",
-              "confirm": "node_modules silinecek, yeniden kurulum gerekir. Devam?",
-              "description": "bağımlılık klasörünü sil"
+              "confirm": "node_modules will be deleted, a reinstall will be needed. Continue?",
+              "description": "deletes the dependency folder"
             },
             {
-              "name": "global bağla",
+              "name": "link global",
               "command": "npm link",
               "icon": "$(link)",
-              "argsPrompt": "paket adı (örn. my-lib)",
+              "argsPrompt": "package name (e.g. my-lib)",
               "description": "link"
             }
           ]
@@ -354,102 +354,102 @@
           "color": "#F14E32",
           "commands": [
             {
-              "name": "durum",
+              "name": "status",
               "command": "git status",
               "icon": "$(source-control)",
-              "description": "çalışma ağacı"
+              "description": "working tree"
             },
             {
-              "name": "fark",
+              "name": "diff",
               "command": "git diff",
               "icon": "$(git-compare)",
-              "description": "değişiklikleri göster"
+              "description": "shows the changes"
             },
             {
               "name": "log",
               "command": "git log --oneline --graph -20",
               "icon": "$(history)",
-              "description": "son 20 commit"
+              "description": "last 20 commits"
             },
             {
-              "name": "hepsini ekle",
+              "name": "stage all",
               "command": "git add -A",
               "icon": "$(cloud-download)",
-              "description": "tüm değişiklikleri sahneye al"
+              "description": "stages every change"
             },
             {
               "name": "commit",
               "command": "git commit -m",
               "icon": "$(git-commit)",
-              "argsPrompt": "commit mesajı",
+              "argsPrompt": "commit message",
               "argsSingle": true,
-              "description": "mesajla commit"
+              "description": "commit with a message"
             },
             {
               "name": "push",
               "command": "git push",
               "icon": "$(cloud-upload)",
-              "confirm": "Değişiklikler uzak depoya gönderilecek. Devam?",
-              "description": "uzak depoya gönder"
+              "confirm": "Changes will be pushed to the remote. Continue?",
+              "description": "push to the remote"
             },
             {
               "name": "pull",
               "command": "git pull",
               "icon": "$(cloud-download)",
-              "confirm": "Yerel değişikliklerle çakışabilir. Devam?",
-              "description": "uzaktan çek"
+              "confirm": "May conflict with local changes. Continue?",
+              "description": "fetch from the remote"
             },
             {
               "name": "fetch",
               "command": "git fetch --all --prune",
               "icon": "$(sync)",
-              "description": "uzakları tazele, silinen dalları at"
+              "description": "refresh remotes, drop deleted branches"
             },
             {
-              "name": "dallar",
+              "name": "branches",
               "command": "git branch -a",
               "icon": "$(git-branch)",
-              "description": "yerel ve uzak dallar"
+              "description": "local and remote branches"
             },
             {
-              "name": "dala geç",
+              "name": "switch branch",
               "command": "git checkout",
               "icon": "$(git-branch)",
-              "argsPrompt": "dal veya dosya adı",
-              "description": "dal değiştir / dosyayı geri al"
+              "argsPrompt": "branch or file name",
+              "description": "switch branch / restore file"
             },
             {
-              "name": "yeni dal",
+              "name": "new branch",
               "command": "git checkout -b",
               "icon": "$(git-branch)",
-              "argsPrompt": "yeni dal adı",
-              "description": "dal oluştur ve geç"
+              "argsPrompt": "new branch name",
+              "description": "create and switch to a branch"
             },
             {
               "name": "stash",
               "command": "git stash",
               "icon": "$(git-stash)",
-              "description": "değişiklikleri sakla"
+              "description": "stashes the changes"
             },
             {
-              "name": "stash geri al",
+              "name": "unstash",
               "command": "git stash pop",
               "icon": "$(git-stash)",
-              "description": "saklananı geri yükle"
+              "description": "restores the stash"
             },
             {
-              "name": "son commit'i geri al",
+              "name": "undo last commit",
               "command": "git reset --soft HEAD~1",
               "icon": "$(debug-rerun)",
-              "confirm": "Son commit geri alınacak (dosyalar korunur). Devam?",
+              "confirm": "The last commit will be undone (files are kept). Continue?",
               "description": "soft reset"
             },
             {
-              "name": "klonla",
+              "name": "clone",
               "command": "git clone",
               "icon": "$(repo)",
-              "argsPrompt": "depo adresi",
-              "description": "uzaktan klonla"
+              "argsPrompt": "repository URL",
+              "description": "clone from the remote"
             }
           ]
         },
@@ -459,69 +459,69 @@
           "color": "#FFCA28",
           "commands": [
             {
-              "name": "giriş yap",
+              "name": "log in",
               "command": "firebase login",
               "icon": "$(account)",
-              "description": "tarayıcıda oturum açar"
+              "description": "opens a browser session"
             },
             {
-              "name": "çıkış yap",
+              "name": "log out",
               "command": "firebase logout",
               "icon": "$(sign-out)",
-              "description": "oturumu kapat"
+              "description": "closes the session"
             },
             {
-              "name": "projeleri listele",
+              "name": "list projects",
               "command": "firebase projects:list",
               "icon": "$(list-ordered)",
-              "description": "hesabındaki projeler"
+              "description": "projects on the account"
             },
             {
-              "name": "projeye bağlan",
+              "name": "link project",
               "command": "firebase use",
               "icon": "$(link)",
-              "argsPrompt": "proje adı",
-              "description": "klasörü projeye bağlar"
+              "argsPrompt": "project ID",
+              "description": "links the folder to a project"
             },
             {
-              "name": "hosting deploy",
+              "name": "deploy hosting",
               "command": "firebase deploy --only hosting",
               "icon": "$(cloud-upload)",
-              "confirm": "Hosting canlıya yayınlanacak. Devam?",
-              "description": "statik siteyi yayınla"
+              "confirm": "Hosting will be published to production. Continue?",
+              "description": "publishes the static site"
             },
             {
-              "name": "functions deploy",
+              "name": "deploy functions",
               "command": "firebase deploy --only functions",
               "icon": "$(rocket)",
-              "confirm": "Functions canlıya yayınlanacak. Devam?",
-              "description": "sunucu fonksiyonlarını yayınla"
+              "confirm": "Functions will be published to production. Continue?",
+              "description": "publishes the server functions"
             },
             {
-              "name": "kuralları deploy",
+              "name": "deploy rules",
               "command": "firebase deploy --only firestore:rules",
               "icon": "$(shield)",
-              "confirm": "Firestore kuralları yayınlanacak. Devam?",
+              "confirm": "Firestore rules will be published. Continue?",
               "description": "rules + indexes"
             },
             {
-              "name": "emülatörler",
+              "name": "emulators",
               "command": "firebase emulators:start",
               "icon": "$(beaker)",
-              "description": "yerel emülatörler (Ctrl+C ile durur)"
+              "description": "local emulators (Ctrl+C to stop)"
             },
             {
-              "name": "fonksiyon logları",
+              "name": "function logs",
               "command": "firebase functions:log",
               "icon": "$(history)",
-              "description": "canlı fonksiyon logları"
+              "description": "live function logs"
             },
             {
-              "name": "başlat",
+              "name": "init",
               "command": "firebase init",
               "icon": "$(gear)",
-              "confirm": "Klasörde firebase.json oluşturulacak/yazılacak. Devam?",
-              "description": "yapılandırma (interaktif)"
+              "confirm": "firebase.json will be created or written in this folder. Continue?",
+              "description": "configuration (interactive)"
             }
           ]
         }
@@ -541,7 +541,7 @@
         "cmdkit.groups": {
           "type": "array",
           "default": [],
-          "description": "Durum çubuğu menüsünde gösterilecek komut grupları. Boş bırakılırsa eklentinin varsayılan grupları (Python, Flutter, Node.js) kullanılır.",
+          "description": "Command groups shown in the menus. Leave empty to use the built-in defaults (Python, Flutter, Node.js).",
           "items": {
             "type": "object",
             "required": [
@@ -621,37 +621,37 @@
         "cmdkit.groupFile": {
           "type": "string",
           "default": "",
-          "description": "Komut listesinin düzenlendiği dosyanın yolu. Göreli yollar ilk çalışma alanı köküne göre çözülür. Boş bırakılırsa .vscode/cmdkit-groups.json kullanılır. Monorepo'da alt paketi göstermek için: \"packages/api/cmdkit-groups.json\"."
+          "description": "Path to the file where the command list is edited. Relative paths resolve against the first workspace root. Leave empty to use .vscode/cmdkit-groups.json. To point at a sub-package in a monorepo: \"packages/api/cmdkit-groups.json\"."
         },
         "cmdkit.statusBar.icon": {
           "type": "string",
           "default": "terminal",
-          "description": "Durum çubuğu düğmesinin ikonu. Kodikon adı (\"zap\") veya \"$(zap)\" biçiminde yazılabilir. Adaylar: \"Cmdkit: İkon Kataloğu\"."
+          "description": "Icon for the status bar button. Accepts a codicon name (\"zap\") or the \"$(zap)\" form. Run \"Cmdkit: Icon Catalog\" to see the candidates."
         },
         "cmdkit.statusBar.color": {
           "type": "string",
           "default": "",
-          "description": "Durum çubuğu düğmesinin ön plan rengi. Boş bırakılırsa tema rengi kullanılır. \"#4EC9B0\" gibi hex ya da \"charts.red\", \"statusBarItem.errorBackground\" gibi tema rengi adı."
+          "description": "Foreground color of the status bar button. Leave empty to use the theme color. Either a hex value like \"#4EC9B0\" or a theme color name such as \"charts.red\" or \"statusBarItem.errorBackground\"."
         },
         "cmdkit.statusBar.background": {
           "type": "string",
           "default": "",
-          "description": "Durum çubuğu düğmesinin arka plan rengi. Aynı biçim: hex veya tema rengi adı. Boş bırakılırsa arka plan şeffaf kalır."
+          "description": "Background color of the status bar button. Same format as the foreground color. Leave empty to keep the background transparent."
         },
         "cmdkit.statusBar.showGroups": {
           "type": "boolean",
           "default": true,
-          "description": "Her grup için durum çubuğunda ayrı bir düğme gösterir. Tıklanınca grup seviyesi atlanır ve o grubun komutları açılır."
+          "description": "Show a separate status bar button per group. Clicking one skips the group level and opens that group's commands directly."
         },
         "cmdkit.statusBar.showMaster": {
           "type": "boolean",
           "default": true,
-          "description": "\"cmd\" düğmesini gösterir: tüm gruplar tek listeden seçilir."
+          "description": "Show the \"cmd\" button, which lists every group's commands in a single flat list."
         },
         "cmdkit.statusBar.maxGroupItems": {
           "type": "number",
           "default": 3,
-          "description": "Durum çubuğunda en fazla kaç grup düğmesi gösterilsin. Fazlası yalnızca Cmd düğmesi ve arama üzerinden erişilebilir. 0 yazarsan sınırsız olur, tüm gruplar gösterilir. Hiç grup düğmesi istemiyorsan cmdkit.statusBar.showGroups = false."
+          "description": "Maximum number of group buttons shown in the status bar. Anything beyond that is reachable through the Cmd button and the search command. Set to 0 for no limit. To show no group buttons at all, set cmdkit.statusBar.showGroups to false."
         },
         "cmdkit.statusBar.groupLabel": {
           "type": "string",
@@ -660,7 +660,7 @@
             "",
             "always"
           ],
-          "description": "\"always\" ise grup düğmelerinde ikonun yanına grup adı da yazılır. Boş bırakılırsa yalnızca ikon görünür."
+          "description": "When set to \"always\", the group name is written next to the icon on each group button. Leave empty to show icons only."
         },
         "cmdkit.statusBar.hiddenGroups": {
           "type": "array",
@@ -668,12 +668,12 @@
             "type": "string"
           },
           "default": [],
-          "description": "Durum çubuğunda gösterilmeyecek grup adları. Örn. [\"Python\", \"Node.js\"]."
+          "description": "Group names not shown in the status bar. For example [\"Python\", \"Node.js\"]."
         },
         "cmdkit.statusBar.priority": {
           "type": "number",
           "default": 250,
-          "description": "Durum çubuğu düğmelerinin sırası. Yüksek değer daha sola gelir; grup düğmeleri bundan 1, 2, 3 azalır. Başka bir eklenti aynı değeri kullanırsa düğmelerimizin arasına girer, o durumda bu değeri değiştir. Bu makinede kullanılan değerler: -1, 0, 1, 100, 1000."
+          "description": "Order of the status bar buttons. A higher value sits further left; each group button takes 1, 2, 3 below this. Another extension using the same value interleaves with ours — change this value in that case. Values already used on this machine: -1, 0, 1, 100, 1000."
         }
       }
     }

@@ -26,7 +26,7 @@ async function copyWindowsVersion(offending: readonly Offending[]): Promise<void
       detail: expandTokens(entry.command.command, 'win32'),
     })),
     {
-      placeHolder: 'Windows karşılığı seç — panoya kopyalanır',
+      placeHolder: 'Pick the Windows equivalent — it is copied to the clipboard',
       matchOnDescription: true,
       matchOnDetail: true,
     }
@@ -46,7 +46,7 @@ async function copyWindowsVersion(offending: readonly Offending[]): Promise<void
 
   await vscode.env.clipboard.writeText(expandTokens(source.command.command, 'win32'));
   void vscode.window.showInformationMessage(
-    'cmdkit: panoya kopyalandı — cmdkit.groups içindeki komutu bununla değiştir.'
+    'cmdkit: copied — replace the command in cmdkit.groups with this.'
   );
 }
 
@@ -56,21 +56,21 @@ export async function checkPlatform(context: vscode.ExtensionContext): Promise<v
 
   if (offending.length === 0) {
     void vscode.window.showInformationMessage(
-      `cmdkit: ${process.platform} için sorunlu komut yok.`
+      `cmdkit: no problematic commands for ${process.platform}.`
     );
     return;
   }
 
   const choice = await vscode.window.showWarningMessage(
-    `${offending.length} komut POSIX yolu içeriyor (.venv/bin, rm -rf). ` +
+    `${offending.length} commands contain POSIX paths (.venv/bin, rm -rf). ` +
       `Bu platform: ${process.platform}.`,
-    'Windows karşılığını kopyala',
-    'Bir daha gösterme'
+    'Copy the Windows equivalent',
+    'Do not show again'
   );
 
-  if (choice === 'Windows karşılığını kopyala') {
+  if (choice === 'Copy the Windows equivalent') {
     await copyWindowsVersion(offending);
-  } else if (choice === 'Bir daha gösterme') {
+  } else if (choice === 'Do not show again') {
     await context.globalState.update(NOTICE_KEY, true);
   }
 }
@@ -90,11 +90,11 @@ export function maybeShowPlatformNotice(context: vscode.ExtensionContext): void 
 
   void vscode.window
     .showInformationMessage(
-      `cmdkit: ${count} komut macOS/Linux yolu içeriyor, Windows'ta çalışmaz.`,
-      'Windows karşılığını kopyala'
+      `cmdkit: ${count} commands contain macOS/Linux paths and will not run on Windows.`,
+      'Copy the Windows equivalent'
     )
     .then((choice) => {
-      if (choice === 'Windows karşılığını kopyala') {
+      if (choice === 'Copy the Windows equivalent') {
         return copyWindowsVersion(findPosixOnly(getGroups()));
       }
       return undefined;

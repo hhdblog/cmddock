@@ -128,7 +128,7 @@ describe('reloadGroupFile', () => {
   it('dosya yoksa önce düzenlemeyi ister', async () => {
     await reloadGroupFile(context() as never);
 
-    expect(messages.at(-1)?.text).toContain('Komut Listesini Düzenle');
+    expect(messages.at(-1)?.text).toContain('Edit Command List');
     expect(writes).toHaveLength(0);
   });
 
@@ -233,7 +233,7 @@ describe('applyGroupFile', () => {
     await applyGroupFile(ctx as never);
 
     expect(writes).toHaveLength(0);
-    expect(messages.at(-1)?.text).toContain('hiçbir şey yazılmadı');
+    expect(messages.at(-1)?.text).toContain('nothing was written');
   });
 
   it('yeni komutu birleştirip yazar', async () => {
@@ -380,7 +380,7 @@ describe('addLibraryGroup', () => {
 
     await addLibraryGroup(context());
 
-    expect(messages.at(-1)?.text).toContain('hepsi zaten ekli');
+    expect(messages.at(-1)?.text).toContain('are already added');
     expect(writes).toHaveLength(0);
   });
 
@@ -441,8 +441,8 @@ describe('addLibraryGroup', () => {
     await addLibraryGroup(context());
 
     const written = writes[0].value as { commands: { name: string; argsPrompt?: string }[] }[];
-    const calistir = written[1].commands.find((c) => c.name === 'çalıştır');
-    expect(calistir?.argsPrompt).toBeTruthy();
+    const run = written[1].commands.find((c) => c.name === 'run');
+    expect(run?.argsPrompt).toBeTruthy();
   });
 
   it('seçilen hedefe yazar', async () => {
@@ -533,7 +533,7 @@ describe('kütüphane ekledikten sonra düzenleme dosyası senkronlanır', () =>
     await addLibraryGroup(ctx as never);
 
     expect(read()).not.toContain('Go');
-    expect(messages.some((message) => message.text.includes('aynı değil'))).toBe(true);
+    expect(messages.some((message) => message.text.includes('differs from your settings'))).toBe(true);
   });
 
   it('dosyada kaydedilmemiş düzenleme varsa dokunmaz', async () => {
@@ -603,9 +603,9 @@ describe('removeGroup', () => {
 
     await removeGroup(context() as never);
 
-    const modal = messages.find((m) => m.text.includes('silinecek'));
-    expect(modal?.text).toContain('1 komut');
-    expect(modal?.text).toContain('geri alınamaz');
+    const modal = messages.find((m) => m.text.includes('will be deleted'));
+    expect(modal?.text).toContain('1 commands');
+    expect(modal?.text).toContain('cannot be undone');
   });
 
   it('onaylanmazsa yazmaz', async () => {
@@ -643,7 +643,7 @@ describe('removeGroup', () => {
     await removeGroup(context() as never);
 
     expect(writes).toHaveLength(0);
-    expect(messages.at(-1)?.text).toContain('tek grup');
+    expect(messages.at(-1)?.text).toContain('only group');
   });
 
   it('dosya senkronsa silinen grubu dosyadan da çıkarır', async () => {
@@ -670,8 +670,8 @@ describe('removeGroup', () => {
 
     await removeGroup(ctx as never);
 
-    expect(messages.some((m) => m.text.includes('hâlâ var'))).toBe(true);
-    expect(messages.some((m) => m.text.includes('geri gelir'))).toBe(true);
+    expect(messages.some((m) => m.text.includes('is still in the editing file'))).toBe(true);
+    expect(messages.some((m) => m.text.includes('it comes back'))).toBe(true);
   });
 
   it('seçilen hedefe yazar', async () => {

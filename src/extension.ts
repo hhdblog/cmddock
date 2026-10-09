@@ -62,7 +62,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
       if (!group) {
         void vscode.window.showWarningMessage(
-          `cmdkit: "${groupName}" grubu artık ayarlarda yok.`
+          `cmdkit: the group "${groupName}" is no longer in your settings.`
         );
         return;
       }
@@ -92,8 +92,8 @@ export function activate(context: vscode.ExtensionContext): void {
       if (!resolved) {
         void vscode.window.showInformationMessage(
           last
-            ? 'cmdkit: son çalışan komut artık ayarlarda yok.'
-            : 'cmdkit: henüz komut çalıştırılmadı.'
+            ? 'cmdkit: the last run command is no longer in your settings.'
+            : 'cmdkit: no command has been run yet.'
         );
         return;
       }

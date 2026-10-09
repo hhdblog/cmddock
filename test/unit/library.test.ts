@@ -154,11 +154,13 @@ describe('hazır grup kütüphanesi', () => {
 
   it('onay metni geri alınamaz olduğunda uyarıyor', () => {
     const dangerous = /flushall|prune -a|uninstall/;
+    // Kullanıcıya gösterilen metin İngilizce; uyarı da aynı dilde olmalı.
+    const warns = /cannot be undone|permanently|will be deleted|ALL keys/;
 
     for (const group of LIBRARY_GROUPS) {
       for (const command of group.commands) {
         if (dangerous.test(command.command)) {
-          expect(command.confirm, command.command).toMatch(/geri alınamaz|alınamaz|silinecek/);
+          expect(command.confirm, command.command).toMatch(warns);
         }
       }
     }
@@ -249,7 +251,7 @@ describe('normalizeLibrary', () => {
     const result = normalizeLibrary([
       { name: 'G', summary: 's', commands: [{ name: 'a', command: 'rm -rf x', confirm: true }] },
     ]);
-    expect(result[0].commands[0].confirm).toBe("'rm -rf x' çalıştırılsın mı?");
+    expect(result[0].commands[0].confirm).toBe("'rm -rf x' to run?");
   });
 
   it('geçerli referans testte kullanılıyor', () => {

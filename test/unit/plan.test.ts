@@ -163,7 +163,7 @@ describe('planItems', () => {
     const tooltip = plan.find((entry) => entry.id === 'Python')?.tooltipLines.join('\n');
 
     expect(tooltip).toContain('Python');
-    expect(tooltip).toContain('1 komut');
+    expect(tooltip).toContain('1 commands');
   });
 
   it('en çok kullanılan komut varsa tooltipte görünür', () => {
@@ -174,10 +174,10 @@ describe('planItems', () => {
     });
 
     expect(plan.find((entry) => entry.id === 'Python')?.tooltipLines.join('\n')).toContain(
-      'En çok: test (×5)'
+      'Most used: test (×5)'
     );
     expect(plan.find((entry) => entry.id === 'Node.js')?.tooltipLines.join('\n')).not.toContain(
-      'En çok'
+      'Most used'
     );
   });
 
@@ -245,7 +245,7 @@ describe('planItems', () => {
     const names = planItems(groups, unlimited).map((entry) => entry.name);
 
     expect(names).toEqual([
-      'Cmdkit: Tüm Gruplar',
+      'Cmdkit: All Groups',
       'Cmdkit: Python',
       'Cmdkit: Flutter',
       'Cmdkit: Node.js',

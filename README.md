@@ -1,163 +1,168 @@
 # Cmdkit
 
-Durum çubuğundaki tek bir öğeyle sık kullandığın terminal komutlarına iki tıkla ulaş.
+Reach your most used terminal commands in two clicks, from a single item in the status bar.
 
-`Cmdkit` → komut grubu → komut → terminalde çalışır. Gruplar `cmdkit-groups.json`
-dosyasında düzenlenir, `.vscode/settings.json` içine uygulanır; dosyayı commit'leyip
-ekibinle paylaşabilirsin.
+`Cmdkit` → command group → command → runs in the terminal. Groups are edited in
+`cmdkit-groups.json`, applied into `.vscode/settings.json`, and you can commit that
+file to share it with your team.
 
-## Kurulum
+## Install
 
 ```bash
 npm install
 npm run build
-npm run package            # cmdkit-0.2.0.vsix üretir
+npm run package            # produces cmdkit-0.2.0.vsix
 code --install-extension cmdkit-0.2.0.vsix
 ```
 
-Geliştirirken VSCode'da bu klasörü açıp <kbd>F5</kbd> ile Extension Development Host başlat.
+While developing, open this folder in VSCode and press <kbd>F5</kbd> to start the
+Extension Development Host.
 
-## Kullanım
+## Usage
 
-| Yapmak istediğin                        | Ne yapmalısın                                                            |
-| --------------------------------------- | ------------------------------------------------------------------------ |
-| Komut çalıştır                          | Durum çubuğundaki **grup ikonuna** tıkla → komut (grup seviyesi atlanır) |
-| Tüm gruplardan seç                      | Durum çubuğundaki `Cmd` düğmesine tıkla → grup → komut                   |
-| Komut listesini düzenle                 | `Cmdkit: Komut Listesini Düzenle` → JSON dosyası açılır, düzenle       |
-| Hazır grup ekle (Docker, Go, k8s, Surge…) | `Cmdkit: Hazır Grup Ekle` → kütüphaneden seç                          |
-| Grup sil                                | `Cmdkit: Grup Kaldır` → gruplardan seç                                 |
-| Grup seviyesine inmeden ara             | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `Cmdkit: Tüm Komutlarda Ara`            |
-| Son komutu tekrarla                     | `Cmdkit: Son Komutu Tekrar Çalıştır`                                   |
-| Windows uyumluluğunu denetle            | `Cmdkit: Platform Uyumluluğunu Kontrol Et`                             |
-| Kullanılabilir ikonları gör             | `Cmdkit: İkon Kataloğu`                                                |
-| Komut dosyasını nasıl kullanacağımı gör | `Cmdkit: Komut Dosyası Nasıl Kullanılır`                               |
-| Durum çubuğunda hangi gruplar görünsün  | `Cmdkit: Durum Çubuğu Düğmelerini Seç` (çoklu seçim, işaretle)         |
+| What you want                          | What to do                                                                    |
+| -------------------------------------- | ----------------------------------------------------------------------------- |
+| Run a command                          | Click the **group icon** in the status bar → command (skips the group level)  |
+| Pick from every group                  | Click the `Cmd` button in the status bar → group → command                    |
+| Edit the command list                  | `Cmdkit: Edit Command List` → the JSON file opens, edit it                    |
+| Add a built-in group (Docker, Go, k8s, Surge…) | `Cmdkit: Add Built-in Group` → pick from the library                     |
+| Remove a group                         | `Cmdkit: Remove Group` → pick from the groups                                 |
+| Search without going through a group   | <kbd>Ctrl</kbd>+<kbd>P</kbd> → `Cmdkit: Search All Commands`                   |
+| Repeat the last command                | `Cmdkit: Run Last Command Again`                                              |
+| Check Windows compatibility            | `Cmdkit: Check Platform Compatibility`                                       |
+| Browse the usable icons                | `Cmdkit: Icon Catalog`                                                        |
+| Learn how the command file works       | `Cmdkit: How to Use the Command File`                                        |
+| Choose which groups show in the bar    | `Cmdkit: Choose Status Bar Items` (multi select, tick)                        |
 
-Komut listesinde **en çok kullandıkların üstte** çıkar; sayı eşitse `settings.json` sırası korunur.
-Grubun kendi sırası hep ayardaki gibi kalır.
+The commands you use most float to the top; on a tie the `settings.json` order
+wins. The order of the groups themselves always follows your settings.
 
-## Durum çubuğu
+## The status bar
 
-Durum çubuğunda **her grup kendi ikonuyla ayrı bir düğme** olur; tıklanınca o grubun komutları
-doğrudan açılır. `Cmd` düğmesi tüm grupları tek listeden açar. İkisi de isteğe bağlıdır:
+Each group gets **its own status bar button with its own icon**; clicking one opens that
+group's commands directly. The `Cmd` button lists every group in one flat list. Both
+are optional:
 
 ```
-[⌨ Cmd] [🐍] [📱] [⚙]     ← Cmd + Python, Flutter, Node.js ikonları
+[⌨ Cmd] [🐍] [📱] [⚙]     ← Cmd plus the Python, Flutter, Node.js icons
 ```
 
-| Ayar                              | Varsayılan | Açıklama                                                                                                                                                                                 |
+| Setting                            | Default    | Description                                                                                                                                                                              |
 | --------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cmdkit.groupFile`               | `""`       | Komut dosyasının yolu — bkz. yukarıdaki bölüm                                                                                                                                            |
-| `cmdkit.statusBar.showGroups`    | `true`     | Her grup için ayrı düğme gösterir                                                                                                                                                        |
-| `cmdkit.statusBar.showMaster`    | `true`     | `Cmd` düğmesini gösterir                                                                                                                                                                 |
-| `cmdkit.statusBar.maxGroupItems` | `3`        | Çubukta **başlangıçta** kaç grup düğmesi görünür. Fazlası oluşturulur ama gizli başlar: durum çubuğunda sağ tık → `Hide Status Bar Items` → **Show** ile açabilirsin. **`0` = sınırsız** |
-| `cmdkit.statusBar.hiddenGroups`  | `[]`       | Görünmeyecek grup adları: `["Python"]`                                                                                                                                                   |
-| `cmdkit.statusBar.groupLabel`    | `""`       | `"always"` ise ikonun yanına grup adını da yazar                                                                                                                                         |
-| `cmdkit.statusBar.icon`          | `terminal` | `Cmd` düğmesinin ikonu. `"zap"` veya `"$(zap)"` yazılabilir                                                                                                                              |
-| `cmdkit.statusBar.color`         | `""`       | Ön plan rengi: `#4EC9B0` gibi hex ya da `charts.red` gibi tema rengi                                                                                                                     |
-| `cmdkit.statusBar.background`    | `""`       | Arka plan rengi, aynı biçim                                                                                                                                                              |
-| `cmdkit.statusBar.priority`      | `250`      | Düğmelerin sırası (yüksek = daha sol). Başka eklentiyle çakışırsa kaydır                                                                                                                 |
+| `cmdkit.groupFile`               | `""`       | Path to the command file — see the section above                                                                                                                                         |
+| `cmdkit.statusBar.showGroups`    | `true`     | Show a separate button per group                                                                                                                                                         |
+| `cmdkit.statusBar.showMaster`    | `true`     | Show the `Cmd` button                                                                                                                                                                    |
+| `cmdkit.statusBar.maxGroupItems` | `3`        | How many group buttons show in the bar **to begin with**. The rest are created but start hidden: right click the status bar → `Hide Status Bar Items` → **Show**. **`0` = unlimited** |
+| `cmdkit.statusBar.hiddenGroups`  | `[]`       | Group names not shown: `["Python"]`                                                                                                                                                      |
+| `cmdkit.statusBar.groupLabel`    | `""`       | `"always"` writes the group name next to the icon                                                                                                                                        |
+| `cmdkit.statusBar.icon`          | `terminal` | Icon of the `Cmd` button. `"zap"` or `"$(zap)"` both work                                                                                                                               |
+| `cmdkit.statusBar.color`         | `""`       | Foreground colour: hex like `#4EC9B0` or a theme colour like `charts.red`                                                                                                                |
+| `cmdkit.statusBar.background`    | `""`       | Background colour, same format                                                                                                                                                           |
+| `cmdkit.statusBar.priority`      | `250`      | Order of the buttons (higher = further left). Shift it if another extension collides                                                                                                      |
 
-Grup düğmesinin tooltip'inde grup adı, komut sayısı ve **en çok kullanılan komut**
-(`En çok: test (×5)`) görünür. Renk ayarı tüm düğmelere birden uygulanır; boş bırakılırsa
-tema kullanılır (şeffaf arka plan).
+A group button's tooltip shows the group name, the command count and **the most used
+command** (`Most used: test (×5)`). The colour setting applies to every button at once;
+leave it empty to use the theme (transparent background).
 
-**Çubuk kıtalması:** Durum çubuğu zaten Pylance, Git, Live Server gibi eklentilerle dolu oluyor;
-onlarca ikon eklemek okunmaz hale gelir. Bu yüzden **ilk kurulumda 3** grup düğmesi gösteriliyor.
+**Crowding the bar:** the status bar is already busy with Pylance, Git, Live Server and
+friends; dozens of icons turn it unreadable. That is why only **3** group buttons show
+on a fresh install.
 
-Bu bir sınır değil, başlangıç değeri: ilk kurulumda 3 grup görünür, beşinci gruplar **gizli**
-başlar — düğmeleri yine oluşturulur, bu yüzden durum çubuğunda **sağ tık → `Hide Status Bar Items`
-→ `Cmdkit: Git` / `Cmdkit: Firebase` işaretine basınca açılırlar**. Açtığın gruplar bir sonraki
-komut çalıştırmasında gizlenmez; sadece ayarı değiştirdiğinde sınırlama yeniden uygulanır.
+This is not a limit, it is a starting value: the first 3 groups are visible and the rest
+start **hidden** — the buttons are still created, so they appear under **right click →
+`Hide Status Bar Items` → `Cmdkit: Git` / `Cmdkit: Firebase`** in the status bar. Groups
+you reveal there stay visible through the next command run; the cap is only reapplied
+when you change the setting.
 
-Kalıcı ayar istersen `maxGroupItems: 0` (**sınırsız**) veya `hiddenGroups` ile bazılarını tamamen
-kaldırma. Hiç grup düğmesi istemiyorsan `showGroups: false`.
+For a permanent choice use `maxGroupItems: 0` (**unlimited**) or drop some entirely with
+`hiddenGroups`. To show no group buttons at all, set `showGroups: false`.
 
-Sıra **ayarlardaki grup sırasına** göre; gösterilmeyen gruplar `Cmd` düğmesinden ve
-`Tüm Komutlarda Ara`'dan erişilebilir kalır, `Cmd` tooltip'inde kaç düğmenin gizli olduğunu yazar.
+Order follows **the group order in your settings**; hidden groups stay reachable through
+the `Cmd` button and `Search All Commands`, and the `Cmd` tooltip says how many buttons
+are hidden.
 
-Grup eklediğinde/çıkardığında düğmeler ayar değişikliğiyle kendiliğinden güncellenir — yeniden
-yükleme gerekmez. VSCode'un durum çubuğu sağ tık menüsünden de gizleyebilirsin.
+Adding or removing a group updates the buttons through the setting change — no reload
+needed. VSCode's own status bar context menu can hide them too.
 
-**Sağ tıkla tek tek gizlemek:** Durum çubuğuna sağ tıkla → `Hide Status Bar Items` altında her
-düğme ayrı ayrı listelenir:
+**Hiding them one by one:** right click the status bar and every button is listed
+separately under `Hide Status Bar Items`:
 
 ```
-Cmdkit: Tüm Gruplar
+Cmdkit: All Groups
 Cmdkit: Python
 Cmdkit: Flutter
 Cmdkit: Node.js
 ```
 
-Bunun çalışması için iki şey gerekiyor (ikisi de yapıldı):
+Two things make this work (both are in place):
 
-- **Kimlik:** `createStatusBarItem(id, ...)` ile her düğmeye ayrı id veriliyor
-  (`cmdkit.cmd`, `cmdkit.group.Python`, …). Kimlik verilmezse hepsi eklenti kimliğine
-  düşüyor, menüde tek kalem oluyor ve biri gizlenince hepsi gizleniyor.
-- **Ad:** `StatusBarItem.name` set ediliyor. Bu alan menüde görünen etiket; boş bırakılırsa
-  menüde her öğe "Cmdkit (extension)" olarak aynı görünür.
+- **Identity:** `createStatusBarItem(id, ...)` gives each button its own id
+  (`cmdkit.cmd`, `cmdkit.group.Python`, …). Without ids they all fall back to the
+  extension identity, the menu collapses into a single entry, and hiding one hides them all.
+- **Name:** `StatusBarItem.name` is set. That is the label the menu shows; left empty,
+  every entry reads "Cmdkit (extension)".
 
-**Sıralama çakışması:** VSCode durum çubuğunu tüm eklentilerin öncelik değerlerine göre sıralar,
-yani başka bir eklenti aynı sayıyı kullanırsa düğmelerimizin arasına girer (Live Server `100`
-kullandığı için `Cmd` ile grup ikonları arasına girmişti). Kurulu eklentilerin tarandığı değerler
-`-1, 0, 1, 100, 1000` çıktı; varsayılan **250** seçildi (200–259 bandı boş). Yine de çakışma
-görürsen `cmdkit.statusBar.priority` değerini kaydır.
+**Ordering collisions:** VSCode sorts the status bar by the priority of every extension,
+so another extension using the same number interleaves with ours (Live Server uses `100`,
+which put itself between the `Cmd` button and the group icons). Scanning the installed
+extensions turned up `-1, 0, 1, 100, 1000`, so the default is **250** (the 200–259 band was
+free). Shift `cmdkit.statusBar.priority` if you still see a collision.
 
-**Cmdkit: İkon Kataloğu** komutu ~120 doğrulanmış kodikonu kategoriler halinde listeler,
-ikonları canlı çizer; seçtiğin ad panoya kopyalanır — sonra `statusBar.icon` ya da grup/komut
-`icon` alanına yapıştırırsın.
+**Cmdkit: Icon Catalog** lists about 120 verified codicons grouped by category and draws
+them live; the name you pick is copied to the clipboard — then paste it into
+`statusBar.icon` or the `icon` field of a group or command.
 
-> VSCode ikonları listeleyen bir API sunmadığı için katalog elle tutuluyor. Bu yüzden
-> katalogdaki adların tamamı VSCode'un ikon kayıt defteriyle doğrulanarak kondu.
+> VSCode offers no API to list its icons, so the catalog is kept by hand. Every name in it
+> has been placed there by verifying it against VSCode's icon registry.
 
-Grup ve komut `icon` alanlarında düz ad da kabul edilir: `"icon": "git-branch"` yazan yazı
-olarak görünmez, `$(git-branch)` biçimine çevrilir.
+The `icon` field of a group or command also accepts a bare name: `"icon": "git-branch"`
+does not render as text, it is turned into the `$(git-branch)` form.
 
-### Cmd menüsü
+### The Cmd menu
 
-`Cmd` düğmesi önce grupları listeler, sonra dört bölüme ayrılmış yardımcı menüleri gösterir:
+The `Cmd` button lists the groups first, then the utility menus split into four sections:
 
 ```
-$(snake) Python                    12 komut
-$(device-mobile) Flutter           12 komut
-$(server-environment) Node.js      12 komut
+$(snake) Python                    12 commands
+$(device-mobile) Flutter           12 commands
+$(server-environment) Node.js      12 commands
 
-—— komutlar ——
-$(search)        Tüm Komutlarda Ara
-$(debug-rerun)   Son Komutu Tekrar Çalıştır
+—— commands ——
+$(search)        Search All Commands
+$(debug-rerun)   Run Last Command Again
 
-—— listeyi düzenle ——
-$(json)          Komut Listesini Düzenle
-$(sync)          Komut Dosyasını Uygula
-$(new-folder)    Hazır Grup Ekle
-$(trash)         Grup Kaldır
-$(refresh)       Dosyayı Ayarlardan Yenile
+—— edit the list ——
+$(json)          Edit Command List
+$(sync)          Apply Command File
+$(new-folder)    Add Built-in Group
+$(trash)         Remove Group
+$(refresh)       Reload File From Settings
 
-—— görünüm ——
-$(list-selection) Durum Çubuğu Düğmelerini Seç
-$(paintcan)      İkon Kataloğu
+—— view ——
+$(list-selection) Choose Status Bar Items
+$(paintcan)      Icon Catalog
 
-—— denetle ve yardım ——
-$(check)         Platform Uyumluluğunu Kontrol Et
-$(markdown)      Komut Dosyası Nasıl Kullanılır
+—— check and help ——
+$(check)         Check Platform Compatibility
+$(markdown)      How to Use the Command File
 ```
 
-Yardımcı menü **dört bölüme ayrılır** ve sıra **kullanım sıklığına göre** kurulur:
-günlük iki komut en üstte, listeyi düzenleme ortada, nadir kullanılanlar en altta.
-Yeni komut eklemek için `src/menu.ts` içindeki `MENU_ACTIONS` listesine bir satır ekle ve
-`section` alanına bölümünü yaz (`run` / `edit` / `view` / `help`). Sıra tanım yazım
-sırasıdır, bölüm sırası `MENU_SECTIONS`. `id` doğrudan çalıştırılacak komut kimliği;
-aynı komutlar Komut Paleti'nde de duruyor.
+The utility menu is **split into four sections** and ordered **by how often each is
+used**: the two daily commands on top, list editing in the middle, the rare ones at the
+bottom. To add a command, add a line to the `MENU_ACTIONS` list in `src/menu.ts` and put
+its section in the `section` field (`run` / `edit` / `view` / `help`). The order is the
+order of definition, the order of sections is `MENU_SECTIONS`. `id` is the command id that
+gets executed directly; the same commands are in the Command Palette too.
 
-## Hazır grup kütüphanesi
+## Built-in group library
 
-Kurulumla gelen 5 grubun dışında **11 hazır grup** daha var; hepsi tek komutla
-eklenir:
+Beyond the 5 groups that ship with the install there are **11 more built-in groups**;
+each is added with a single command:
 
-`Cmdkit: Hazır Grup Ekle` → kütüphaneden seç → hedefi sorar → yazar.
+`Cmdkit: Add Built-in Group` → pick from the library → it asks for a destination → writes.
 
-| Grup                           | Komut |     | Grup                                      | Komut |
-| ------------------------------ | ----- | --- | ----------------------------------------- | ----- |
+| Group                           | Commands |     | Group                                      | Commands |
+| ------------------------------ | -------- | --- | ----------------------------------------- | -------- |
 | `$(package)` Docker            | 9     |     | `$(vm)` Kubernetes                        | 10    |
 | `$(source-control)` GitHub CLI | 12    |     | `$(symbol-interface)` Java (Maven/Gradle) | 8     |
 | `$(database)` PostgreSQL       | 7     |     | `$(server)` Redis                         | 6     |
@@ -165,24 +170,23 @@ eklenir:
 | `$(gear)` Rust                 | 10    |     | `$(rocket)` Vercel                        | 5     |
 | `$(zap)` Surge                 | 15    |     |                                          |       |
 
-Kurulumda gelenler `configurationDefaults` içinde olduğu için **herkese** gelir;
-onu büyütmek istemeyenin menüsünü şişirmemek için bunlar kütüphanede duruyor.
-Zaten eklediğin gruplar listede çıkmaz.
+The ones that ship with the install live in `configurationDefaults`, so **everyone**
+gets them; they sit in the library so that growing the default set does not clutter the
+menu for people who do not want it. Groups you have already added do not show in the list.
 
-Yalnızca **ekler**, silmez — mevcut komutlarına dokunmaz. Silmek için
-`Komut Dosyasını Uygula` → `Listeyi değiştir`.
+It only **adds**, never deletes — your existing commands are untouched. To delete, use
+`Apply Command File` → `Replace list`.
 
-Kütüphane **`src/library.json`** içinde; yeni grup eklemek için oraya bir giriş
-yazmak yeterli. `npm run build` bunu okuyup `package.json` içindeki
-`configurationDefaults` alanını üretir — **iki dosyayı elle senkronlamak yok**,
-`library.json` tek kaynaktır.
+The library is **`src/library.json`**; to add a group, write an entry there. `npm run
+build` reads it and generates the `configurationDefaults` field in `package.json` —
+**you never sync the two by hand**, `library.json` is the single source.
 
-`test/unit/library.test.ts` ikonların katalogda olduğunu, grup içi adların
-benzersizliğini ve **yıkıcı komutların onay istediğini** otomatik denetler.
+`test/unit/library.test.ts` automatically checks that icons exist in the catalog, that
+names are unique within a group, and that **destructive commands ask for confirmation**.
 
-## Komutlarını tanımlama
+## Defining your commands
 
-`settings.json` içinde `cmdkit.groups`:
+In `settings.json`, under `cmdkit.groups`:
 
 ```jsonc
 "cmdkit.groups": [
@@ -191,128 +195,128 @@ benzersizliğini ve **yıkıcı komutların onay istediğini** otomatik denetler
     "icon": "$(source-control)",
     "color": "#8BC34A",
     "commands": [
-      { "name": "status", "command": "git status", "description": "Çalışma ağacı" },
-      { "name": "commit", "command": "git commit -m", "argsPrompt": "mesaj", "argsSingle": true },
-      { "name": "reset",  "command": "git reset --hard", "confirm": "Geri alınamaz!" }
+      { "name": "status", "command": "git status", "description": "working tree" },
+      { "name": "commit", "command": "git commit -m", "argsPrompt": "message", "argsSingle": true },
+      { "name": "reset",  "command": "git reset --hard", "confirm": "Cannot be undone!" }
     ]
   }
 ]
 ```
 
-| Alan          | Zorunlu | Açıklama                                                                                                                                      |
-| ------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`        | evet    | Menüde görünen ad                                                                                                                             |
-| `command`     | evet    | Çalıştırılacak shell komutu                                                                                                                   |
-| `description` | hayır   | Sağda gri metin olarak görünür                                                                                                                |
-| `icon`        | hayır   | Kodikon, varsayılan `$(terminal)`. Düz ad da olur (`zap`)                                                                                     |
-| `color`       | hayır   | Durum çubuğundaki **bu grubun** rengi: `#4B8BBE` ya da `charts.blue`. Boşsa `cmdkit.statusBar.color` uygulanır                               |
-| `confirm`     | hayır   | `true` veya metin → çalıştırmadan önce onay                                                                                                   |
-| `argsPrompt`  | hayır   | Çalıştırmadan önce girdi ister                                                                                                                |
-| `argsSingle`  | hayır   | **true ise girdinin tamamı tek argüman olur**, boşluktan bölünmez. `git commit -m`, `psql -c` gibi serbest metin bekleyen bayraklar için şart |
-| `clear`       | hayır   | `true` → terminal temizlenerek çalışır                                                                                                        |
+| Field         | Required | Description                                                                                                                                                       |
+| ------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | yes      | Name shown in the menu                                                                                                                                            |
+| `command`     | yes      | The shell command to run                                                                                                                                          |
+| `description` | no       | Shown as dimmed text on the right                                                                                                                                 |
+| `icon`        | no       | Codicon, default `$(terminal)`. A bare name works too (`zap`)                                                                                                     |
+| `color`       | no       | Colour of **this group** in the status bar: `#4B8BBE` or `charts.blue`. Empty falls back to `cmdkit.statusBar.color`                                               |
+| `confirm`     | no       | `true` or a string → asks before running                                                                                                                           |
+| `argsPrompt`  | no       | Asks for input before running                                                                                                                                    |
+| `argsSingle`  | no       | **When true the whole input is one argument**, not split on spaces. Required for flags that take free text, such as `git commit -m` or `psql -c`                   |
+| `clear`       | no       | `true` → runs with the terminal cleared first                                                                                                                     |
 
-Kurulumda 5 hazır grup gelir: **Python**, **Flutter**, **Node.js**, **Git**, **Firebase**
-(toplam 61 komut).
-Kendi ayarını yazarsan hazır grupların yerini alır — silmek istersen `"cmdkit.groups": []`.
+The install brings 5 built-in groups: **Python**, **Flutter**, **Node.js**, **Git**,
+**Firebase** (61 commands in total). Writing your own setting replaces them — to drop them
+outright, use `"cmdkit.groups": []`.
 
-61 komutun **hepsinde** anlamlı bir ikon var (`$(beaker)` test, `$(shield)` lint,
-`$(cloud-download)` kurulum, `$(trash)` silme, `$(paintcan)` format…). Tek kaynak
-`src/library.json`'dır; `npm run build` onu okuyup `package.json` içindeki
-`configurationDefaults`'ı üretir, birim testi de ikisinin eşit kaldığını denetler.
+All 61 commands have a meaningful icon (`$(beaker)` test, `$(shield)` lint,
+`$(cloud-download)` install, `$(trash)` delete, `$(paintcan)` format…). The single source
+is `src/library.json`; `npm run build` reads it and generates `configurationDefaults` in
+`package.json`, and a unit test checks the two stay in step.
 
-Aynı dosyada `defaults` (ilk kurulumda gelen 5 grup) ve `groups` (kütüphanedeki 16 grup)
-yan yana durur — böylece silinen bir varsayılan grup `Hazır Grup Ekle` ile geri
-getirilebilir.
+`defaults` (the 5 groups of a fresh install) and `groups` (the 16 in the library) sit side
+by side in that file, so a default group you removed can be brought back with
+`Add Built-in Group`.
 
-| Grup     | İkon                    | Renk      | Komut |
-| -------- | ----------------------- | --------- | ----- |
-| Python   | `$(snake)`              | `#4B8BBE` | 12    |
-| Flutter  | `$(device-mobile)`      | `#47C5FB` | 12    |
-| Node.js  | `$(server-environment)` | `#83CD29` | 12    |
-| Git      | `$(source-control)`     | `#F14E32` | 15    |
-| Firebase | `$(broadcast)`          | `#FFCA28` | 10    |
+| Group    | Icon                    | Colour     | Commands |
+| -------- | ----------------------- | ---------- | -------- |
+| Python   | `$(snake)`              | `#4B8BBE` | 12       |
+| Flutter  | `$(device-mobile)`      | `#47C5FB` | 12       |
+| Node.js  | `$(server-environment)` | `#83CD29` | 12       |
+| Git      | `$(source-control)`     | `#F14E32` | 15       |
+| Firebase | `$(broadcast)`          | `#FFCA28` | 10       |
 
-Grup `color` alanı yalnızca durum çubuğu ikonunu boyar (menüde renk gösterilemez, `QuickPickItem`
-renk desteklemiyor). Öncelik: grubun kendi `color`'ı → yoksa `cmdkit.statusBar.color`.
+The `color` field of a group only paints the status bar icon (colours cannot be shown in
+the menu, `QuickPickItem` does not support them). Priority: the group's own `color` →
+otherwise `cmdkit.statusBar.color`.
 
-## Komut ekleme / silme / düzenleme
+## Adding, removing and editing commands
 
-Komutlar `cmdkit.groups` ayarında durur, ama elle düzenlemek için düzenleme
-dosyası kullanılır: **VSCode'da açılır, şemayla doğrulanır, sonra ayarlara uygulanır.**
+Commands live in the `cmdkit.groups` setting, but to edit them by hand the extension uses
+an **editing file: it opens in VSCode, is validated against the schema, then applied to
+your settings.**
 
 ```
-Cmdkit: Komut Listesini Düzenle     →  cmdkit-groups.json açılır (yoksa ayarlardan yazılır)
-   ... düzenle, Ctrl+S ...
-Cmdkit: Komut Dosyasını Uygula      →  özet gösterir, onaylar, settings.json'a yazar
+Cmdkit: Edit Command List     →  cmdkit-groups.json opens (written from settings if missing)
+   ... edit, Ctrl+S ...
+Cmdkit: Apply Command File    →  shows a summary, asks, writes settings.json
 ```
 
-| Komut                                 | Ne yapar                                                                                                                                   |
-| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Cmdkit: Komut Listesini Düzenle`   | Dosyayı açar. **Soru sormaz.** Dosya yoksa mevcut ayarlardan oluşturulur; varsa **üzerine yazılmaz** (kaydedilmemiş düzenlemen bozulmasın) |
-| `Cmdkit: Komut Dosyasını Uygula`    | Dosyayı okur, **ne değişeceğini özetler**, onay ister, sonra hedefi seçip yazar                                                            |
-| `Cmdkit: Dosyayı Ayarlardan Yenile` | Dosyayı ayarlardaki güncel liste ile **üzerine yazar** — düzenlemeyi sıfırlamanın yolu                                                     |
+| Command                                | What it does                                                                                                                              |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `Cmdkit: Edit Command List`            | Opens the file. **Asks nothing.** If the file is missing it is created from the current settings; if it exists it is **never overwritten** (so unsaved edits survive) |
+| `Cmdkit: Apply Command File`           | Reads the file, **summarises what will change**, asks for confirmation, then picks a destination and writes                                   |
+| `Cmdkit: Reload File From Settings`    | **Overwrites** the file with the current list from settings — the way to discard your edits                                                |
 
-Dosya yolu hatırlanır (proje bazlı). Varsayılanı **`.vscode/cmdkit-groups.json`** —
-dosyanın uygulandığı yer de `.vscode/settings.json`, kaynak ve hedef aynı yerde.
-Proje açık değilse ev dizinine düşer. Hatırlanan yol yoksa **Komut Dosyasını Uygula**
-bir kez dosya seçtirir — böylece başkasının gönderdiği listeyi de alabilirsin.
+The path is remembered per project. The default is **`.vscode/cmdkit-groups.json`** — the
+file is applied into `.vscode/settings.json`, so source and destination are in the same
+place. With no project open it falls back to your home directory. When no path has been
+remembered, `Apply Command File` asks you to pick a file once — that way you can also
+take a list someone else sent you.
 
-| Ayar                | Varsayılan | Açıklama                                                                                                                                                        |
+| Setting                | Default    | Description                                                                                                                                                        |
 | ------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `cmdkit.groupFile` | `""`       | Düzenleme dosyasının yolu. Monorepo'da alt pakete yönlendirmek için: `"packages/api/cmdkit-groups.json"`. Göreli yollar ilk çalışma alanı köküne göre çözülür |
+| `cmdkit.groupFile` | `""`       | Path to the editing file. To point at a sub-package in a monorepo: `"packages/api/cmdkit-groups.json"`. Relative paths resolve against the first workspace root |
 
-Dosyada **yorum serbest** (JSONC — `//` satır, `/* */` blok), otomatik tamamlama
-ve şema doğrulaması çalışır:
-`schemas/cmdkit-groups.json` hem `name`/`command` zorunluluğunu hem de yazım
-hatalarını (`descrition` gibi) kırmızı gösterir. Bilinmeyen alan reddedilir.
+**Comments are free** in the file (JSONC — `//` line, `/* */` block), and
+autocompletion and schema validation work:
+`schemas/cmdkit-groups.json` marks both the `name`/`command` requirement and typos
+(like `descrition`) in red. Unknown fields are rejected.
 
-Dosyayı elle düzenlediğin için dışa aktarım **normalize edilmiş** hâli değil ham
-listeyi yazar; `description: ""`, `confirm: false` gibi gereksiz alanlar sızmaz.
-Aynı ayıklama `settings.json`'a yazarken de yapılır, orada da yalnızca gerçekten
-ayarladığın alanlar durur — 61 komutta `confirm: false` ve `clear: false` başına
-~106 satır gürültü geride kalmaz. Alanlar okunurken zaten geri doldurulduğu için
-hiçbir ayar kaybolmaz.
+Because you edit the file by hand, the export writes the **raw list, not the normalised
+one**; redundant fields like `description: ""` and `confirm: false` never leak in. The
+same trimming happens when writing `settings.json`, where only the fields you actually
+set stay — that keeps about 106 lines of noise from 61 commands out. No setting is lost,
+because the fields are filled back in as they are read.
 
-> `settings.json`'ı elle düzenlemen gerekmiyor; ekip arkadaşın `Komut Dosyasını
-Uygula` ile kendi dosyasına alsın. Paylaşılacak dosya `cmdkit-groups.json`.
+> You never edit `settings.json` by hand; have a teammate pull it into their own file with
+> `Apply Command File`. The file to share is `cmdkit-groups.json`.
 
-### Uygulama (import)
+### Applying (import)
 
-İki mod var:
+There are two modes:
 
-- **Grupları birleştir** — aynı isimli komut güncellenir, yeniler eklenir. Gelen listede olmayanlar **silinmez**.
-- **Listeyi değiştir** — mevcut liste tamamen gelen liste olur. Gelen listede olmayan komutlar **silinir** (yani silme işlemi bu yolla yapılır).
+- **Merge groups** — a same-named command is updated, new ones are added. Anything missing from the incoming list is **not deleted**.
+- **Replace list** — the current list becomes the incoming list. Commands missing from it **are deleted** (so this is how you delete).
 
-Yazmadan önce özet gösterilir, sonra **bu proje** (`.vscode/settings.json`) veya
-**kullanıcı** (global) hedefi sorulur.
+A summary is shown before writing, then you are asked for **this project**
+(`.vscode/settings.json`) or **user** (global).
 
-Özet **yazılacak sonucu** tarif eder, gelen dosyada ne eksik olduğunu değil. Bu
-yüzden `Grupları birleştir` modunda `silinecek` **hiç görünmez** — birleştirme
-zaten silmiyor. Örnekler:
+The summary describes **the result that will be written**, not what is missing from the
+file. That is why `to delete` never appears in `Merge groups` mode — merging does not
+delete. Examples:
 
 ```
-Grupları birleştir   →   • Git: 18 komut, 1 yeni
-Listeyi değiştir     →   • Git: 17 komut, 1 silinecek
+Merge groups   →   • Git: 18 commands, 1 new
+Replace list   →   • Git: 17 commands, 1 to delete
 ```
 
-Gerçekten hiçbir şey değişmiyorsa özet hiç gösterilmez, doğrudan "hiçbir şey
-yazılmadı" bildirimi çıkar ve dosyaya dokunulmaz.
+If nothing actually changes, no summary appears at all: you get a "nothing was written"
+notice straight away and the file is left alone. (Because the summary compares normalised
+fields, purely cosmetic differences are not caught at this step.)
 
-Listede gerçekten hiçbir şey değişmiyorsa dosyaya hiç dokunulmaz — "hiçbir şey yazılmadı"
-bildirimi çıkar. (Özet normalize edilmiş alanları karşılaştırdığı için, yalnızca
-biçimsel farkları bu adım yakalamaz.)
+The file format is exactly the same as `cmdkit.groups` and it preserves platform tokens
+(`{venv}`, `{rm}` …) as written. Copying to the clipboard was dropped: to share a list,
+either commit the file (a teammate pulls it with `Apply Command File`) or commit
+`.vscode/settings.json` after applying. The second is longer and noisier; the first is
+cleaner.
 
-Dosya biçimi `cmdkit.groups` ile birebir aynıdır ve platform belirteçlerini
-(`{venv}`, `{rm}` …) olduğu gibi korur. Panoya kopyalama yolu kaldırıldı: listeyi
-paylaşmak için ya dosyayı commit'le (ekip arkadaşın `Komut Dosyasını Uygula` ile
-kendi ayarlarına alsın) ya da uyguladıktan sonra `.vscode/settings.json`'u commit'le.
-İkincisi daha uzun ve gürültülü; ilki daha temiz.
+## Platform tokens
 
-## Platform belirteçleri
+The built-in groups are written as a single string; paths and the delete command are
+resolved to the platform at run time.
 
-Varsayılan gruplar tek metinde yazılı; yol ve silme komutu çalışma anında platforma göre çözülür.
-
-| Belirteç   | macOS / Linux      | Windows                    |
+| Token       | macOS / Linux      | Windows                    |
 | ---------- | ------------------ | -------------------------- |
 | `{python}` | `python3`          | `python`                   |
 | `{venv}`   | `.venv/bin/`       | `.venv\Scripts\`           |
@@ -323,33 +327,34 @@ Varsayılan gruplar tek metinde yazılı; yol ve silme komutu çalışma anında
 { "name": "test", "command": "{venvpy} -m pytest" }
 ```
 
-Bilinmeyen belirteçler (`{herhangi}`) olduğu gibi bırakılır.
+Unknown tokens (`{anything}`) are left as they are.
 
-## Davranış notları
+## Behaviour notes
 
-- Komutlar **terminalde** çalışır (`tasks.executeTask`), çıktıyı normal şekilde izlersin.
-- Tüm komutlar **tek terminali** paylaşır; arka arda çalıştırdıkça alt alta eklenir.
-- Argümanlar ayrı ayrı geçirilir, tırnaklı yollar (`"benim dosyam.txt"`) bozulmaz.
-- `&&` ve `|` içeren komutlar sorunsuz çalışır.
-- `flutter run`, `npm run dev` gibi uzun süreli komutlar terminali açık tutar, <kbd>Ctrl</kbd>+<kbd>C</kbd> ile durur.
-- Uzaktan (SSH/WSL) gelişmede komut uzak terminalde çalışır.
-- Kullanım sayaçları proje bazlı saklanır (`workspaceState`), `settings.json` dosyan kirletilmez.
+- Commands run **in the terminal** (`tasks.executeTask`), so you watch the output the usual way.
+- All commands **share a single terminal**; run several in a row and they stack up.
+- Arguments are passed separately, so quoted paths (`"my file.txt"`) survive intact.
+- Commands containing `&&` and `|` work without trouble.
+- Long-running commands like `flutter run` or `npm run dev` keep the terminal open; <kbd>Ctrl</kbd>+<kbd>C</kbd> stops them.
+- In remote development (SSH/WSL) the command runs in the remote terminal.
+- Usage counters are stored per project (`workspaceState`), so `settings.json` stays untouched.
 
-## Geliştirme
+## Development
 
 ```bash
 npm run typecheck      # tsc --noEmit
-npm test               # 384 birim testi (vitest)
-npm run test:integration   # gerçek VSCode içinde smoke test
+npm test               # 418 unit tests (vitest)
+npm run test:integration   # smoke test inside a real VSCode
 npm run sync-defaults  # src/library.json → package.json (defaults)
-npm run icon           # media/icon.png üret
+npm run icon           # produces media/icon.png
 npm run watch          # esbuild watch
 ```
 
-`test:integration` varsayılan olarak VSCode indirir. İndirme yapmadan yerel kurulumu kullanmak için:
+`test:integration` downloads VSCode by default. To use your local install without
+downloading:
 
 ```bash
 VSCODE_TEST_EXECUTABLE="/Applications/Visual Studio Code.app/Contents/MacOS/Electron" npm run test:integration
 ```
 
-Tasarım kararları ve uygulama günlüğü: `PLAN.md` (depo kökünde).
+Design decisions and the implementation log: `PLAN.md` (repo root).

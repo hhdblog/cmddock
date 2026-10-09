@@ -20,14 +20,14 @@ export interface MenuAction {
 }
 
 /** Grup listesinden yardımcı menüye geçişi işaretleyen ayraç. */
-export const MENU_SEPARATOR = '—— komutlar ve araçlar ——';
+export const MENU_SEPARATOR = '—— commands and tools ——';
 
 /** Bölüm başlığını veren ayraç etiketleri. */
 export const MENU_SECTION_LABELS: Readonly<Record<MenuSection, string>> = {
-  run: 'komutlar',
-  edit: 'listeyi düzenle',
-  view: 'görünüm',
-  help: 'denetle ve yardım',
+  run: 'commands',
+  edit: 'edit the list',
+  view: 'view',
+  help: 'check and help',
 };
 
 /** Bölümlerin görüneceği sıra. */
@@ -36,78 +36,78 @@ export const MENU_SECTIONS: readonly MenuSection[] = ['run', 'edit', 'view', 'he
 export const MENU_ACTIONS: readonly MenuAction[] = [
   {
     id: 'cmdkit.search',
-    label: 'Tüm Komutlarda Ara',
-    description: 'grupları düzleştirir, yazarak ararsın',
+    label: 'Search All Commands',
+    description: 'flattens every group — search by typing',
     icon: '$(search)',
     section: 'run',
   },
   {
     id: 'cmdkit.runLast',
-    label: 'Son Komutu Tekrar Çalıştır',
-    description: 'en son çalıştığın komutu tekrar çalıştırır',
+    label: 'Run Last Command Again',
+    description: 're-runs the last command you ran',
     icon: '$(debug-rerun)',
     section: 'run',
   },
   {
     id: 'cmdkit.export',
-    label: 'Komut Listesini Düzenle',
-    description: 'komut dosyasını açar, düzenle',
+    label: 'Edit Command List',
+    description: 'opens the command file for editing',
     icon: '$(json)',
     section: 'edit',
   },
   {
     id: 'cmdkit.import',
-    label: 'Komut Dosyasını Uygula',
-    description: 'dosyadaki listeyi özetleyip ayarlara yazar',
+    label: 'Apply Command File',
+    description: 'summarises the file, then writes it to settings',
     icon: '$(sync)',
     section: 'edit',
   },
   {
     id: 'cmdkit.addGroup',
-    label: 'Hazır Grup Ekle',
-    description: 'kütüphaneden komut grubu ekle',
+    label: 'Add Built-in Group',
+    description: 'adds a group from the built-in library',
     icon: '$(new-folder)',
     section: 'edit',
   },
   {
     id: 'cmdkit.removeGroup',
-    label: 'Grup Kaldır',
-    description: 'komut grubunu ve içindeki tüm komutları siler',
+    label: 'Remove Group',
+    description: 'removes a group and all its commands',
     icon: '$(trash)',
     section: 'edit',
   },
   {
     id: 'cmdkit.reload',
-    label: 'Dosyayı Ayarlardan Yenile',
-    description: 'dosyayı ayarlardaki liste ile üzerine yazar',
+    label: 'Reload File From Settings',
+    description: 'overwrites the file with the list from settings',
     icon: '$(refresh)',
     section: 'edit',
   },
   {
     id: 'cmdkit.statusBarItems',
-    label: 'Durum Çubuğu Düğmelerini Seç',
-    description: 'hangi grupların çubukta görüneceğini işaretle',
+    label: 'Choose Status Bar Items',
+    description: 'choose which groups appear in the bar',
     icon: '$(list-selection)',
     section: 'view',
   },
   {
     id: 'cmdkit.iconCatalog',
-    label: 'İkon Kataloğu',
-    description: 'kullanılabilir kodikonları gör',
+    label: 'Icon Catalog',
+    description: 'browse the available codicons',
     icon: '$(paintcan)',
     section: 'view',
   },
   {
     id: 'cmdkit.checkPlatform',
-    label: 'Platform Uyumluluğunu Kontrol Et',
-    description: 'macOS/Linux yollarını Windows için düzelt',
+    label: 'Check Platform Compatibility',
+    description: 'rewrite macOS/Linux paths for Windows',
     icon: '$(check)',
     section: 'help',
   },
   {
     id: 'cmdkit.usage',
-    label: 'Komut Dosyası Nasıl Kullanılır',
-    description: 'dosya formatı, alanlar, uygulama modları',
+    label: 'How to Use the Command File',
+    description: 'file format, fields, apply modes',
     icon: '$(markdown)',
     section: 'help',
   },

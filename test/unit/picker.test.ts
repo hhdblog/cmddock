@@ -18,7 +18,7 @@ import { Command, Group } from '../../src/normalize';
  *  2. **Seçim ne döndürdü?** — çağıran kod yalnızca `PickResult`'a bakıyor;
  *     ayrımın kendisi doğruysa yeter.
  *
- * İkisi birbirinin yerine geçmez: menüye "Tüm Komutlarda Ara" yazmış da
+ * İkisi birbirinin yerine geçmez: menüye "Search All Commands" yazmış da
  * `matchOnDetail` yoksa kullanıcı shell metnine göre arayamaz.
  */
 
@@ -111,7 +111,7 @@ describe('pickCommand — grup listesi', () => {
 
     const actions = shownItems().filter((item) => item.actionId);
     expect(actions.length).toBeGreaterThan(0);
-    expect(labels().some((l) => l.includes('Tüm Komutlarda Ara'))).toBe(true);
+    expect(labels().some((l) => l.includes('Search All Commands'))).toBe(true);
   });
 
   it('arama kutusu grup ve menü adlarını önerir', async () => {
@@ -261,7 +261,7 @@ describe('pickAnyCommand — tüm komutlar tek listede', () => {
     await pickAnyCommand([GIT, NODE]);
 
     const options = quickPickCalls[0]?.options as { placeHolder?: string };
-    expect(options.placeHolder).toContain('ara');
+    expect(options.placeHolder).toContain('Search');
   });
 
   it('shell metnine göre arama açıktır — "git log" yazarak bulabilirsin', async () => {

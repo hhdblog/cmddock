@@ -66,14 +66,14 @@ describe('statusBar', () => {
     it('henüz komut çalıştırılmadıysa bunu yazar', () => {
       const handle = activate(context);
 
-      expect(tooltipOf(masterOf(handle))).toContain('Son: henüz çalıştırılmadı');
+      expect(tooltipOf(masterOf(handle))).toContain('Last: nothing has been run yet');
     });
 
     it('son komut ayarlardaysa grup › komut biçiminde yazar', () => {
       context.workspaceState.update('cmdkit.last', { group: 'Python', name: 'test' });
       const handle = activate(context);
 
-      expect(tooltipOf(masterOf(handle))).toContain('Son: Python › test');
+      expect(tooltipOf(masterOf(handle))).toContain('Last: Python › test');
     });
 
     it('son komut ayarlardan silinmişse "null" yazmaz', () => {
@@ -82,7 +82,7 @@ describe('statusBar', () => {
 
       const tooltip = tooltipOf(masterOf(handle));
       expect(tooltip).not.toContain('null');
-      expect(tooltip).toContain('Son: artık ayarlarda yok');
+      expect(tooltip).toContain('Last: no longer in your settings');
     });
 
     it('son komutun grubu silinmişse de "null" yazmaz', () => {
@@ -91,13 +91,13 @@ describe('statusBar', () => {
 
       const tooltip = tooltipOf(masterOf(handle));
       expect(tooltip).not.toContain('null');
-      expect(tooltip).toContain('Son: artık ayarlarda yok');
+      expect(tooltip).toContain('Last: no longer in your settings');
     });
 
     it('grup ve komut sayısını yazar', () => {
       const handle = activate(context);
 
-      expect(tooltipOf(masterOf(handle))).toContain('1 grup, 2 komut');
+      expect(tooltipOf(masterOf(handle))).toContain('1 groups, 2 commands');
     });
 
     it('toplam çalıştırma sayısını yazar', () => {
@@ -107,14 +107,14 @@ describe('statusBar', () => {
       });
       const handle = activate(context);
 
-      expect(tooltipOf(masterOf(handle))).toContain('5 çalıştırma');
+      expect(tooltipOf(masterOf(handle))).toContain('5 runs');
     });
 
     it('gruplar boşken boş listede olduğunu söyler', () => {
       setConfiguration('cmdkit', { groups: [] });
       const handle = activate(context);
 
-      expect(tooltipOf(masterOf(handle))).toContain('"cmdkit.groups" boş');
+      expect(tooltipOf(masterOf(handle))).toContain('"cmdkit.groups" is empty');
     });
 
     it('gruplar boşken düğme metnine "!" ekler', () => {
@@ -160,7 +160,7 @@ describe('statusBar', () => {
       const hidden = handle.items.filter((item) => !item.visible);
 
       for (const item of hidden) {
-        expect(tooltipOf(item)).toContain('Tıkla: bu grubun komutları');
+        expect(tooltipOf(item)).toContain('Click for the commands in this group');
       }
     });
 
@@ -208,7 +208,7 @@ describe('statusBar', () => {
 
       const handle = activate(context);
 
-      expect(tooltipOf(masterOf(handle))).toContain('2 grup düğmesi gizli');
+      expect(tooltipOf(masterOf(handle))).toContain('2 group buttons hidden');
     });
   });
 
@@ -279,7 +279,7 @@ describe('statusBar', () => {
 
       expect(handle.items[1].command).toEqual({
         command: 'cmdkit.openGroup',
-        title: 'Python komutları',
+        title: 'Python commands',
         arguments: ['Python'],
       });
     });
@@ -295,7 +295,7 @@ describe('statusBar', () => {
       const handle = activate(context);
 
       expect(handle.items.map((item) => item.name)).toEqual([
-        'Cmdkit: Tüm Gruplar',
+        'Cmdkit: All Groups',
         'Cmdkit: Python',
         'Cmdkit: Flutter',
       ]);
@@ -315,13 +315,13 @@ describe('statusBar', () => {
       });
       const handle = activate(context);
 
-      expect(tooltipOf(handle.items[1])).toContain('En çok: test (×5)');
+      expect(tooltipOf(handle.items[1])).toContain('Most used: test (×5)');
     });
 
     it('hiç komut çalıştırılmadıysa bu satırı yazmaz', () => {
       const handle = activate(context);
 
-      expect(tooltipOf(handle.items[1])).not.toContain('En çok');
+      expect(tooltipOf(handle.items[1])).not.toContain('Most used');
     });
   });
 

@@ -1,47 +1,52 @@
 import * as vscode from 'vscode';
 
 /**
- * `Cmdkit: Komut Dosyası Nasıl Kullanılır` komutunun gösterdiği kılavuz.
+ * The guide shown by the `Cmdkit: How to Use the Command File` command.
  *
- * Düz dosya olarak durması bilinçli: içerik eklenti klasöründe ya da sanal
- * belgede, kullanıcı okuyup kopyalayabiliyor. Uzun metin olacağı için
- * `showInformationMessage` yerine önizlenebilir bir Markdown belgesi açılıyor.
+ * Kept as a plain file on purpose: the content lands in a virtual document the
+ * user can read and copy from. It is long enough that
+ * `showInformationMessage` will not do, so a previewable Markdown document is
+ * opened instead.
  */
-export const KULLANIM = `# Cmdkit — komut dosyası nasıl kullanılır
+export const USAGE = `# Cmdkit — how to use the command file
 
-Komutlar **\`cmdkit.groups\`** ayarında yaşar ve ekranda şu sırayla çalışır:
+Commands live in the **\`cmdkit.groups\`** setting and run in this order on
+screen:
 
-\`Cmd\` düğmesi → grup → komut → terminalde çalışır.
+\`Cmd\` button → group → command → runs in the terminal.
 
-Ama bu ayarı elle düzenlemek zahmetli. Bu yüzden düzenleme işi ayrı bir dosyada:
-**\`cmdkit-groups.json\`**.
+Editing that setting by hand is tedious, so the editing happens in a separate
+file: **\`cmdkit-groups.json\`**.
 
-## Üç adım
+## Three steps
 
-1. **\`Cmdkit: Komut Listesini Düzenle\`** → dosya açılır.
-   Dosya yoksa ayarlarınla oluşturulur; varsa **üzerine yazılmaz**.
-2. Dosyayı düzenle, <kbd>Ctrl</kbd>+<kbd>S</kbd> ile kaydet.
-   **Kaydetmek uygulamaz.**
-3. **\`Cmdkit: Komut Dosyasını Uygula\`** → ne değişeceğini özetler, onay
-   ister, hedefi sorar ve \`settings.json\`'a yazar.
+1. **\`Cmdkit: Edit Command List\`** → the file opens.
+   If it does not exist it is created from your settings; if it does, it is
+   **never overwritten**.
+2. Edit the file, save with <kbd>Ctrl</kbd>+<kbd>S</kbd>.
+   **Saving does not apply it.**
+3. **\`Cmdkit: Apply Command File\`** → summarises what will change, asks for
+   confirmation, asks for a destination and writes \`settings.json\`.
 
-Ayarı değiştirmeden hiçbir komut değişmez. Eklenti her zaman \`settings.json\`'ı
-okur, dosyayı değil — aradaki tek bağlantı bu üçüncü adımdır.
+No command changes until you change the setting. The extension always reads
+\`settings.json\`, never the file — the third step is the only link between
+them.
 
-Dosyada yorum satırı (\`//\`) kullanabilirsin — dosya JSONC'dir, \`/* */\` blok
-yorumları da çalışır. Elle düzenlediğin için yazmak normal; \`#4B8BBE\` gibi bir
-renk kodunun neden orada olduğunu not düşmek işe yarar.
+You can use \`//\` line comments in the file — it is JSONC, so \`/* */\` block
+comments work too. Since you are editing it by hand, comments are natural; they
+come in handy for noting why a colour like \`#4B8BBE\` is there.
 
-Yorum yalnızca tırnak dışında yorumdur: \`"command": "curl https://x/y"\`
-satırındaki \`//\` komutun parçasıdır, silinmez.
+Only \`//\` outside quotes counts as a comment: in \`"command": "curl
+https://x/y"\` the \`//\` is part of the command and is left alone.
 
-### Dosya nerede?
+### Where is the file?
 
-Varsayılan **\`<proje>/.vscode/cmdkit-groups.json\`** — dosyanın uygulandığı
-yer de \`.vscode/settings.json\`, kaynak ve hedef aynı klasörde duruyor. Proje
-açılmadıysa ev dizinine düşer. Yol proje bazlı hatırlanır.
+By default **\`<project>/.vscode/cmdkit-groups.json\`** — the file is applied
+into \`.vscode/settings.json\`, so source and destination sit in the same folder.
+With no project open it falls back to your home directory. The path is
+remembered per project.
 
-Monorepo'da alt pakete yönlendirmek için \`cmdkit.groupFile\` ayarını kullan:
+To point at a sub-package in a monorepo use the \`cmdkit.groupFile\` setting:
 
 \`\`\`json
 {
@@ -49,107 +54,109 @@ Monorepo'da alt pakete yönlendirmek için \`cmdkit.groupFile\` ayarını kullan
 }
 \`\`\`
 
-Göreli yollar ilk çalışma alanı köküne göre çözülür, mutlak yollar olduğu gibi
-alınır. Yol bir kez hatırlanınca ayar değişikliği etkili olmaz — hatırlanan yol
-kazanır.
+Relative paths resolve against the first workspace root, absolute paths are
+taken as they are. Once a path has been remembered, changing the setting has no
+effect — the remembered path wins.
 
-## Uygulama (import) — iki mod
+## Applying (import) — two modes
 
-| Mod | Ne yapar |
+| Mode | What it does |
 |---|---|
-| **Grupları birleştir** | Aynı isimli komutlar güncellenir, yeniler eklenir. Gelen listede **olmayanlar silinmez.** |
-| **Listeyi değiştir** | Mevcut liste tamamen gelen liste olur. Gelen listede olmayanlar **silinir.** |
+| **Merge groups** | Same-named commands are updated, new ones added. Anything **missing from the incoming list is kept.** |
+| **Replace list** | The current list becomes the incoming list. Anything **missing from the incoming list is deleted.** |
 
-Özet **yazılacak sonucu** tarif eder, dosyada ne eksik olduğunu değil. Bu yüzden
-\`Grupları birleştir\` modunda \`silinecek\` **hiç görünmez** — birleştirme zaten
-silmiyor. Örnekler:
-
-\`\`\`
-Grupları birleştir   →   • Git: 15 komut, 1 yeni
-Listeyi değiştir     →   • Git: 15 komut, 2 silinecek
-\`\`\`
-
-Bir **grup** tamamen siliniyorsa komutlarıyla birlikte kaybolur ve ikonu, rengi
-de gider. Özet bunu ayrıca ve gürültülü biçimde bildirir:
+The summary describes the **result that will be written**, not what is missing
+from the file. That is why \`will be deleted\` never appears in \`Merge groups\`
+mode — merging does not delete. Examples:
 
 \`\`\`
-• Node.js: GRUP SİLİNECEK (12 komut, ikon ve renk de kaybolur)
-2 grup tamamen silinecek. Bu geri alınamaz — devam etmeden önce komutlarını
-başka bir gruba taşımayı düşün.
+Merge groups   →   • Git: 15 commands, 1 new
+Replace list   →   • Git: 15 commands, 2 to delete
 \`\`\`
 
-Grupların ikonu ya da rengi değişirse özet \`ikon/renk değişti\` der.
+When an entire **group** disappears it takes its commands with it, and its icon
+and colour go too. The summary calls that out separately, and loudly:
 
-Listede gerçekten hiçbir şey değişmiyorsa özet hiç gösterilmez, dosyaya dokunulmaz.
+\`\`\`
+• Node.js: GROUP WILL BE DELETED (12 commands, icon and colour go too)
+2 groups will be deleted entirely. This cannot be undone — consider moving the
+commands to another group before you continue.
+\`\`\`
 
-## Silmek
+If a group's icon or colour changes, the summary says \`icon/colour changed\`.
 
-Komutu silmek: dosyadan sil, **\`Listeyi değiştir\`** ile uygula.
-\`Grupları birleştir\` silmez, onaylansa bile eski komut kalır.
+If nothing actually changes, no summary is shown at all and the file is left
+untouched.
 
-Grubu silmek için **\`Cmdkit: Grup Kaldır\`** daha güvenli. \`Listeyi değiştir\`
-tüm listeyi gelen dosyayla değiştirdiği için, dosya bayattaysa (ör. kütüphaneden
-eklenmiş ama dosyaya geçmemiş bir grup) istemediğin gruplar da gider.
-\`Grup Kaldır\` yalnızca seçtiğin grubu çıkarır.
+## Deleting
 
-Son grup kaldırılamaz — çalıştırılacak komut kalmaz. Bu yüzden liste hiçbir
-zaman boşalmaz; boş bir \`[]\` dosyasını uygulamak da reddedilir.
+To delete a command: remove it from the file and apply with **\`Replace list\`**.
+\`Merge groups\` never deletes — the old command survives even if you confirm.
 
-Geri alma yolu yok, kasıtlı: ayarlar dosyası sürüm kontrolünde değil, "son
-yazılan liste"tir. Silmeden önce dosyan elinde olduğu için bir şey giderse
-dosyadan geri getirip \`Listeyi değiştir\` ile uygulaman yeterli.
+To delete a group, **\`Cmdkit: Remove Group\`** is safer. \`Replace list\` swaps the
+whole list for the incoming file, so if the file is stale (say a group was
+added from the library but never written back to the file) groups you wanted to
+keep go with it. \`Remove Group\` takes out only the group you picked.
 
-## Gruplar arası işaretler
+The last group cannot be removed — that would leave no commands to run. So the
+list never empties, and applying an empty \`[]\` file is rejected too.
 
-Aynı isimli iki grup yazarsan ikinci düğme de birincisini açar — ayarları elle
-yazarken olabiliyor. Grup adlarını farklı tut.
+There is no undo, deliberately: the settings file is not under version control,
+it is "the list as last written". The file is in your hands before you delete
+anything, so if something goes missing you can restore it from the file and
+apply with \`Replace list\`.
 
-## Nereye yazılır?
+## Duplicate names
 
-\`Komut Dosyasını Uygula\` sonunda hedefi sorar:
+Two groups with the same name make the second button open the first — which
+happens when settings are written by hand. Keep the group names distinct.
 
-- **Bu proje** → \`<proje>/.vscode/settings.json\`
-- **Kullanıcı** → global ayarlar, tüm projeler için geçerli
+## Where does it get written?
 
-Proje açık değilse soru çıkmaz, doğrudan kullanıcı ayarlarına yazılır.
+\`Apply Command File\` asks for a destination at the end:
 
-Proje değeri kullanıcı değerini **gölgeler**. Yani bir projede
-\`.vscode/settings.json\` içinde \`cmdkit.groups\` varsa, aynı anda yazdığın
-kullanıcı ayarı o projede etkisiz kalır.
+- **This project** → \`<project>/.vscode/settings.json\`
+- **User** → global settings, valid for every project
 
-## Ekiple paylaşma
+With no project open the question is skipped and the user settings are used.
 
-Paylaşılacak dosya **\`cmdkit-groups.json\`**. Repoya commit'le, ekip arkadaşın
-\`Komut Dosyasını Uygula\` ile kendi ayarlarına alsın.
+A project value **shadows** a user value. So if a project has \`cmdkit.groups\`
+in \`.vscode/settings.json\`, a user setting you write at the same time stays
+ineffective for that project.
 
-\`.vscode/settings.json\`'a commit etmek de çalışır ama normalize edilmiş hâlde
-yazıldığı için 61 komutta ~100 satır gürültü olur.
+## Sharing with a team
 
-## Alan listesi
+The file to share is **\`cmdkit-groups.json\`**. Commit it to the repo and let a
+teammate pull it into their own settings with \`Apply Command File\`.
 
-### Grup
+Committing \`.vscode/settings.json\` works too, but it is written normalised, so
+61 commands turn into roughly 100 lines of noise.
 
-| Alan | Zorunlu | Varsayılan | Ne yapar |
+## Field reference
+
+### Group
+
+| Field | Required | Default | What it does |
 |---|---|---|---|
-| \`name\` | evet | — | Menüde başlık, durum çubuğu düğmesinin adı |
-| \`icon\` | hayır | \`$(terminal)\` | Durum çubuğu ikonu. Düz ad da olur: \`"zap"\` |
-| \`color\` | hayır | tema | Yalnızca bu grubun düğme rengi. \`"#4B8BBE"\` ya da \`charts.blue\` |
-| \`commands\` | evet | — | Komut listesi |
+| \`name\` | yes | — | Heading in the menu, label of the status bar button |
+| \`icon\` | no | \`$(terminal)\` | Status bar icon. A bare name works too: \`"zap"\` |
+| \`color\` | no | theme | Colour of this group's button only. \`"#4B8BBE"\` or \`charts.blue\` |
+| \`commands\` | yes | — | The command list |
 
-### Komut
+### Command
 
-| Alan | Zorunlu | Varsayılan | Ne yapar |
+| Field | Required | Default | What it does |
 |---|---|---|---|
-| \`name\` | evet | — | Menüde görünen ad |
-| \`command\` | evet | — | Çalıştırılacak shell komutu |
-| \`icon\` | hayır | \`$(terminal)\` | Komut satırındaki ikon |
-| \`description\` | hayır | boş | Menüde sağda gri metin |
-| \`confirm\` | hayır | \`false\` | \`true\` ise veya metin verirsen çalıştırmadan önce onay ister |
-| \`argsPrompt\` | hayır | — | Çalıştırmadan önce kullanıcıdan değer sorar |
-| \`argsSingle\` | hayır | \`false\` | **true ise girdinin tamamı tek argüman olur**, boşluktan bölünmez. \`git commit -m\`, \`psql -c\` gibi serbest metin bekleyen bayraklar için şart |
-| \`clear\` | hayır | \`false\` | \`true\` ise terminal temizlenerek çalışır |
+| \`name\` | yes | — | Name shown in the menu |
+| \`command\` | yes | — | The shell command to run |
+| \`icon\` | no | \`$(terminal)\` | Icon on the command row |
+| \`description\` | no | empty | Dimmed text on the right of the menu |
+| \`confirm\` | no | \`false\` | \`true\`, or any text, asks for confirmation before running |
+| \`argsPrompt\` | no | — | Asks the user for a value before running |
+| \`argsSingle\` | no | \`false\` | **When true the whole input is one argument**, not split on spaces. Required for flags that take free text, such as \`git commit -m\` or \`psql -c\` |
+| \`clear\` | no | \`false\` | \`true\` runs with the terminal cleared first |
 
-**Örnek:**
+**Example:**
 
 \`\`\`json
 {
@@ -157,19 +164,19 @@ yazıldığı için 61 komutta ~100 satır gürültü olur.
   "icon": "$(source-control)",
   "color": "#F14E32",
   "commands": [
-    { "name": "durum", "command": "git status", "description": "çalışma ağacı" },
-    { "name": "commit", "command": "git commit -m", "argsPrompt": "mesaj (örn. düzeltme)" },
-    { "name": "reset", "command": "git reset --hard", "confirm": "Geri alınamaz!" }
+    { "name": "status", "command": "git status", "description": "working tree" },
+    { "name": "commit", "command": "git commit -m", "argsPrompt": "message (e.g. fix typo)" },
+    { "name": "reset", "command": "git reset --hard", "confirm": "Cannot be undone!" }
   ]
 }
 \`\`\`
 
-## Platform belirteçleri
+## Platform tokens
 
-Varsayılan gruplar tek metinde yazılı; yol ve silme komutu çalışma anında
-platforma göre çözülür.
+The built-in groups are written as a single string; paths and the delete
+command are resolved to the platform at run time.
 
-| Belirteç | macOS / Linux | Windows |
+| Token | macOS / Linux | Windows |
 |---|---|---|
 | \`{python}\` | \`python3\` | \`python\` |
 | \`{venv}\` | \`.venv/bin/\` | \`.venv\\Scripts\\\` |
@@ -180,45 +187,45 @@ platforma göre çözülür.
 { "name": "test", "command": "{venvpy} -m pytest" }
 \`\`\`
 
-Bilinmeyen belirteçler (\`{herhangi}\`) olduğu gibi bırakılır.
+Unknown tokens (\`{anything}\`) are left as they are.
 
-## Sık takılanlar
+## Common problems
 
-**Değişiklik yapmadım gibi görünüyorum.** Kaydettin ama uygulamadın.
-\`Komut Dosyasını Uygula\` çalıştır.
+**"It looks like nothing changed."** You saved but did not apply. Run
+\`Apply Command File\`.
 
-**Grup ikonumu değiştirdim, çubukta eski.** Uygulamayı bitir; ayar değişimi
-düğmeleri kendiliğinden yeniler.
+**"I changed the group icon, the bar still shows the old one."** Finish the
+apply; changing the setting refreshes the buttons on its own.
 
-**Komut sildim ama hâlâ var.** \`Grupları birleştir\` silmez. \`Listeyi değiştir\`
-kullan.
+**"I deleted a command but it is still there."** \`Merge groups\` does not
+delete. Use \`Replace list\`.
 
-**Grubum görünmüyor.** \`commands\` dizisi boş olan gruplar **sessizce yok
-sayılır** — eklediğini sanırsın ama menüde çıkmaz. Dosyada en az bir komut
-olmalı; şema boş diziyi kırmızı işaretler.
+**"My group is missing."** Groups with an empty \`commands\` array are
+**silently ignored** — you think you added it, but it never shows up. The file
+needs at least one command; the schema marks an empty array red.
 
-**"İçerik okunamadı" hatası.** Mesaj nedenini söyler: JSON bozuk olabilir,
-dosya dizi olmayabilir, komut dizileri boş olabilir, ya da alanlar eksik
-olabilir.
+**"Content could not be read" error.** The message gives the reason: the JSON
+may be broken, the file may not be an array, the command arrays may be empty,
+or fields may be missing.
 
-**Menüm şişti.** Durum çubuğunda \`maxGroupItems\` (varsayılan 3) ve
-\`hiddenGroups\` ayarları var; \`Cmdkit: Durum Çubuğu Düğmelerini Seç\` ile
-görünmesi gerekenleri işaretle.
+**"My menu is crowded."** There are \`maxGroupItems\` (default 3) and
+\`hiddenGroups\` settings; run \`Cmdkit: Choose Status Bar Items\` to tick the ones
+that should stay.
 
-**Daha fazla hazır grup.** \`Cmdkit: Hazır Grup Ekle\` — Docker, Go, Kubernetes,
-PostgreSQL, GitHub CLI ve 5 grup daha.
+**"More built-in groups."** \`Cmdkit: Add Built-in Group\` — Docker, Go,
+Kubernetes, PostgreSQL, GitHub CLI and five more.
 `;
 
 /**
- * Kılavuzu önizlenebilir bir Markdown belgesi olarak açar.
+ * Opens the guide as a previewable Markdown document.
  *
- * Gerçek dosya yazmıyor: içerik sanal belgeye gider, kullanıcı istediğini
- * kopyalayabilir ama eklenti klasörünü kirletmez.
+ * Writes no real file: the content goes to a virtual document, so the user can
+ * copy whatever they want without littering the extension folder.
  */
 export async function showUsage(): Promise<void> {
   const document = await vscode.workspace.openTextDocument({
     language: 'markdown',
-    content: KULLANIM,
+    content: USAGE,
   });
   await vscode.window.showTextDocument(document, { preview: true });
 }

@@ -5,7 +5,7 @@ import { Command, Group } from './normalize';
 import { expandTokens } from './tokens';
 
 const TASK_SOURCE = 'cmdkit';
-const RUN_LABEL = 'Çalıştır';
+const RUN_LABEL = 'Run';
 
 function errorText(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
@@ -17,7 +17,7 @@ async function confirmRun(command: Command): Promise<boolean> {
   }
 
   const answer = await vscode.window.showWarningMessage(
-    `${command.confirm}\n\nÇalıştırılacak: ${expandTokens(command.command)}`,
+    `${command.confirm}\n\nWill run: ${expandTokens(command.command)}`,
     { modal: true },
     RUN_LABEL
   );
@@ -33,7 +33,7 @@ async function promptArgs(command: Command): Promise<string[] | undefined> {
 
   const answer = await vscode.window.showInputBox({
     prompt: command.argsPrompt,
-    placeHolder: `Başlatılacak: ${expandTokens(command.command)}`,
+    placeHolder: `Will run: ${expandTokens(command.command)}`,
     ignoreFocusOut: true,
   });
 
@@ -111,7 +111,7 @@ export async function runCommand(
     return true;
   } catch (error) {
     void vscode.window.showErrorMessage(
-      `cmdkit: "${command.name}" başlatılamadı — ${errorText(error)}`
+      `cmdkit: could not start "${command.name}" — ${errorText(error)}`
     );
     return false;
   }

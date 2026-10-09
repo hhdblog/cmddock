@@ -107,18 +107,18 @@ export function parseFailureReason(input: string): string | undefined {
   if (!result.ok) {
     // Yorum temizlendikten sonra da hata varsa gerçek sorun yorum değil —
     // kullanıcının aradığı cevap "tırnak, virgül ya da parantez eksik".
-    return 'JSON bozuk olabilir — tırnak, virgül ya da süslü parantez eksik.';
+    return 'The JSON may be broken — a quote, a comma or a curly brace is missing.';
   }
 
   const parsed = result.value;
 
   if (!Array.isArray(parsed)) {
-    return 'Dosya bir komut dizisi olmalı — köşeli parantezle başlamalı.';
+    return 'The file must be an array of commands — it should start with a square bracket.';
   }
 
   if (parsed.length === 0) {
-    return 'Dosyada grup kalmadı. En az bir grup olmalı — son grubu silersen ' +
-      'çalıştırılacak komut kalmaz.';
+    return 'No group left in the file. At least one group is required — if you remove the last one there ' +
+      'is nothing left to run.';
   }
 
   // commands alanı var ama boşsa "eksik" demek yanlış olur; grup sessizce
@@ -127,14 +127,14 @@ export function parseFailureReason(input: string): string | undefined {
     (group) => Array.isArray(group?.commands) && group.commands.length === 0
   );
   if (onlyEmpty) {
-    return 'Grupların "commands" dizileri boş. En az bir komutu olan grup ' +
-      'ekle — komutsuz grup sessizce yok sayılır.';
+    return 'The "commands" arrays of the groups are empty. Add a group with at least one command — ' +
+      'a group without commands is ignored silently.';
   }
 
   // Dizi ve boş değil; gerçekten geçersizse normalizasyon boş döner.
   if (normalizeGroups(parsed).length === 0) {
-    return 'Grup veya komut alanları eksik. Her grubun "name" ve "commands", ' +
-      'her komutun "name" ve "command" alanı gerekli.';
+    return 'Some group or command fields are missing. Every group needs "name" and "commands", ' +
+      'and every command needs "name" and "command".';
   }
 
   return undefined;
@@ -213,7 +213,7 @@ function describe(
   }
 
   if (current.length === 0) {
-    return [`Sonuç: ${result.length} grup, ${countCommands(result)} komut (yeni liste)`];
+    return [`Result: ${result.length} groups, ${countCommands(result)} commands (new list)`];
   }
 
   const names = new Set(result.map((group) => group.name));
@@ -222,7 +222,7 @@ function describe(
     const before = current.find((candidate) => candidate.name === group.name);
 
     if (!before) {
-      return `• ${group.name}: yeni grup, ${group.commands.length} komut`;
+      return `• ${group.name}: new group, ${group.commands.length} commands`;
     }
 
     const added = group.commands.filter(
@@ -237,11 +237,11 @@ function describe(
     // kullanıcı hiçbir şey olmadığını sanır.
     const appearance = before.icon !== group.icon || before.color !== group.color;
 
-    const parts = [`${group.commands.length} komut`];
-    if (added > 0) parts.push(`${added} yeni`);
-    if (changed > 0) parts.push(`${changed} güncellenecek`);
-    if (removed > 0) parts.push(`${removed} silinecek`);
-    if (appearance) parts.push('ikon/renk değişti');
+    const parts = [`${group.commands.length} commands`];
+    if (added > 0) parts.push(`${added} new`);
+    if (changed > 0) parts.push(`${changed} to update`);
+    if (removed > 0) parts.push(`${removed} to delete`);
+    if (appearance) parts.push('icon/colour changed');
 
     return `• ${group.name}: ${parts.join(', ')}`;
   });
@@ -253,18 +253,18 @@ function describe(
   const dropped = current.filter((group) => !names.has(group.name));
   for (const group of dropped) {
     lines.push(
-      `• ${group.name}: GRUP SİLİNECEK (${group.commands.length} komut, ikon ve renk de kaybolur)`
+      `• ${group.name}: GROUP WILL BE DELETED (${group.commands.length} commands, icon and colour go too)`
     );
   }
 
   if (dropped.length > 0) {
     lines.push(
-      `${dropped.length} grup tamamen silinecek. Bu geri alınamaz — devam etmeden önce ` +
-        `komutlarını başka bir gruba taşımayı düşün.`
+      `${dropped.length} groups will be deleted entirely. This cannot be undone — before you continue ` +
+        `consider moving the commands to another group.`
     );
   }
 
-  lines.push(`Toplam: ${countCommands(current)} → ${countCommands(result)} komut`);
+  lines.push(`Total: ${countCommands(current)} → ${countCommands(result)} commands`);
 
   return lines;
 }

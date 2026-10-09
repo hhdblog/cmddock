@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { KULLANIM } from '../../src/help';
+import { USAGE } from '../../src/help';
 import { tokenMap } from '../../src/tokens';
 
 interface Schema {
@@ -13,80 +13,81 @@ const manifest = JSON.parse(
   readFileSync(fileURLToPath(new URL('../../package.json', import.meta.url)), 'utf8')
 ) as { contributes: { configuration: { properties: Record<string, Schema> } } };
 
-// Şema iç içe: cmdkit.groups → items (grup) → properties.commands.items (komut)
+// Schema nests: cmdkit.groups → items (group) → properties.commands.items (command)
 const groupsSetting = manifest.contributes.configuration.properties['cmdkit.groups'];
 const groupFields = Object.keys(groupsSetting?.items?.properties ?? {});
 const commandFields = Object.keys(groupsSetting?.items?.properties?.commands?.items?.properties ?? {});
 
 /**
- * Kılavuz elle yazıldı. Şemaya ya da belirteç tablosuna yeni alan eklendiğinde
- * burada kırmızıya düşmeli, yoksa kullanıcı eksik belgeyle kalır.
+ * The guide is written by hand. When a field or a token is added to the schema
+ * it has to go red here, otherwise the user is left with an incomplete
+ * document.
  */
 describe('kullanım kılavuzu', () => {
-  it('her grup alanını açıklıyor', () => {
+  it('documents every group field', () => {
     expect(groupFields.length).toBeGreaterThan(0);
     for (const field of groupFields) {
-      expect(KULLANIM, `grup alanı: ${field}`).toContain(`\`${field}\``);
+      expect(USAGE, `group field: ${field}`).toContain(`\`${field}\``);
     }
   });
 
-  it('her komut alanını açıklıyor', () => {
+  it('documents every command field', () => {
     expect(commandFields.length).toBeGreaterThan(0);
     for (const field of commandFields) {
-      expect(KULLANIM, `komut alanı: ${field}`).toContain(`\`${field}\``);
+      expect(USAGE, `command field: ${field}`).toContain(`\`${field}\``);
     }
   });
 
-  it('her platform belirteçini listeliyor', () => {
+  it('lists every platform token', () => {
     for (const token of Object.keys(tokenMap('linux'))) {
-      expect(KULLANIM, token).toContain(`\`{${token}}\``);
+      expect(USAGE, token).toContain(`\`{${token}}\``);
     }
   });
 
-  it('belirteçlerin Windows karşılıklarını veriyor', () => {
+  it('gives the Windows value of every token', () => {
     for (const value of Object.values(tokenMap('win32'))) {
-      expect(KULLANIM, value).toContain(value);
+      expect(USAGE, value).toContain(value);
     }
   });
 
-  it('macOS karşılıklarını veriyor', () => {
+  it('gives the macOS value of every token', () => {
     for (const value of Object.values(tokenMap('linux'))) {
-      expect(KULLANIM, value).toContain(value);
+      expect(USAGE, value).toContain(value);
     }
   });
 
-  it('iki uygulama modunu da anlatıyor', () => {
-    expect(KULLANIM).toContain('Grupları birleştir');
-    expect(KULLANIM).toContain('Listeyi değiştir');
+  it('explains both apply modes', () => {
+    expect(USAGE).toContain('Merge groups');
+    expect(USAGE).toContain('Replace list');
   });
 
-  it('birleştirmenin silmediğini söylüyor', () => {
-    expect(KULLANIM).toMatch(/silinmez/);
+  it('says that merging does not delete', () => {
+    expect(USAGE).toMatch(/missing from the incoming list is kept/i);
   });
 
-  it('kaydetmenin uygulamadığını söylüyor', () => {
-    expect(KULLANIM).toMatch(/[Kk]aydet(mek)? .*uygulamaz/);
+  it('says that saving does not apply', () => {
+    expect(USAGE).toMatch(/[Ss]aving does not apply it/);
   });
 
-  it('iki uygulama hedefini anlatıyor', () => {
-    expect(KULLANIM).toContain('.vscode/settings.json');
-    expect(KULLANIM).toContain('Kullanıcı');
+  it('explains both destinations', () => {
+    expect(USAGE).toContain('.vscode/settings.json');
+    expect(USAGE).toContain('**User**');
   });
 
-  it('gölgelemeyi anlatıyor', () => {
-    expect(KULLANIM).toMatch(/gölgeler/);
+  it('explains shadowing', () => {
+    expect(USAGE).toMatch(/shadows/);
   });
 
-  it('ikon ve renk değişikliğinin uygulandığını söylüyor', () => {
-    expect(KULLANIM).toContain('ikon/renk değişti');
+  it('says icon and colour changes are applied', () => {
+    expect(USAGE).toContain('icon/colour changed');
   });
 
-  it('hazır grup komutundan bahsediyor', () => {
-    expect(KULLANIM).toContain('Hazır Grup Ekle');
+  it('mentions the built-in group command', () => {
+    expect(USAGE).toContain('Add Built-in Group');
   });
 
-  it('JSON örneği geçerli — kopyalayan kullanıcı hata almaz', () => {
-    const blocks = [...KULLANIM.matchAll(/```json\n([\s\S]*?)```/g)].map((m) => m[1]);
+  it('JSON examples are valid — a user copying them gets no error', () => {
+    const blocks = [...USAGE.matchAll(/```json\n([\s\S]*?)```/g)].map((m) => m[1]);
     expect(blocks.length).toBeGreaterThan(0);
 
     for (const block of blocks) {
@@ -94,8 +95,8 @@ describe('kullanım kılavuzu', () => {
     }
   });
 
-  it('platform belirteçli örnek de geçerli JSON', () => {
-    const blocks = [...KULLANIM.matchAll(/```json\n([\s\S]*?)```/g)].map((m) => m[1]);
+  it('the tokenised example is valid JSON too', () => {
+    const blocks = [...USAGE.matchAll(/```json\n([\s\S]*?)```/g)].map((m) => m[1]);
     const tokenized = blocks.find((block) => block.includes('{venvpy}'));
 
     expect(tokenized).toBeDefined();

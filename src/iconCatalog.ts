@@ -22,7 +22,7 @@ export async function showIconCatalog(): Promise<void> {
   ]);
 
   const picked = await vscode.window.showQuickPick(items, {
-    placeHolder: 'İkon seç — adı panoya kopyalanır',
+    placeHolder: 'Pick an icon — its name is copied to the clipboard',
     matchOnDescription: true,
   });
 
@@ -32,7 +32,7 @@ export async function showIconCatalog(): Promise<void> {
 
   await vscode.env.clipboard.writeText(picked.iconName);
   void vscode.window.showInformationMessage(
-    `cmdkit: "${picked.iconName}" panoya kopyalandı — ` +
-      'cmdkit.statusBar.icon veya grup/komut icon alanına yaz.'
+    `cmdkit: copied "${picked.iconName}" — ` +
+      'Write it into cmdkit.statusBar.icon or the icon field of a group or command.'
   );
 }

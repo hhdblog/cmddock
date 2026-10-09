@@ -83,11 +83,11 @@ function masterItem(
     id: MASTER_ID,
     text: `${options.masterIcon} ${MASTER_LABEL}`,
     visible: true,
-    name: `${ENTRY_NAME_PREFIX}: Tüm Gruplar`,
+    name: `${ENTRY_NAME_PREFIX}: All Groups`,
     statusBarId: `${MASTER_STATUS_BAR_ID_PREFIX}.cmd`,
     tooltipLines: [
       `**Cmdkit** — ${groups.length} grup, ${countCommands(groups)} komut`,
-      'Tıkla: grup seç → komut çalıştır',
+      'Click: pick a group → run a command',
     ],
     priority: basePriority,
   };
@@ -167,14 +167,14 @@ export function planItems(
     const icon = parseIcon(group.icon);
     const label = options.groupLabel(group);
     const text = label ? `${icon} ${label}` : icon;
-    const lines = [`**${group.icon} ${group.name}** — ${group.commands.length} komut`];
+    const lines = [`**${group.icon} ${group.name}** — ${group.commands.length} commands`];
 
     const top = options.topCommand?.(group);
     if (top) {
-      lines.push(`En çok: ${top.name} (×${top.count})`);
+      lines.push(`Most used: ${top.name} (×${top.count})`);
     }
 
-    lines.push('', 'Tıkla: bu grubun komutları');
+    lines.push('', 'Click for the commands in this group');
 
     plan.push({
       kind: 'group',

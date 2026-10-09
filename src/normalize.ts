@@ -50,7 +50,7 @@ export function normalizeCommand(raw: unknown): Command | undefined {
   if (typeof r.confirm === 'string' && r.confirm.length > 0) {
     confirm = r.confirm;
   } else if (r.confirm === true) {
-    confirm = `'${command}' çalıştırılsın mı?`;
+    confirm = `'${command}' to run?`;
   }
 
   const argsPrompt = text(r.argsPrompt) || undefined;

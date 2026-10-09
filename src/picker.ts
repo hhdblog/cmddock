@@ -40,7 +40,7 @@ export async function pickCommand(
 ): Promise<PickResult | undefined> {
   if (groups.length === 0) {
     void vscode.window.showWarningMessage(
-      'cmdkit: komut grubu yok. "cmdkit.groups" ayarına grup ekle.'
+      'cmdkit: no command groups. Add one to the "cmdkit.groups" setting.'
     );
     return undefined;
   }
@@ -67,7 +67,7 @@ export async function pickCommand(
   ];
 
   const picked = await vscode.window.showQuickPick(groupItems, {
-    placeHolder: 'Komut grubu veya diğer menüler',
+    placeHolder: 'A command group or one of the other menus',
     matchOnDescription: true,
   });
 
@@ -101,7 +101,7 @@ export async function pickCommandsInGroup(
   }));
 
   const pickedCommand = await vscode.window.showQuickPick(commandItems, {
-    placeHolder: `${group.name} — komut seç`,
+    placeHolder: `${group.name} — pick a command`,
     matchOnDescription: true,
     matchOnDetail: true,
   });
@@ -126,7 +126,7 @@ export async function pickAnyCommand(
 ): Promise<PickResult | undefined> {
   if (groups.length === 0) {
     void vscode.window.showWarningMessage(
-      'cmdkit: komut grubu yok. "cmdkit.groups" ayarına grup ekle.'
+      'cmdkit: no command groups. Add one to the "cmdkit.groups" setting.'
     );
     return undefined;
   }
@@ -142,7 +142,7 @@ export async function pickAnyCommand(
   );
 
   const picked = await vscode.window.showQuickPick(items, {
-    placeHolder: 'Tüm komutlarda ara',
+    placeHolder: 'Search all commands',
     matchOnDescription: true,
     matchOnDetail: true,
   });

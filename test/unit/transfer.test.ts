@@ -127,17 +127,17 @@ describe('parseGroups — JSONC yorumları', () => {
     // Gerçek sorun eksik parantez; "JSON bozuk" demek doğru, "yorum geçersiz"
     // demek yanlış olurdu.
     expect(parseFailureReason('// not\n[{')).toBe(
-      'JSON bozuk olabilir — tırnak, virgül ya da süslü parantez eksik.'
+      'The JSON may be broken — a quote, a comma or a curly brace is missing.'
     );
   });
 
   it('yorumlu dosya boş listede ayırt edilir', () => {
-    expect(parseFailureReason('// not\n[]')).toContain('grup kalmadı');
+    expect(parseFailureReason('// not\n[]')).toContain('No group left');
   });
 
   it('yorumlu dosyada eksik alan yine ayırt edilir', () => {
     expect(parseFailureReason('// not\n[{"name":"G","commands":[]}]')).toContain(
-      'boş'
+      'are empty'
     );
   });
 });
@@ -206,28 +206,28 @@ describe('planImport', () => {
     const plan = planImport(current, incoming, 'replace');
     const a = plan.summary.find((line) => line.startsWith('• A'));
 
-    expect(a).toContain('yeni');
-    expect(a).toContain('güncellenecek');
-    expect(a).toContain('silinecek');
-    expect(plan.summary.join('\n')).toContain('Toplam:');
+    expect(a).toContain('new');
+    expect(a).toContain('to update');
+    expect(a).toContain('to delete');
+    expect(plan.summary.join('\n')).toContain('Total:');
   });
 
   it('merge modunda silinecek bildirmez', () => {
     const plan = planImport(current, incoming, 'merge');
     const a = plan.summary.find((line) => line.startsWith('• A'));
 
-    expect(a).not.toContain('silinecek');
-    expect(a).toContain('yeni');
+    expect(a).not.toContain('to delete');
+    expect(a).toContain('new');
   });
 
   it('mevcut liste boşken özet yeni liste der', () => {
     const plan = planImport([], incoming, 'replace');
-    expect(plan.summary.join('\n')).toContain('yeni liste');
+    expect(plan.summary.join('\n')).toContain('new list');
   });
 
   it('yeni grubu özette ayrı satır olarak gösterir', () => {
     const plan = planImport(current, incoming, 'merge');
-    expect(plan.summary).toContain('• C: yeni grup, 1 komut');
+    expect(plan.summary).toContain('• C: new group, 1 commands');
   });
 });
 describe('slimGroups', () => {
@@ -348,7 +348,7 @@ describe('gruba ait görünüm (ikon/renk) birleştirmede', () => {
       normalizeGroups(withLook('$(source-control)', '#111111')),
       'merge'
     );
-    expect(plan.summary.join(' ')).not.toContain('ikon/renk');
+    expect(plan.summary.join(' ')).not.toContain('icon/colour');
   });
 
   it('görünüm değiştiğinde özette belirtir', () => {
@@ -357,7 +357,7 @@ describe('gruba ait görünüm (ikon/renk) birleştirmede', () => {
       normalizeGroups(withLook('$(rocket)', '#222222')),
       'merge'
     );
-    expect(plan.summary.join(' ')).toContain('ikon/renk değişti');
+    expect(plan.summary.join(' ')).toContain('icon/colour changed');
   });
 });
 
@@ -373,29 +373,29 @@ describe('özet, silinen grupları da bildirir', () => {
   it('sonuçta olmayan grup görünür', () => {
     const plan = planImport([...group('Python'), ...group('Node.js', 12)], group('Python'), 'replace');
 
-    expect(plan.summary.join('\n')).toContain('Node.js: GRUP SİLİNECEK');
+    expect(plan.summary.join('\n')).toContain('Node.js: GROUP WILL BE DELETED');
   });
 
   it('kaç komutla birlikte kaybolduğunu söyler', () => {
     const plan = planImport(group('Python'), group('Node.js', 12), 'replace');
 
-    expect(plan.summary.join('\n')).toContain('12 komut');
+    expect(plan.summary.join('\n')).toContain('12 commands');
   });
 
   it('kaç grup silindiğini ve geri alınamaz olduğunu söyler', () => {
     const current = [...group('Python'), ...group('Docker', 9), ...group('Go', 10)];
     const plan = planImport(current, group('Python'), 'replace');
 
-    expect(plan.summary.join('\n')).toContain('2 grup tamamen silinecek');
-    expect(plan.summary.join('\n')).toContain('geri alınamaz');
+    expect(plan.summary.join('\n')).toContain('2 groups will be deleted entirely');
+    expect(plan.summary.join('\n')).toContain('cannot be undone');
   });
 
   it('grup kalıyorsa uyarı vermez', () => {
     const current = [...group('Python'), ...group('Docker', 9)];
     const plan = planImport(current, current, 'replace');
 
-    expect(plan.summary.join('\n')).not.toContain('GRUP SİLİNECEK');
-    expect(plan.summary.join('\n')).not.toContain('geri alınamaz');
+    expect(plan.summary.join('\n')).not.toContain('GROUP WILL BE DELETED');
+    expect(plan.summary.join('\n')).not.toContain('cannot be undone');
   });
 
   it('merge modunda grup silinmez, uyarı da çıkmaz', () => {
@@ -403,15 +403,15 @@ describe('özet, silinen grupları da bildirir', () => {
     const plan = planImport(current, group('Python'), 'merge');
 
     expect(plan.result.map((g) => g.name)).toContain('Docker');
-    expect(plan.summary.join('\n')).not.toContain('GRUP SİLİNECEK');
+    expect(plan.summary.join('\n')).not.toContain('GROUP WILL BE DELETED');
   });
 
   it('silme uyarısı toplam satırından önce gelir', () => {
     const plan = planImport([...group('Python'), ...group('Docker', 9)], group('Python'), 'replace');
     const lines = plan.summary;
 
-    const warning = lines.findIndex((line) => line.includes('GERİ ALINAMAZ') || line.includes('geri alınamaz'));
-    const total = lines.findIndex((line) => line.startsWith('Toplam:'));
+    const warning = lines.findIndex((line) => line.includes('cannot be undone'));
+    const total = lines.findIndex((line) => line.startsWith('Total:'));
 
     expect(warning).toBeGreaterThanOrEqual(0);
     expect(warning).toBeLessThan(total);
@@ -420,17 +420,17 @@ describe('özet, silinen grupları da bildirir', () => {
 
 describe('parseFailureReason', () => {
   it('bozuk JSON için sözdizimi derdini söyler', () => {
-    expect(parseFailureReason('{ bu json değil')).toContain('bozuk');
+    expect(parseFailureReason('{ not json')).toContain('broken');
   });
 
   it('dizi olmayan içerikte biçim bekliyor', () => {
-    expect(parseFailureReason('"metin"')).toContain('köşeli parantez');
+    expect(parseFailureReason('"text"')).toContain('square bracket');
   });
 
   it('boş listede sonucun nedenini söyler', () => {
     const reason = parseFailureReason('[]');
-    expect(reason).toContain('grup kalmadı');
-    expect(reason).toContain('En az bir grup');
+    expect(reason).toContain('No group left');
+    expect(reason).toContain('At least one group');
   });
 
   it('eksik alanlarda hangi alanların gerekli olduğunu söyler', () => {
@@ -452,11 +452,11 @@ describe('komutsuz grup', () => {
     expect(normalized.map((g) => g.name)).toEqual(['A']);
   });
 
-  it('tek başına komutsuz gruptan mesaj "boş" der, "eksik" değil', () => {
+  it('tek başına komutsuz gruptan mesaj "are empty" der, "required" değil', () => {
     const reason = parseFailureReason('[{"name":"X","commands":[]}]');
 
-    expect(reason).toContain('boş');
-    expect(reason).not.toContain('gerekli');
+    expect(reason).toContain('are empty');
+    expect(reason).not.toContain('needs "name"');
   });
 
   it('karışık listede komutsuz grup mesajı bozmaz', () => {
