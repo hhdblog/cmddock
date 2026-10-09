@@ -8,3 +8,8 @@ out/
 # Cmdkit düzenleme dosyası (Komut Listesini Düzenle üretir).
 # Kök dizine sabitleniyor: schemas/cmdkit-groups.json yoksayılmasın.
 /cmdkit-groups.json
+
+# Tasarım günlüğü — geliştirici için, depoya girmiyor.
+# İçinde kararların gerekçeleri ve geçmiş var; kullanıcının işine yaramaz,
+# README'nin sonundaki referans da kaldırıldı.
+/docs/PLAN.md
