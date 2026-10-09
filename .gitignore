@@ -5,9 +5,9 @@ dist/
 out/
 .vscode-test/
 
-# Cmdkit düzenleme dosyası (Komut Listesini Düzenle üretir).
-# Kök dizine sabitleniyor: schemas/cmdkit-groups.json yoksayılmasın.
-/cmdkit-groups.json
+# CmdDock düzenleme dosyası (Komut Listesini Düzenle üretir).
+# Kök dizine sabitleniyor: schemas/cmddock-groups.json yoksayılmasın.
+/cmddock-groups.json
 
 # Ajan çalışma kuralları — sadece bu makinede. Repoya girmesi gerekmiyor,
 # ama dosya diskte kaldığı için opencode her yeni sohbette otomatik yüklüyor.

@@ -25,4 +25,4 @@ dist/**/*.map
 *.vsix
 
 # Düzenleme dosyası kök dizinde üretiliyorsa paketlenmesin.
-/cmdkit-groups.json
+/cmddock-groups.json
