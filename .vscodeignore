@@ -1,14 +1,26 @@
-.gitignore
-.vscode/**
+# package.json ve kök dosyaları paketlenmez — vsce bunları zaten ekliyor.
+#
+# `npm run build` (vscode:prepublish) dist/ üretir, kaynak .ts dosyaları
+# çalışma zamanında gerekmiyor.
+node_modules/**
 src/**
 test/**
 scripts/**
-examples/**
 out/**
-node_modules/**
+.vscode/**
+.vscode-test/**
+
 tsconfig.json
-esbuild.mjs
 vitest.config.mts
+esbuild.mjs
+PLAN.md
+.gitignore
+
+# Kaynak haritası 214 KB — paketin yarısından fazlası. Yerelde hata ayıklamak
+# için gerekli, ama kurulan eklentide kullanıcıya hiçbir işe yaramıyor.
+dist/**/*.map
+
 *.vsix
-**/*.map
-.vscode-test/
+
+# Düzenleme dosyası kök dizinde üretiliyorsa paketlenmesin.
+/cmdkit-groups.json
