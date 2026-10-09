@@ -15,6 +15,7 @@ vitest.config.mts
 esbuild.mjs
 PLAN.md
 docs/**
+AGENTS.md
 .gitignore
 
 # Kaynak haritası 214 KB — paketin yarısından fazlası. Yerelde hata ayıklamak
