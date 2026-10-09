@@ -1046,6 +1046,117 @@
           "description": "canlıya çıkarır"
         }
       ]
+    },
+    {
+      "name": "Surge",
+      "icon": "$(zap)",
+      "color": "#E8A317",
+      "summary": "statik yayın, sürüm, DNS, SSL",
+      "commands": [
+        {
+          "name": "oturum",
+          "command": "surge whoami",
+          "icon": "$(account)",
+          "description": "etkin oturumu gösterir"
+        },
+        {
+          "name": "giriş",
+          "command": "surge login",
+          "icon": "$(symbol-key)",
+          "description": "oturum açar"
+        },
+        {
+          "name": "çıkış",
+          "command": "surge logout",
+          "icon": "$(sign-out)",
+          "description": "oturumu kapatır, jetonu geçersizleştirir"
+        },
+        {
+          "name": "e-posta doğrula",
+          "command": "surge verify",
+          "icon": "$(verified)",
+          "description": "hesap e-postasını doğrular"
+        },
+        {
+          "name": "projeler",
+          "command": "surge list",
+          "icon": "$(list-ordered)",
+          "description": "hesaptaki tüm projeler"
+        },
+        {
+          "name": "yayınla",
+          "command": "surge",
+          "icon": "$(rocket)",
+          "argsPrompt": "dizin ve alan adı (örn. ./dist site.com)",
+          "confirm": "Üretime yayınlanacak. Devam?",
+          "description": "dizini alan adına yayınlar"
+        },
+        {
+          "name": "CNAME ile yayınla",
+          "command": "surge publish",
+          "icon": "$(cloud-upload)",
+          "confirm": "Üretime yayınlanacak. Devam?",
+          "description": "CNAME dosyasındaki alan adına yayınlar"
+        },
+        {
+          "name": "önizleme yayını",
+          "command": "surge --preview",
+          "icon": "$(preview)",
+          "argsPrompt": "dizin ve alan adı (örn. ./dist site.com)",
+          "description": "üretime dokunmadan önizleme yayınlar"
+        },
+        {
+          "name": "sürümler",
+          "command": "surge revs",
+          "icon": "$(history)",
+          "argsPrompt": "alan adı",
+          "description": "projenin sürüm geçmişi"
+        },
+        {
+          "name": "geri al",
+          "command": "surge rollback",
+          "icon": "$(debug-rerun)",
+          "argsPrompt": "alan adı",
+          "confirm": "Canlı sürüm değiştirilecek. Devam?",
+          "description": "önceki sürüme döner"
+        },
+        {
+          "name": "ayarlar",
+          "command": "surge config",
+          "icon": "$(tools)",
+          "argsPrompt": "alan adı",
+          "description": "proje yapılandırması"
+        },
+        {
+          "name": "istatistik",
+          "command": "surge stats",
+          "icon": "$(watch)",
+          "argsPrompt": "alan adı",
+          "description": "trafik ve kullanım analitiği"
+        },
+        {
+          "name": "DNS",
+          "command": "surge dns",
+          "icon": "$(globe)",
+          "argsPrompt": "alan adı",
+          "description": "DNS kayıtlarını yönetir"
+        },
+        {
+          "name": "SSL",
+          "command": "surge ssl",
+          "icon": "$(shield)",
+          "argsPrompt": "alan adı",
+          "description": "sertifika işlemleri"
+        },
+        {
+          "name": "projeyi kaldır",
+          "command": "surge teardown",
+          "icon": "$(trash)",
+          "argsPrompt": "alan adı",
+          "confirm": "Proje kalıcı olarak silinecek, geri alınamaz. Devam?",
+          "description": "yayınlanmış projeyi kaldırır"
+        }
+      ]
     }
   ]
 }

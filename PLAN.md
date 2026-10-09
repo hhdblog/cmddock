@@ -578,6 +578,7 @@ kullanılmadı.
 | Redis | `$(server)` | `#DC382C` | 6 |
 | Android | `$(device-mobile)` | `#3DDC84` | 6 |
 | Vercel | `$(rocket)` | `#FF4A4A` | 5 |
+| Surge | `$(zap)` | `#E8A317` | 15 |
 
 **Sıralama gerekçesi:** 1–3 herkes için (en yüksek kullanım × en zengin CLI),
 4–8 dikey ama o işi yapan için çok zaman kazandırır, 9–10 mevcut yığına uyuyor
@@ -706,11 +707,34 @@ MySQL yok (Postgres ile aynı kalıp), Make yok (proje-özel), Helm yok (kubectl
 **Vercel** (`$(rocket)`, `#FF4A4A`)
 | Komut | Shell | Not |
 |---|---|---|
-| geliştirici sunucusu | `vercel dev` | uzun süreli |
+| geliştirici sunucusu | `vercel dev --yes` | uzun süreli — CLI ayrıca onay istiyor |
 | derle | `vercel build` | |
-| loglar | `vercel logs` | uzun süreli |
-| ortam değişkenleri | `vercel env ls` | |
+| loglar | `vercel logs` | uzun süreli · `argsPrompt`: dağıtım URL/ID |
+| ortam değişkenleri | `vercel env ls` | proje bağlanmadan çalışmaz |
 | yayınla | `vercel --prod` | `confirm` — canlıya çıkarır |
+
+**Surge** (`$(zap)`, `#E8A317`)
+| Komut | Shell | Not |
+|---|---|---|
+| oturum | `surge whoami` | |
+| giriş | `surge login` | |
+| çıkış | `surge logout` | jetonu geçersizleştirir |
+| e-posta doğrula | `surge verify` | ilk yayından önce gerekir |
+| projeler | `surge list` | |
+| yayınla | `surge` | `argsPrompt`: dizin ve alan adı · `confirm` |
+| CNAME ile yayınla | `surge publish` | `confirm` |
+| önizleme yayını | `surge --preview` | `argsPrompt`: dizin ve alan adı — üretime dokunmaz |
+| sürümler | `surge revs` | `argsPrompt`: alan adı |
+| geri al | `surge rollback` | `argsPrompt`: alan adı · `confirm` — canlı sürüm değişir |
+| ayarlar | `surge config` | `argsPrompt`: alan adı |
+| istatistik | `surge stats` | `argsPrompt`: alan adı |
+| DNS | `surge dns` | `argsPrompt`: alan adı |
+| SSL | `surge ssl` | `argsPrompt`: alan adı |
+| projeyi kaldır | `surge teardown` | `argsPrompt`: alan adı · `confirm` — geri alınamaz |
+
+> `surge` grameri `<hedef> <fiil`: hedef alan adı, dizin ya da boş bırakılırsa
+> bulunduğun klasör. Fiilsiz hedef hiçbir şey yapmaz, özet basar — bu yüzden
+> `yayınla` komutunda `confirm` şart: hedef ve fiil birlikte veriliyor.
 
 ### Tasarım kararları
 
@@ -741,8 +765,9 @@ silinen bir varsayılan grup `Hazır Grup Ekle` ile geri getirilebiliyor.
 | Docker | 9 | | Redis | 6 |
 | GitHub CLI | 12 | | Android | 6 |
 | PostgreSQL | 7 | | Vercel | 5 |
+| Surge | 15 | | | |
 
-15 grup, 144 komut. İlk kurulumda gelen 5 grup, kalan 10 seçime açık.
+16 grup, 159 komut. İlk kurulumda gelen 5 grup, kalan 11 seçime açık.
 
 ### Uygulama adımları (tamamlandı)
 

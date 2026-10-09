@@ -18,8 +18,8 @@ function iconName(value: string): string {
 
 /** Kütüphane elle yazıldığı için iç bütünlüğünü otomatik denetliyoruz. */
 describe('hazır grup kütüphanesi', () => {
-  it('on beş grup var', () => {
-    expect(LIBRARY_GROUPS).toHaveLength(15);
+  it('on altı grup var', () => {
+    expect(LIBRARY_GROUPS).toHaveLength(16);
   });
 
   /**
@@ -131,11 +131,21 @@ describe('hazır grup kütüphanesi', () => {
       'go clean -cache',
       'gh release create',
       'vercel --prod',
+      'surge publish',
+      'surge rollback',
+      'surge teardown',
     ];
+
+    // `surge <dizin> <alan adı>` yayınlıyor ve komut metni tek başına `surge`.
+    // startsWith('surge') her surge komutuna, hatta `surge list` gibi
+    // salt-okunur olanlara da tutardı — o yüzden tam eşleşme ayrı liste.
+    const destructiveExact = ['surge'];
 
     for (const group of LIBRARY_GROUPS) {
       for (const command of group.commands) {
-        if (destructive.some((needle) => command.command.startsWith(needle))) {
+        const byPrefix = destructive.some((needle) => command.command.startsWith(needle));
+        const byExact = destructiveExact.includes(command.command);
+        if (byPrefix || byExact) {
           expect(command.confirm, `${group.name}/${command.name}: ${command.command}`).toBeTruthy();
         }
       }
