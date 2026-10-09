@@ -49,6 +49,8 @@ async function exists(target: string): Promise<boolean> {
 
 async function writeFile(target: string, text: string): Promise<boolean> {
   try {
+    // Varsayılan yer .vscode/ altında; proje o klasörü içermeyebilir.
+    await fs.mkdir(path.dirname(target), { recursive: true });
     await fs.writeFile(target, text, 'utf8');
     return true;
   } catch (error) {
@@ -115,10 +117,34 @@ function targetName(target: vscode.ConfigurationTarget): string {
   return target === vscode.ConfigurationTarget.Workspace ? 'bu proje' : 'kullanıcı ayarları';
 }
 
+/**
+ * Düzenleme dosyasının varsayılan yeri.
+ *
+ * `.vscode/` altı seçildi çünkü dosyanın uygulandığı yer de orası: kaynak ve
+ * hedef aynı klasörde durunca ikisi aynı commit'te yaşar ve "ekipte nasıl
+ * paylaşıyorum" sorusu tek yere düşer. Depo kökü izlenmeyen dosya bırakıyordu.
+ *
+ * `cmdDeck.groupFile` ile monorepo gibi durumlarda alt pakete yönlendirilebilir;
+ * göreli yollar ilk çalışma alanı köküne göre çözülür.
+ */
 function defaultFilePath(): string {
   const folder = vscode.workspace.workspaceFolders?.[0]?.uri;
   const base = folder?.scheme === 'file' ? folder : vscode.Uri.file(os.homedir());
-  return vscode.Uri.joinPath(base, DEFAULT_FILE_NAME).fsPath;
+  const root = base.fsPath;
+
+  const configured = vscode.workspace
+    .getConfiguration(CONFIG_SECTION)
+    .get<string>('groupFile');
+
+  if (typeof configured === 'string' && configured.trim().length > 0) {
+    const value = configured.trim();
+    return path.isAbsolute(value) ? value : path.join(root, value);
+  }
+
+  // Klasör açılmadıysa ev dizinine düşüyoruz; orada .vscode/ kurmak tuhaf olurdu.
+  return folder?.scheme === 'file'
+    ? path.join(root, '.vscode', DEFAULT_FILE_NAME)
+    : path.join(root, DEFAULT_FILE_NAME);
 }
 
 /**

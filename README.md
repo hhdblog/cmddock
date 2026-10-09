@@ -47,6 +47,7 @@ doğrudan açılır. `Cmd` düğmesi tüm grupları tek listeden açar. İkisi d
 
 | Ayar | Varsayılan | Açıklama |
 |---|---|---|
+| `cmdDeck.groupFile` | `""` | Komut dosyasının yolu — bkz. yukarıdaki bölüm |
 | `cmdDeck.statusBar.showGroups` | `true` | Her grup için ayrı düğme gösterir |
 | `cmdDeck.statusBar.showMaster` | `true` | `Cmd` düğmesini gösterir |
 | `cmdDeck.statusBar.maxGroupItems` | `3` | Çubukta **başlangıçta** kaç grup düğmesi görünür. Fazlası oluşturulur ama gizli başlar: durum çubuğunda sağ tık → `Hide Status Bar Items` → **Show** ile açabilirsin. **`0` = sınırsız** |
@@ -242,9 +243,14 @@ Cmd Deck: Komut Dosyasını Uygula      →  özet gösterir, onaylar, settings.
 | `Cmd Deck: Komut Dosyasını Uygula` | Dosyayı okur, **ne değişeceğini özetler**, onay ister, sonra hedefi seçip yazar |
 | `Cmd Deck: Dosyayı Ayarlardan Yenile` | Dosyayı ayarlardaki güncel liste ile **üzerine yazar** — düzenlemeyi sıfırlamanın yolu |
 
-Dosya yolu hatırlanır (proje bazlı). Varsayılanı proje kökünde `cmd-deck-groups.json`;
-proje açık değilse ev dizini. Hatırlanan yol yoksa **Komut Dosyasını Uygula** bir kez
-dosya seçtirir — böylece başkasının gönderdiği listeyi de alabilirsin.
+Dosya yolu hatırlanır (proje bazlı). Varsayılanı **`.vscode/cmd-deck-groups.json`** —
+dosyanın uygulandığı yer de `.vscode/settings.json`, kaynak ve hedef aynı yerde.
+Proje açık değilse ev dizinine düşer. Hatırlanan yol yoksa **Komut Dosyasını Uygula**
+bir kez dosya seçtirir — böylece başkasının gönderdiği listeyi de alabilirsin.
+
+| Ayar | Varsayılan | Açıklama |
+|---|---|---|
+| `cmdDeck.groupFile` | `""` | Düzenleme dosyasının yolu. Monorepo'da alt pakete yönlendirmek için: `"packages/api/cmd-deck-groups.json"`. Göreli yollar ilk çalışma alanı köküne göre çözülür |
 
 Dosyada **yorum serbest** (JSONC), otomatik tamamlama ve şema doğrulaması çalışır:
 `schemas/cmd-deck-groups.json` hem `name`/`command` zorunluluğunu hem de yazım

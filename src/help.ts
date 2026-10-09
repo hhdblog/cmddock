@@ -31,6 +31,24 @@ okur, dosyayı değil — aradaki tek bağlantı bu üçüncü adımdır.
 Dosyada yorum satırı (\`//\`) kullanabilirsin. Elle düzenlediğin için yazmak
 normal; \`#4B8BBE\` gibi bir renk kodunun neden orada olduğunu not düşmek işe yarar.
 
+### Dosya nerede?
+
+Varsayılan **\`<proje>/.vscode/cmd-deck-groups.json\`** — dosyanın uygulandığı
+yer de \`.vscode/settings.json\`, kaynak ve hedef aynı klasörde duruyor. Proje
+açılmadıysa ev dizinine düşer. Yol proje bazlı hatırlanır.
+
+Monorepo'da alt pakete yönlendirmek için \`cmdDeck.groupFile\` ayarını kullan:
+
+\`\`\`json
+{
+  "cmdDeck.groupFile": "packages/api/cmd-deck-groups.json"
+}
+\`\`\`
+
+Göreli yollar ilk çalışma alanı köküne göre çözülür, mutlak yollar olduğu gibi
+alınır. Yol bir kez hatırlanınca ayar değişikliği etkili olmaz — hatırlanan yol
+kazanır.
+
 ## Uygulama (import) — iki mod
 
 | Mod | Ne yapar |

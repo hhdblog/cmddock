@@ -612,6 +612,11 @@
             }
           }
         },
+        "cmdDeck.groupFile": {
+          "type": "string",
+          "default": "",
+          "description": "Komut listesinin düzenlendiği dosyanın yolu. Göreli yollar ilk çalışma alanı köküne göre çözülür. Boş bırakılırsa .vscode/cmd-deck-groups.json kullanılır. Monorepo'da alt paketi göstermek için: \"packages/api/cmd-deck-groups.json\"."
+        },
         "cmdDeck.statusBar.icon": {
           "type": "string",
           "default": "terminal",

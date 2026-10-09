@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
@@ -39,8 +39,8 @@ function context() {
   };
 }
 
-function groupFile(...extra: unknown[]): string {
-  return join(dir, 'cmd-deck-groups.json');
+function groupFile(): string {
+  return join(dir, '.vscode', 'cmd-deck-groups.json');
 }
 
 function read(): string {
@@ -84,6 +84,7 @@ describe('editGroupFile', () => {
   });
 
   it('dosya varsa üzerine yazmaz', async () => {
+    mkdirSync(join(dir, '.vscode'), { recursive: true });
     writeFileSync(groupFile(), 'KULLANICI ELLE YAZDI', 'utf8');
 
     await editGroupFile(context() as never);
@@ -158,6 +159,7 @@ describe('applyGroupFile', () => {
   });
 
   function withFile(contents: string) {
+    mkdirSync(join(dir, '.vscode'), { recursive: true });
     writeFileSync(groupFile(), contents, 'utf8');
     const ctx = context();
     // Yol hatırlanmış olmalı, yoksa applyGroupFile dosya seçtirmek ister.
@@ -179,6 +181,7 @@ describe('applyGroupFile', () => {
   });
 
   it('yol hatırlanmamışsa dosya seçtirir', async () => {
+    mkdirSync(join(dir, '.vscode'), { recursive: true });
     writeFileSync(
       groupFile(),
       JSON.stringify([{ name: 'Git', commands: [{ name: 'yeni', command: 'x' }] }]),
@@ -678,5 +681,60 @@ describe('removeGroup', () => {
     await removeGroup(context() as never);
 
     expect(writes[0].target).toBe(ConfigurationTarget.Global);
+  });
+});
+
+describe('düzenleme dosyasının yeri', () => {
+  beforeEach(() => {
+    setConfiguration('cmdDeck', { groups: ONE_GROUP });
+  });
+
+  it('varsayılan .vscode/ altında', async () => {
+    await editGroupFile(context() as never);
+
+    expect(read()).toContain('git status');
+  });
+
+  it('.vscode klasörü yoksa oluşturur', async () => {
+    expect(existsSync(join(dir, '.vscode'))).toBe(false);
+
+    await editGroupFile(context() as never);
+
+    expect(existsSync(join(dir, '.vscode'))).toBe(true);
+  });
+
+  it('cmdDeck.groupFile göreli yolu ilk klasörün köküne göre çözer', async () => {
+    setConfiguration('cmdDeck', {
+      groups: ONE_GROUP,
+      groupFile: 'packages/api/cmd-deck-groups.json',
+    });
+
+    await editGroupFile(context() as never);
+
+    expect(existsSync(join(dir, 'packages', 'api', 'cmd-deck-groups.json'))).toBe(true);
+  });
+
+  it('cmdDeck.groupFile mutlak yolu olduğu gibi kullanır', async () => {
+    const absolute = join(dir, 'ozel', 'liste.json');
+    setConfiguration('cmdDeck', { groups: ONE_GROUP, groupFile: absolute });
+
+    await editGroupFile(context() as never);
+
+    expect(existsSync(absolute)).toBe(true);
+  });
+
+  it('yol hatırlanmışsa ayar değişikliği yerine o yol kullanılır', async () => {
+    const first = join(dir, '.vscode', 'cmd-deck-groups.json');
+    const ctx = context();
+    await editGroupFile(ctx as never);
+    expect(ctx.workspaceState.get('cmdDeck.groupFilePath')).toBe(first);
+
+    setConfiguration('cmdDeck', {
+      groups: ONE_GROUP,
+      groupFile: 'packages/api/cmd-deck-groups.json',
+    });
+    await editGroupFile(ctx as never);
+
+    expect(existsSync(join(dir, 'packages', 'api'))).toBe(false);
   });
 });
