@@ -1015,7 +1015,7 @@
       "commands": [
         {
           "name": "geliştirici sunucusu",
-          "command": "vercel dev",
+          "command": "vercel dev --yes",
           "icon": "$(play)",
           "description": "yerel sunucu (Ctrl+C ile durur)"
         },
@@ -1029,6 +1029,7 @@
           "name": "loglar",
           "command": "vercel logs",
           "icon": "$(history)",
+          "argsPrompt": "dağıtım URL'si veya ID'si",
           "description": "çalışma zamanı logları (Ctrl+C ile durur)"
         },
         {
