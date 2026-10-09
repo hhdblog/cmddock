@@ -216,7 +216,7 @@ In `settings.json`, under `cmdkit.groups`:
 | `clear`       | no       | `true` → runs with the terminal cleared first                                                                                                                     |
 
 The install brings 5 built-in groups: **Python**, **Flutter**, **Node.js**, **Git**,
-**Firebase** (63 commands in total). Writing your own setting replaces them — to drop them
+**Firebase** (66 commands in total). Writing your own setting replaces them — to drop them
 outright, use `"cmdkit.groups": []`.
 
 All 61 commands have a meaningful icon (`$(beaker)` test, `$(shield)` lint,
@@ -233,7 +233,7 @@ by side in that file, so a default group you removed can be brought back with
 | Python   | `$(snake)`              | `#4B8BBE` | 12       |
 | Flutter  | `$(device-mobile)`      | `#47C5FB` | 12       |
 | Node.js  | `$(server-environment)` | `#83CD29` | 12       |
-| Git      | `$(source-control)`     | `#F14E32` | 17       |
+| Git      | `$(source-control)`     | `#F14E32` | 20       |
 | Firebase | `$(broadcast)`          | `#FFCA28` | 10       |
 
 The `color` field of a group only paints the status bar icon (colours cannot be shown in
@@ -276,7 +276,7 @@ autocompletion and schema validation work:
 Because you edit the file by hand, the export writes the **raw list, not the normalised
 one**; redundant fields like `description: ""` and `confirm: false` never leak in. The
 same trimming happens when writing `settings.json`, where only the fields you actually
-set stay — that keeps about 106 lines of noise from 63 commands out. No setting is lost,
+set stay — that keeps about 106 lines of noise from 66 commands out. No setting is lost,
 because the fields are filled back in as they are read.
 
 > You never edit `settings.json` by hand; have a teammate pull it into their own file with

@@ -57,15 +57,15 @@ describe('varsayılan komut listesi', () => {
     ]);
   });
 
-  it('her grupta 10-17 komut var', () => {
+  it('her grupta 10-20 komut var', () => {
     for (const group of groups) {
       expect(group.commands.length, group.name).toBeGreaterThanOrEqual(10);
-      expect(group.commands.length, group.name).toBeLessThanOrEqual(17);
+      expect(group.commands.length, group.name).toBeLessThanOrEqual(20);
     }
   });
 
   it('toplam komut sayısı', () => {
-    expect(groups.reduce((sum, group) => sum + group.commands.length, 0)).toBe(63);
+    expect(groups.reduce((sum, group) => sum + group.commands.length, 0)).toBe(66);
   });
 
   it('grup adları benzersiz', () => {

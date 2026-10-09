@@ -1,7 +1,7 @@
 {
   "name": "cmdkit",
   "displayName": "Cmdkit",
-  "description": "Group frequently used terminal commands and run them from the status bar. Ships with a library of 161 commands in 16 groups.",
+  "description": "Group frequently used terminal commands and run them from the status bar. Ships with a library of 164 commands in 16 groups.",
   "version": "0.2.0",
   "publisher": "cmdkit",
   "license": "MIT",
@@ -405,6 +405,28 @@
               "icon": "$(cloud-upload)",
               "confirm": "Changes will be pushed to the remote. Continue?",
               "description": "push to the remote"
+            },
+            {
+              "name": "remotes",
+              "command": "git remote -v",
+              "icon": "$(link)",
+              "description": "shows the remotes — empty means push has nowhere to go"
+            },
+            {
+              "name": "add remote",
+              "command": "git remote add origin",
+              "icon": "$(cloud-upload)",
+              "argsPrompt": "repository URL (e.g. https://github.com/you/aaa.git)",
+              "confirm": "This links this folder to a remote repository. Continue?",
+              "description": "links this folder to a remote (create an EMPTY repo on GitHub first)"
+            },
+            {
+              "name": "push first time",
+              "command": "git push -u origin",
+              "icon": "$(rocket)",
+              "argsPrompt": "branch name (e.g. main)",
+              "confirm": "This will publish the commits to the remote. Continue?",
+              "description": "first push: uploads the history and remembers the branch"
             },
             {
               "name": "pull",
