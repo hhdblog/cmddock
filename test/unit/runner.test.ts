@@ -12,7 +12,7 @@ import {
   Task,
 } from '../stubs/vscode';
 import { runCommand } from '../../src/runner';
-import { DeckCommand, DeckGroup } from '../../src/normalize';
+import { Command, Group } from '../../src/normalize';
 
 /**
  * `runner` testlerinin merkezî sorusu: **terminalde ne satırı çalışıyor?**
@@ -20,13 +20,13 @@ import { DeckCommand, DeckGroup } from '../../src/normalize';
  * `executeTask`'e giden görevin `execution.commandLine`'ına bakıyoruz.
  */
 
-const GROUP: DeckGroup = {
+const GROUP: Group = {
   name: 'Git',
   icon: '$(source-control)',
   commands: [],
 };
 
-function command(overrides: Partial<DeckCommand> = {}): DeckCommand {
+function command(overrides: Partial<Command> = {}): Command {
   return {
     name: 'status',
     command: 'git status',

@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 // esbuild bu import'u test paketine gömer, 'vscode' dışarıda kalır.
 import { getGroups } from '../../src/config';
 import { runCommand } from '../../src/runner';
-import { DeckCommand, DeckGroup } from '../../src/normalize';
+import { Command, Group } from '../../src/normalize';
 
 const EXTENSION_ID = 'cmdkit.cmdkit';
 
@@ -83,8 +83,8 @@ suite('cmdkit entegrasyon', () => {
   });
 
   test('komut gerçekten terminal görevi olarak başlatılıyor', async () => {
-    const group = getGroups()[0] as DeckGroup;
-    const probe: DeckCommand = {
+    const group = getGroups()[0] as Group;
+    const probe: Command = {
       name: 'test-echo',
       command: 'echo cmd-decalji-ok',
       description: '',
@@ -113,8 +113,8 @@ suite('cmdkit entegrasyon', () => {
   });
 
   test('onay reddedilince komut çalıştırılmıyor', async () => {
-    const group = getGroups()[0] as DeckGroup;
-    const destructive: DeckCommand = {
+    const group = getGroups()[0] as Group;
+    const destructive: Command = {
       name: 'test-iptal',
       command: 'echo asla-calismamali',
       description: '',

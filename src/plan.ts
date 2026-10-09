@@ -1,4 +1,4 @@
-import { DeckGroup, countCommands } from './normalize';
+import { Group, countCommands } from './normalize';
 import { ColorSpec, parseColor, parseIcon } from './style';
 
 export const MASTER_ID = 'cmdkit';
@@ -39,9 +39,9 @@ export interface StatusBarOptions {
   /** "cmd" düğmesinin önceliği; grup düğmeleri bundan 1, 2, 3... azalır. */
   readonly masterPriority?: number;
   /** Grup düğmesinde ikonun yanına yazılacak metin; boş dönerse yalnızca ikon. */
-  readonly groupLabel: (group: DeckGroup) => string;
+  readonly groupLabel: (group: Group) => string;
   /** En çok kullanılan komut bilgisi (saf veri). */
-  readonly topCommand?: (group: DeckGroup) => { name: string; count: number } | undefined;
+  readonly topCommand?: (group: Group) => { name: string; count: number } | undefined;
 }
 
 export interface StatusBarPlanItem {
@@ -74,7 +74,7 @@ export interface StatusBarPlanItem {
 }
 
 function masterItem(
-  groups: readonly DeckGroup[],
+  groups: readonly Group[],
   options: StatusBarOptions,
   basePriority: number
 ): StatusBarPlanItem {
@@ -100,7 +100,7 @@ export interface VisibilityInput {
 
 /** Şu anda çubukta görünen grup adları (gizleme + sınır uygulanmış hâli). */
 export function visibleGroupNames(
-  groups: readonly DeckGroup[],
+  groups: readonly Group[],
   input: VisibilityInput
 ): string[] {
   const hidden = new Set(input.hiddenGroups);
@@ -117,7 +117,7 @@ export function visibleGroupNames(
 
 /** Kullanıcının seçimine göre `hiddenGroups` için ne yazılmalı. */
 export function hiddenGroupNames(
-  groups: readonly DeckGroup[],
+  groups: readonly Group[],
   selected: readonly string[]
 ): string[] {
   const picked = new Set(selected);
@@ -130,7 +130,7 @@ export function hiddenGroupNames(
  * böylece ayar mantığı test edilebilir kalıyor.
  */
 export function planItems(
-  groups: readonly DeckGroup[],
+  groups: readonly Group[],
   options: StatusBarOptions
 ): StatusBarPlanItem[] {
   const plan: StatusBarPlanItem[] = [];

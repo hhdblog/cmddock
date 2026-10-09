@@ -1,14 +1,14 @@
 import * as vscode from 'vscode';
 import { MENU_SEPARATOR, menuRows } from './menu';
-import { DeckCommand, DeckGroup } from './normalize';
+import { Command, Group } from './normalize';
 
 interface GroupItem extends vscode.QuickPickItem {
-  readonly group: DeckGroup;
+  readonly group: Group;
 }
 
 interface CommandItem extends vscode.QuickPickItem {
-  readonly group: DeckGroup;
-  readonly command: DeckCommand;
+  readonly group: Group;
+  readonly command: Command;
 }
 
 interface ActionItem extends vscode.QuickPickItem {
@@ -27,7 +27,7 @@ type MasterItem = GroupItem | ActionItem | SeparatorItem;
 
 /** Cmd düğmesinden gelen seçim: ya bir komut, ya da listedeki bir yardımcı menü. */
 export type PickResult =
-  | { readonly kind: 'command'; readonly group: DeckGroup; readonly command: DeckCommand }
+  | { readonly kind: 'command'; readonly group: Group; readonly command: Command }
   | { readonly kind: 'action'; readonly id: string };
 
 /**
@@ -36,7 +36,7 @@ export type PickResult =
  * ve `dispose()` sorumluluğu yoktur. Esc `undefined` döner, çağıran yine de temiz çıkar.
  */
 export async function pickCommand(
-  groups: readonly DeckGroup[]
+  groups: readonly Group[]
 ): Promise<PickResult | undefined> {
   if (groups.length === 0) {
     void vscode.window.showWarningMessage(
@@ -90,7 +90,7 @@ export async function pickCommand(
 
 /** Grup seviyesini atlayıp doğrudan o grubun komutlarını listeler. */
 export async function pickCommandsInGroup(
-  group: DeckGroup
+  group: Group
 ): Promise<PickResult | undefined> {
   const commandItems: CommandItem[] = group.commands.map((command) => ({
     label: `${command.icon} ${command.name}`,
@@ -122,7 +122,7 @@ export async function pickCommandsInGroup(
  * Etikette grup adı görünür, `matchOnDetail` ile shell metnine göre de filtrelenir.
  */
 export async function pickAnyCommand(
-  groups: readonly DeckGroup[]
+  groups: readonly Group[]
 ): Promise<PickResult | undefined> {
   if (groups.length === 0) {
     void vscode.window.showWarningMessage(

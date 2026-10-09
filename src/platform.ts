@@ -1,16 +1,16 @@
 import * as vscode from 'vscode';
 import { getGroups } from './config';
-import { DeckCommand, DeckGroup } from './normalize';
+import { Command, Group } from './normalize';
 import { expandTokens, isPosixOnly } from './tokens';
 
 const NOTICE_KEY = 'cmdkit.platformNoticeShown';
 
 interface Offending {
-  readonly group: DeckGroup;
-  readonly command: DeckCommand;
+  readonly group: Group;
+  readonly command: Command;
 }
 
-function findPosixOnly(groups: readonly DeckGroup[]): Offending[] {
+function findPosixOnly(groups: readonly Group[]): Offending[] {
   return groups.flatMap((group) =>
     group.commands
       .filter((command) => isPosixOnly(command.command))

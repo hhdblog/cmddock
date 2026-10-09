@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { DeckCommand, DeckGroup } from './normalize';
+import { Command, Group } from './normalize';
 
 const USAGE_KEY = 'cmdkit.usage';
 const LAST_KEY = 'cmdkit.last';
@@ -61,8 +61,8 @@ export function readLast(state: vscode.Memento): LastCommand | undefined {
 
 export async function recordRun(
   state: vscode.Memento,
-  group: DeckGroup,
-  command: DeckCommand
+  group: Group,
+  command: Command
 ): Promise<void> {
   const usage: Record<string, UsageRecord> = { ...readUsage(state) };
   const key = keyOf(group.name, command.name);
@@ -75,10 +75,10 @@ export async function recordRun(
 
 /** En çok kullanılan üstte; eşitlikte ayardaki sıra korunur (stable sort). */
 export function sortCommands(
-  commands: readonly DeckCommand[],
+  commands: readonly Command[],
   usage: UsageMap,
   groupName: string
-): DeckCommand[] {
+): Command[] {
   return commands
     .map((command, index) => ({ command, index, count: countOf(usage, groupName, command.name) }))
     .sort((a, b) => b.count - a.count || a.index - b.index)
@@ -86,7 +86,7 @@ export function sortCommands(
 }
 
 /** Grup sırası ayardaki gibi kalır, yalnızca grup içindeki komutlar sıralanır. */
-export function rankGroups(groups: readonly DeckGroup[], usage: UsageMap): DeckGroup[] {
+export function rankGroups(groups: readonly Group[], usage: UsageMap): Group[] {
   return groups.map((group) => ({
     ...group,
     commands: sortCommands(group.commands, usage, group.name),
@@ -95,9 +95,9 @@ export function rankGroups(groups: readonly DeckGroup[], usage: UsageMap): DeckG
 
 /** Ayar değişmiş olsa da son çalışan komut hâlâ tanımlıysa bulunur. */
 export function resolveLast(
-  groups: readonly DeckGroup[],
+  groups: readonly Group[],
   last: LastCommand | undefined
-): { group: DeckGroup; command: DeckCommand } | undefined {
+): { group: Group; command: Command } | undefined {
   if (!last) {
     return undefined;
   }
@@ -109,9 +109,9 @@ export function resolveLast(
 }
 
 export function findCommand(
-  groups: readonly DeckGroup[],
+  groups: readonly Group[],
   groupName: string,
   commandName: string
-): { group: DeckGroup; command: DeckCommand } | undefined {
+): { group: Group; command: Command } | undefined {
   return resolveLast(groups, { group: groupName, name: commandName });
 }

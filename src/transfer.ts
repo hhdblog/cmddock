@@ -1,11 +1,11 @@
 import { parseJsonc } from './jsonc';
-import { DeckCommand, DeckGroup, countCommands, normalizeGroups } from './normalize';
+import { Command, Group, countCommands, normalizeGroups } from './normalize';
 
 export type ImportMode = 'replace' | 'merge';
 
 export interface ImportPlan {
   readonly mode: ImportMode;
-  readonly result: DeckGroup[];
+  readonly result: Group[];
   readonly summary: string[];
 }
 
@@ -18,7 +18,7 @@ export function serializeJson(value: unknown): string {
   return JSON.stringify(value, null, 2);
 }
 
-export function serializeGroups(groups: readonly DeckGroup[]): string {
+export function serializeGroups(groups: readonly Group[]): string {
   return serializeJson(groups);
 }
 
@@ -55,7 +55,7 @@ interface LooseGroup {
  * normalize edilmiş alanlar üzerinden karşılaştırma yapmaya devam eder —
  * değiştirilirse "hiçbir şey değişmedi" algılaması bozulur.
  */
-export function slimGroups(groups: readonly DeckGroup[]): LooseGroup[] {
+export function slimGroups(groups: readonly Group[]): LooseGroup[] {
   return groups.map((group) => {
     const slim: LooseGroup = { name: group.name, commands: [] };
 
@@ -141,7 +141,7 @@ export function parseFailureReason(input: string): string | undefined {
 }
 
 /** Geçersiz JSON veya geçerli ama boş liste → undefined. */
-export function parseGroups(input: string): DeckGroup[] | undefined {
+export function parseGroups(input: string): Group[] | undefined {
   const result = parseJsonc(input);
   if (!result.ok) {
     return undefined;
@@ -157,9 +157,9 @@ export function parseGroups(input: string): DeckGroup[] | undefined {
  * "değiştir" modu kullanılır).
  */
 export function mergeGroups(
-  current: readonly DeckGroup[],
-  incoming: readonly DeckGroup[]
-): DeckGroup[] {
+  current: readonly Group[],
+  incoming: readonly Group[]
+): Group[] {
   const merged = current.map((group) => ({
     ...group,
     commands: [...group.commands],
@@ -196,17 +196,17 @@ export function mergeGroups(
 
 /** Gelen grupta aynı isimli komut bulunmayan mevcut komutlar. */
 export function removedInGroup(
-  current: DeckGroup,
-  incoming: DeckGroup
-): DeckCommand[] {
+  current: Group,
+  incoming: Group
+): Command[] {
   return current.commands.filter(
     (command) => !incoming.commands.some((candidate) => candidate.name === command.name)
   );
 }
 
 function describe(
-  current: readonly DeckGroup[],
-  result: readonly DeckGroup[]
+  current: readonly Group[],
+  result: readonly Group[]
 ): string[] {
   if (result.length === 0) {
     return [];
@@ -269,7 +269,7 @@ function describe(
   return lines;
 }
 
-function isSameCommand(a: DeckCommand, b: DeckCommand): boolean {
+function isSameCommand(a: Command, b: Command): boolean {
   return (
     a.command === b.command &&
     a.description === b.description &&
@@ -282,8 +282,8 @@ function isSameCommand(a: DeckCommand, b: DeckCommand): boolean {
 }
 
 export function planImport(
-  current: readonly DeckGroup[],
-  incoming: readonly DeckGroup[],
+  current: readonly Group[],
+  incoming: readonly Group[],
   mode: ImportMode
 ): ImportPlan {
   const result = mode === 'replace' ? [...incoming] : mergeGroups(current, incoming);

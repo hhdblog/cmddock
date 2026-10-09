@@ -1,6 +1,6 @@
 import { parseIcon } from './style';
 
-export interface DeckCommand {
+export interface Command {
   readonly name: string;
   readonly command: string;
   readonly description: string;
@@ -12,17 +12,12 @@ export interface DeckCommand {
   readonly clear: boolean;
 }
 
-export interface DeckGroup {
+export interface Group {
   readonly name: string;
   readonly icon: string;
   /** Durum çubuğundaki bu grup düğmesinin ön plan rengi (hex veya tema rengi adı). */
   readonly color?: string;
-  readonly commands: readonly DeckCommand[];
-}
-
-export interface PickedCommand {
-  readonly group: DeckGroup;
-  readonly command: DeckCommand;
+  readonly commands: readonly Command[];
 }
 
 export const DEFAULT_ICON = '$(terminal)';
@@ -39,7 +34,7 @@ function record(value: unknown): Record<string, unknown> | undefined {
 }
 
 /** Geçersiz komut (isim veya komut metni eksik) atlanır, hata fırlatılmaz. */
-export function normalizeCommand(raw: unknown): DeckCommand | undefined {
+export function normalizeCommand(raw: unknown): Command | undefined {
   const r = record(raw);
   if (!r) {
     return undefined;
@@ -72,7 +67,7 @@ export function normalizeCommand(raw: unknown): DeckCommand | undefined {
   };
 }
 
-export function normalizeGroup(raw: unknown): DeckGroup | undefined {
+export function normalizeGroup(raw: unknown): Group | undefined {
   const r = record(raw);
   if (!r) {
     return undefined;
@@ -82,7 +77,7 @@ export function normalizeGroup(raw: unknown): DeckGroup | undefined {
   const rawCommands = Array.isArray(r.commands) ? r.commands : [];
   const commands = rawCommands
     .map(normalizeCommand)
-    .filter((c): c is DeckCommand => c !== undefined);
+    .filter((c): c is Command => c !== undefined);
 
   if (!name || commands.length === 0) {
     return undefined;
@@ -91,15 +86,15 @@ export function normalizeGroup(raw: unknown): DeckGroup | undefined {
   return { name, icon: parseIcon(r.icon), color: text(r.color).trim() || undefined, commands };
 }
 
-export function normalizeGroups(raw: unknown): DeckGroup[] {
+export function normalizeGroups(raw: unknown): Group[] {
   if (!Array.isArray(raw)) {
     return [];
   }
   return raw
     .map(normalizeGroup)
-    .filter((g): g is DeckGroup => g !== undefined);
+    .filter((g): g is Group => g !== undefined);
 }
 
-export function countCommands(groups: readonly DeckGroup[]): number {
+export function countCommands(groups: readonly Group[]): number {
   return groups.reduce((total, group) => total + group.commands.length, 0);
 }

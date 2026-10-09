@@ -3,7 +3,7 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import { CONFIG_SECTION, GROUPS_KEY, getGroups, readRawGroups } from './config';
-import { countCommands, DeckGroup, normalizeGroups } from './normalize';
+import { countCommands, Group, normalizeGroups } from './normalize';
 import { LIBRARY_GROUPS, LibraryGroup } from './library';
 import { hiddenGroupNames, visibleGroupNames } from './plan';
 import {
@@ -551,7 +551,7 @@ async function applyFileSync(plan: FileSyncPlan, skipped: string): Promise<boole
 }
 
 interface GroupPick extends vscode.QuickPickItem {
-  readonly group: DeckGroup;
+  readonly group: Group;
 }
 
 /**

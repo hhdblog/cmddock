@@ -1,7 +1,7 @@
 import * as os from 'node:os';
 import * as vscode from 'vscode';
 import { buildCommandLine, splitArgs } from './args';
-import { DeckCommand, DeckGroup } from './normalize';
+import { Command, Group } from './normalize';
 import { expandTokens } from './tokens';
 
 const TASK_SOURCE = 'cmdkit';
@@ -11,7 +11,7 @@ function errorText(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
-async function confirmRun(command: DeckCommand): Promise<boolean> {
+async function confirmRun(command: Command): Promise<boolean> {
   if (command.confirm === false) {
     return true;
   }
@@ -26,7 +26,7 @@ async function confirmRun(command: DeckCommand): Promise<boolean> {
 }
 
 /** undefined = kullanıcı iptal etti, [] = argümansız çalıştır. */
-async function promptArgs(command: DeckCommand): Promise<string[] | undefined> {
+async function promptArgs(command: Command): Promise<string[] | undefined> {
   if (!command.argsPrompt) {
     return [];
   }
@@ -54,8 +54,8 @@ async function promptArgs(command: DeckCommand): Promise<string[] | undefined> {
 }
 
 export async function runCommand(
-  group: DeckGroup,
-  command: DeckCommand
+  group: Group,
+  command: Command
 ): Promise<boolean> {
   if (!(await confirmRun(command))) {
     return false;

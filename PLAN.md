@@ -427,7 +427,7 @@ entegrasyon 7/7 ✔ · paket 32.82 KB ✔
 
 | Konu | Karar |
 |---|---|
-| Veri tipi | `DeckGroup.color` **ham string** olarak tutuluyor, `ColorSpec` değil. Parse edilmiş nesne JSON'a girip dışa/içe aktarımda bozulurdu (`{"hex":"..."}` → yeniden okununca undefined) |
+| Veri tipi | `Group.color` **ham string** olarak tutuluyor, `ColorSpec` değil. Parse edilmiş nesne JSON'a girip dışa/içe aktarımda bozulurdu (`{"hex":"..."}` → yeniden okununca undefined) |
 | Çözümleme | `plan.ts` içinde `parseColor(group.color)`: hex → doğrudan, `charts.blue` gibi tema adı → `ThemeColor` |
 | Öncelik | Grubun kendi `color`'ı → yoksa `cmdkit.statusBar.color` → yoksa tema |
 | Varsayılanlar | Python `#4B8BBE`, Flutter `#47C5FB`, Node.js `#83CD29` (marka tonları, koyu çubukta okunaklı) |

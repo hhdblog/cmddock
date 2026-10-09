@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { DeckGroup, normalizeGroups } from './normalize';
+import { Group, normalizeGroups } from './normalize';
 
 export const CONFIG_SECTION = 'cmdkit';
 export const GROUPS_KEY = 'groups';
@@ -8,7 +8,7 @@ export const GROUPS_KEY = 'groups';
  * Ayarlar geçerli bir dizi değilse boş liste döner, uzantı çökmez.
  * configurationDefaults (Python / Flutter / Node.js) boş çalışma alanında da buradan gelir.
  */
-export function getGroups(scope?: vscode.Uri): DeckGroup[] {
+export function getGroups(scope?: vscode.Uri): Group[] {
   return normalizeGroups(readRawGroups(scope));
 }
 

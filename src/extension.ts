@@ -2,9 +2,9 @@ import * as vscode from 'vscode';
 import { getGroups } from './config';
 import { showIconCatalog } from './iconCatalog';
 import { showUsage } from './help';
-import { DeckGroup } from './normalize';
+import { Command, Group } from './normalize';
 import { checkPlatform, maybeShowPlatformNotice } from './platform';
-import { pickAnyCommand, pickCommand, pickCommandsInGroup } from './picker';
+import { pickAnyCommand, pickCommand, pickCommandsInGroup, PickResult } from './picker';
 import { runCommand } from './runner';
 import {
   addLibraryGroup,
@@ -16,10 +16,8 @@ import {
 } from './settings';
 import { createStatusBar, StatusBarHandle } from './statusBar';
 import { rankGroups, readLast, readUsage, recordRun, resolveLast } from './usage';
-import { DeckCommand as Command } from './normalize';
-import { PickResult } from './picker';
 
-function ranked(context: vscode.ExtensionContext): DeckGroup[] {
+function ranked(context: vscode.ExtensionContext): Group[] {
   return rankGroups(getGroups(), readUsage(context.workspaceState));
 }
 
@@ -27,7 +25,7 @@ function ranked(context: vscode.ExtensionContext): DeckGroup[] {
 async function launch(
   context: vscode.ExtensionContext,
   statusBar: StatusBarHandle,
-  picked: { group: DeckGroup; command: Command }
+  picked: { group: Group; command: Command }
 ): Promise<void> {
   if (await runCommand(picked.group, picked.command)) {
     await recordRun(context.workspaceState, picked.group, picked.command);

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { getGroups } from './config';
-import { DeckGroup, countCommands } from './normalize';
+import { Group, countCommands } from './normalize';
 import { DEFAULT_MAX_GROUP_ITEMS, MASTER_ID, MASTER_PRIORITY, planItems, StatusBarPlanItem } from './plan';
 import { ColorSpec, parseColor, parseIcon } from './style';
 import { countOf, readLast, readUsage, UsageMap } from './usage';
@@ -49,7 +49,7 @@ function hiddenGroups(): readonly string[] {
 
 /** Gruptaki en çok kullanılan komut — tooltip'te "En çok: X (×5)" olarak görünür. */
 function topCommandFactory(usage: UsageMap) {
-  return (group: DeckGroup): { name: string; count: number } | undefined => {
+  return (group: Group): { name: string; count: number } | undefined => {
     let best: { name: string; count: number } | undefined;
     for (const command of group.commands) {
       const count = countOf(usage, group.name, command.name);
@@ -106,7 +106,7 @@ export function createStatusBar(context: vscode.ExtensionContext): StatusBarHand
       maxGroupItems: maxGroupItems(),
       masterIcon: parseIcon(setting('icon'), DEFAULT_ICON),
       masterPriority: masterPriority(),
-      groupLabel: setting('groupLabel') === 'always' ? (group: DeckGroup) => group.name : () => '',
+      groupLabel: setting('groupLabel') === 'always' ? (group: Group) => group.name : () => '',
       topCommand: topCommandFactory(usage),
     });
 
@@ -220,7 +220,7 @@ function totalRuns(usage: UsageMap): number {
 }
 
 function resolveLastLabel(
-  groups: readonly DeckGroup[],
+  groups: readonly Group[],
   groupName: string,
   commandName: string
 ): string | null {

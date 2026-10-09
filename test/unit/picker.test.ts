@@ -8,7 +8,7 @@ import {
 } from '../stubs/vscode';
 import { pickAnyCommand, pickCommand, pickCommandsInGroup } from '../../src/picker';
 import { MENU_SEPARATOR } from '../../src/menu';
-import { DeckCommand, DeckGroup } from '../../src/normalize';
+import { Command, Group } from '../../src/normalize';
 
 /**
  * `picker` testleri iki soruya bakıyor:
@@ -32,7 +32,7 @@ interface ItemLike {
   actionId?: string;
 }
 
-function command(overrides: Partial<DeckCommand> = {}): DeckCommand {
+function command(overrides: Partial<Command> = {}): Command {
   return {
     name: 'status',
     command: 'git status',
@@ -44,7 +44,7 @@ function command(overrides: Partial<DeckCommand> = {}): DeckCommand {
   };
 }
 
-function group(overrides: Partial<DeckGroup> = {}): DeckGroup {
+function group(overrides: Partial<Group> = {}): Group {
   return {
     name: 'Git',
     icon: '$(source-control)',
