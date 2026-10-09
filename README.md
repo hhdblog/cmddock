@@ -356,5 +356,3 @@ downloading:
 ```bash
 VSCODE_TEST_EXECUTABLE="/Applications/Visual Studio Code.app/Contents/MacOS/Electron" npm run test:integration
 ```
-
-Design decisions and the implementation log: `PLAN.md` (repo root).

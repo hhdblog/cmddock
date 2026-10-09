@@ -16,7 +16,12 @@
     "terminal",
     "commands",
     "status bar",
-    "task runner"
+    "task runner",
+    "productivity",
+    "cli",
+    "shell",
+    "command palette",
+    "workflow"
   ],
   "main": "./dist/extension.js",
   "activationEvents": [
