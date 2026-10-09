@@ -211,9 +211,13 @@ Kurulumda 5 hazır grup gelir: **Python**, **Flutter**, **Node.js**, **Git**, **
 Kendi ayarını yazarsan hazır grupların yerini alır — silmek istersen `"cmdDeck.groups": []`.
 
 61 komutun **hepsinde** anlamlı bir ikon var (`$(beaker)` test, `$(shield)` lint,
-`$(cloud-download)` kurulum, `$(trash)` silme, `$(paintcan)` format…). Listeyi düzenlemek için
-tek kaynak `examples/default-groups.json`; `npm run sync-defaults` bunu `package.json`'a yazar,
-birim testi de ikisinin eşit kaldığını denetler.
+`$(cloud-download)` kurulum, `$(trash)` silme, `$(paintcan)` format…). Tek kaynak
+`src/library.json`'dır; `npm run build` onu okuyup `package.json` içindeki
+`configurationDefaults`'ı üretir, birim testi de ikisinin eşit kaldığını denetler.
+
+Aynı dosyada `defaults` (ilk kurulumda gelen 5 grup) ve `groups` (kütüphanedeki 15 grup)
+yan yana durur — böylece silinen bir varsayılan grup `Hazır Grup Ekle` ile geri
+getirilebilir.
 
 | Grup | İkon | Renk | Komut |
 |---|---|---|---|

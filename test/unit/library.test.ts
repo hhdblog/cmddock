@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { LIBRARY_GROUPS, LibraryGroup, normalizeLibrary } from '../../src/library';
+import {
+  DEFAULT_GROUP_NAMES,
+  asSettingShape,
+  defaultLibraryGroups,
+  LIBRARY_GROUPS,
+  LibraryGroup,
+  normalizeLibrary,
+} from '../../src/library';
 import { CATALOG_ENTRIES } from '../../src/icons';
 import { normalizeGroups } from '../../src/normalize';
 
@@ -11,21 +18,46 @@ function iconName(value: string): string {
 
 /** Kütüphane elle yazıldığı için iç bütünlüğünü otomatik denetliyoruz. */
 describe('hazır grup kütüphanesi', () => {
-  it('on grup var', () => {
-    expect(LIBRARY_GROUPS).toHaveLength(10);
+  it('on beş grup var', () => {
+    expect(LIBRARY_GROUPS).toHaveLength(15);
+  });
+
+  /**
+   * Silinip geri getirilebilmesi buna bağlı: `Grup Kaldır` ile silinen bir
+   * varsayılan grup, `Hazır Grup Ekle` listesinde görünmezse kalıcı olarak
+   * kaybolur ve geri almak elle JSON düzenlemek gerekir.
+   */
+  it('ilk kurulumdaki her grup kütüphanede de var', () => {
+    const names = LIBRARY_GROUPS.map((group) => group.name);
+
+    for (const name of DEFAULT_GROUP_NAMES) {
+      expect(names, `${name} kütüphanede yok`).toContain(name);
+    }
+  });
+
+  it('kütüphane grupları benzersiz', () => {
+    const names = LIBRARY_GROUPS.map((group) => group.name);
+    expect(new Set(names).size).toBe(names.length);
+  });
+
+  it('varsayılanlar manifestten yeniden üretilebiliyor', () => {
+    const generated = defaultLibraryGroups();
+    expect(generated).toHaveLength(DEFAULT_GROUP_NAMES.length);
+    expect(generated.map((g) => g.name)).toEqual([...DEFAULT_GROUP_NAMES]);
+  });
+
+  it('varsayılanlar manifest şekline çevrilebiliyor', () => {
+    const shaped = defaultLibraryGroups().map((group) => asSettingShape(group) as Record<string, unknown>);
+    expect(shaped).toHaveLength(5);
+    for (const group of shaped) {
+      expect(group).not.toHaveProperty('summary');
+      expect(group).toHaveProperty('commands');
+    }
   });
 
   it('grup adları benzersiz', () => {
     const names = LIBRARY_GROUPS.map((group) => group.name);
     expect(new Set(names).size).toBe(names.length);
-  });
-
-  it('hiçbir grup adı varsayılanlarla çakışmıyor', () => {
-    // Çakışırsa "Hazır Grup Ekle" kullanıcının grubunu ezmek zorunda kalırdı.
-    const defaults = ['Python', 'Flutter', 'Node.js', 'Git', 'Firebase'];
-    for (const group of LIBRARY_GROUPS) {
-      expect(defaults).not.toContain(group.name);
-    }
   });
 
   it('her grubun ikonu katalogda', () => {

@@ -69,6 +69,7 @@ export const ICON_CATALOG: readonly CatalogGroup[] = [
       { name: 'symbol-folder', hint: 'klasör' },
       { name: 'symbol-misc', hint: 'diğer' },
       { name: 'snake', hint: 'Python' },
+      { name: 'book', hint: 'notebook / Jupyter' },
     ],
   },
   {

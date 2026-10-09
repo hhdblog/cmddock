@@ -12,19 +12,39 @@ function readJson(relative: string): unknown {
   return JSON.parse(readFileSync(resolve(root, relative), 'utf8'));
 }
 
-const examples = readJson('examples/default-groups.json');
+const library = readJson('src/library.json') as {
+  defaults: string[];
+  groups: { name: string }[];
+};
 const manifest = readJson('package.json') as {
   contributes: { configurationDefaults: Record<string, unknown> };
 };
 
 const defaults = manifest.contributes.configurationDefaults['cmdDeck.groups'];
+
+/** Kütüphanedeki varsayılan işaretli gruplar — manifestin kaynağı. */
+const examples = library.defaults.map(
+  (name) => library.groups.find((group) => group.name === name)
+);
 const groups = normalizeGroups(examples);
 const catalogNames = new Set(CATALOG_ENTRIES.map((entry) => entry.name));
 
 describe('varsayılan komut listesi', () => {
-  it('examples ve package.json aynı listeyi içerir', () => {
-    // Ayrı ayrı elle düzenlenirse iki yer birbirinden kopuyordu.
-    expect(defaults).toEqual(examples);
+  it('kütüphane ve package.json aynı listeyi üretiyor', () => {
+    // İki kaynak ayrı ayrı düzenlenirse manifest bayat kalıyordu; artık
+    // library.json tek kaynak, sync-defaults bunu package.json'a yazıyor.
+    expect(examples.every((group) => group !== undefined)).toBe(true);
+    // summary yalnızca kütüphane seçicisinde kullanılıyor, manifestte olmamalı.
+    const stripped = examples.map(({ summary: _summary, ...rest }) => rest);
+    expect(defaults).toEqual(stripped);
+  });
+
+  it('manifest summary alanı taşımıyor', () => {
+    // summary yalnızca kütüphane seçicisi için; Settings arayüzünde
+    // anlamsız bir alan olarak görünürdü.
+    for (const group of defaults as Record<string, unknown>[]) {
+      expect(group).not.toHaveProperty('summary');
+    }
   });
 
   it('5 grup içerir', () => {

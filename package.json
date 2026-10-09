@@ -673,7 +673,7 @@
     }
   },
   "scripts": {
-    "build": "node esbuild.mjs",
+    "build": "node scripts/sync-defaults.mjs && node esbuild.mjs",
     "watch": "node esbuild.mjs --watch",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

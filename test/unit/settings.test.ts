@@ -352,7 +352,8 @@ describe('addLibraryGroup', () => {
 
     const offered = (quickPickCalls[0].items as { label: string }[]).map((item) => item.label);
     expect(offered.join(' ')).not.toContain('Docker');
-    expect(offered.length).toBe(LIBRARY_GROUPS.length - 1);
+    // Ayarlarda Git ve Docker var; kütüphanedeki diğer 13 sunulmalı.
+    expect(offered.length).toBe(LIBRARY_GROUPS.length - 2);
   });
 
   it('seçilen grubu mevcut grupların sonuna ekler', async () => {
