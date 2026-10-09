@@ -309,9 +309,9 @@
             },
             {
               "name": "typecheck",
-              "command": "npx tsc --noEmit",
+              "command": "npx --no-install tsc --noEmit",
               "icon": "$(symbol-interface)",
-              "description": "TS tip kontrolü"
+              "description": "yerel TypeScript ile tip kontrolü (kurulu değilse uyarır)"
             },
             {
               "name": "lint",
