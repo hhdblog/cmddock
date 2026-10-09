@@ -5,7 +5,10 @@
   "type": "array",
   "items": {
     "type": "object",
-    "required": ["name", "commands"],
+    "required": [
+      "name",
+      "commands"
+    ],
     "additionalProperties": false,
     "properties": {
       "name": {
@@ -22,10 +25,13 @@
       },
       "commands": {
         "type": "array",
-        "description": "Grup içindeki komutlar.",
+        "description": "Grup içindeki komutlar. Boş bırakılırsa grup sessizce yok sayılır, o yüzden en az bir komut olmalı.",
         "items": {
           "type": "object",
-          "required": ["name", "command"],
+          "required": [
+            "name",
+            "command"
+          ],
           "additionalProperties": false,
           "properties": {
             "name": {
@@ -45,7 +51,10 @@
               "description": "Kodikon adı (\"play\") veya \"$(play)\" biçiminde."
             },
             "confirm": {
-              "type": ["string", "boolean"],
+              "type": [
+                "string",
+                "boolean"
+              ],
               "description": "true ya da bir metin ise çalıştırmadan önce onay ister."
             },
             "argsPrompt": {
@@ -57,7 +66,8 @@
               "description": "true ise terminal temizlenerek çalıştırılır."
             }
           }
-        }
+        },
+        "minItems": 1
       }
     }
   }

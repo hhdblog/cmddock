@@ -166,9 +166,13 @@ düğmeleri kendiliğinden yeniler.
 **Komut sildim ama hâlâ var.** \`Grupları birleştir\` silmez. \`Listeyi değiştir\`
 kullan.
 
+**Grubum görünmüyor.** \`commands\` dizisi boş olan gruplar **sessizce yok
+sayılır** — eklediğini sanırsın ama menüde çıkmaz. Dosyada en az bir komut
+olmalı; şema boş diziyi kırmızı işaretler.
+
 **"İçerik okunamadı" hatası.** Mesaj nedenini söyler: JSON bozuk olabilir,
-dosya dizi olmayabilir, ya da dosyada **grup kalmamış** olabilir. Son durumda
-tek bir grup silmek de yasak — çalıştırılacak komut kalmaz.
+dosya dizi olmayabilir, komut dizileri boş olabilir, ya da alanlar eksik
+olabilir.
 
 **Menüm şişti.** Durum çubuğunda \`maxGroupItems\` (varsayılan 3) ve
 \`hiddenGroups\` ayarları var; \`Cmd Deck: Durum Çubuğu Düğmelerini Seç\` ile

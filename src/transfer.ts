@@ -114,6 +114,16 @@ export function parseFailureReason(input: string): string | undefined {
       'çalıştırılacak komut kalmaz.';
   }
 
+  // commands alanı var ama boşsa "eksik" demek yanlış olur; grup sessizce
+  // düşüyor ve kullanıcı nedenini bulamıyor.
+  const onlyEmpty = (parsed as Record<string, unknown>[]).every(
+    (group) => Array.isArray(group?.commands) && group.commands.length === 0
+  );
+  if (onlyEmpty) {
+    return 'Grupların "commands" dizileri boş. En az bir komutu olan grup ' +
+      'ekle — komutsuz grup sessizce yok sayılır.';
+  }
+
   // Dizi ve boş değil; gerçekten geçersizse normalizasyon boş döner.
   if (normalizeGroups(parsed).length === 0) {
     return 'Grup veya komut alanları eksik. Her grubun "name" ve "commands", ' +

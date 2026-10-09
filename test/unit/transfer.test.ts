@@ -379,3 +379,30 @@ describe('parseFailureReason', () => {
     expect(parseFailureReason('[{"name":"A","commands":[{"name":"a","command":"b"}]}]')).toBeUndefined();
   });
 });
+
+describe('komutsuz grup', () => {
+  it('ayarlarda sessizce düşer', () => {
+    const normalized = normalizeGroups([
+      { name: 'A', commands: [{ name: 'a', command: 'b' }] },
+      { name: 'Bos', commands: [] },
+    ]);
+
+    expect(normalized.map((g) => g.name)).toEqual(['A']);
+  });
+
+  it('tek başına komutsuz gruptan mesaj "boş" der, "eksik" değil', () => {
+    const reason = parseFailureReason('[{"name":"X","commands":[]}]');
+
+    expect(reason).toContain('boş');
+    expect(reason).not.toContain('gerekli');
+  });
+
+  it('karışık listede komutsuz grup mesajı bozmaz', () => {
+    const text = JSON.stringify([
+      { name: 'A', commands: [{ name: 'a', command: 'b' }] },
+      { name: 'Bos', commands: [] },
+    ]);
+
+    expect(parseGroups(text)).toHaveLength(1);
+  });
+});

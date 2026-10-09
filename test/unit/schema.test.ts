@@ -29,7 +29,8 @@ const commandInManifest = groupInManifest?.properties?.commands?.items;
 
 // schemas/cmd-deck-groups.json: dizi → items grup → properties.commands.items komut
 const groupInSchema = schema.items;
-const commandInSchema = groupInSchema?.properties?.commands?.items;
+const groupCommands = groupInSchema?.properties?.commands;
+const commandInSchema = groupCommands?.items;
 
 /**
  * `cmdDeck.groups` ayarının şeması package.json içinde, düzenleme dosyasının şeması
@@ -77,6 +78,11 @@ describe('şema senkronu', () => {
 
   it('clear alanı boolean', () => {
     expect(commandInSchema?.properties?.clear?.type).toBe('boolean');
+  });
+
+  it('komutsuz grup editörde uyarılıyor', () => {
+    // minItems olmadan "commands": [] sessizce geçer, grup sonra yok sayılır.
+    expect(groupCommands?.minItems).toBe(1);
   });
 
   it('bilinmeyen alanlar reddediliyor — yazım hatası yakalansın', () => {
