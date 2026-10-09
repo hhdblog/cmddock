@@ -12,7 +12,7 @@ file to share it with your team.
 npm install
 npm run build
 npm run package            # produces cmdkit-0.2.0.vsix
-code --install-extension cmdkit-0.2.0.vsix
+code --install-extension cmdkit-0.2.1.vsix
 ```
 
 While developing, open this folder in VSCode and press <kbd>F5</kbd> to start the
