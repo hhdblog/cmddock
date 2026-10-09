@@ -352,9 +352,3 @@ VSCODE_TEST_EXECUTABLE="/Applications/Visual Studio Code.app/Contents/MacOS/Elec
 ```
 
 Tasarım kararları ve uygulama günlüğü: `PLAN.md` (depo kökünde).
-
-## Lisans
-
-MIT
-
-git deneme amaçlı değişti.
