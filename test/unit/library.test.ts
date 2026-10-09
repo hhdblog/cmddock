@@ -83,10 +83,10 @@ describe('hazır grup kütüphanesi', () => {
     }
   });
 
-  it('gruplar 5–16 komut arasında', () => {
+  it('gruplar 5–17 komut arasında', () => {
     for (const group of LIBRARY_GROUPS) {
       expect(group.commands.length, group.name).toBeGreaterThanOrEqual(5);
-      expect(group.commands.length, group.name).toBeLessThanOrEqual(16);
+      expect(group.commands.length, group.name).toBeLessThanOrEqual(17);
     }
   });
 
@@ -134,6 +134,9 @@ describe('hazır grup kütüphanesi', () => {
       'surge publish',
       'surge rollback',
       'surge teardown',
+      // Global ayar değiştiriyor: yalnızca bu makinedeki gelecekteki tüm
+      // repoları etkiler, geri alma yolu kullanıcıya bağlı.
+      'git config --global',
     ];
 
     // `surge <dizin> <alan adı>` yayınlıyor ve komut metni tek başına `surge`.

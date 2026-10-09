@@ -272,6 +272,14 @@
           "description": "make this folder a repository"
         },
         {
+          "name": "default branch",
+          "command": "git config --global init.defaultBranch",
+          "icon": "$(symbol-variable)",
+          "argsPrompt": "branch name (e.g. main)",
+          "description": "sets the branch name new repositories start on (Git asks about this on every init)",
+          "confirm": "This changes the branch name for every new repository on this machine. Continue?"
+        },
+        {
           "name": "status",
           "command": "git status",
           "icon": "$(source-control)",

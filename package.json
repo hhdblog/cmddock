@@ -1,7 +1,7 @@
 {
   "name": "cmdkit",
   "displayName": "Cmdkit",
-  "description": "Group frequently used terminal commands and run them from the status bar. Ships with a library of 160 commands in 16 groups.",
+  "description": "Group frequently used terminal commands and run them from the status bar. Ships with a library of 161 commands in 16 groups.",
   "version": "0.2.0",
   "publisher": "cmdkit",
   "license": "MIT",
@@ -358,6 +358,14 @@
               "command": "git init",
               "icon": "$(new-folder)",
               "description": "make this folder a repository"
+            },
+            {
+              "name": "default branch",
+              "command": "git config --global init.defaultBranch",
+              "icon": "$(symbol-variable)",
+              "argsPrompt": "branch name (e.g. main)",
+              "description": "sets the branch name new repositories start on (Git asks about this on every init)",
+              "confirm": "This changes the branch name for every new repository on this machine. Continue?"
             },
             {
               "name": "status",
