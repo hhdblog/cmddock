@@ -478,7 +478,7 @@
             },
             {
               "name": "projeye bağlan",
-              "command": "firebase use --add",
+              "command": "firebase use",
               "icon": "$(link)",
               "argsPrompt": "proje adı",
               "description": "klasörü projeye bağlar"
