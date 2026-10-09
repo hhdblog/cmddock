@@ -430,7 +430,7 @@ entegrasyon 7/7 ✔ · paket 32.82 KB ✔
 | Veri tipi | `Group.color` **ham string** olarak tutuluyor, `ColorSpec` değil. Parse edilmiş nesne JSON'a girip dışa/içe aktarımda bozulurdu (`{"hex":"..."}` → yeniden okununca undefined) |
 | Çözümleme | `plan.ts` içinde `parseColor(group.color)`: hex → doğrudan, `charts.blue` gibi tema adı → `ThemeColor` |
 | Öncelik | Grubun kendi `color`'ı → yoksa `cmdkit.statusBar.color` → yoksa tema |
-| Varsayılanlar | Python `#4B8BBE`, Flutter `#47C5FB`, Node.js `#83CD29` (marka tonları, koyu çubukta okunaklı) |
+| Varsayılanlar | Python `#FFD43B` (resmî sarı), Flutter `#47C5FB`, Node.js `#83CD29` (marka tonları, koyu çubukta okunaklı) |
 | Sınır | Renk **sadece durum çubuğunda** görünür. QuickPick'te renk gösterilemiyor (`QuickPickItem` renk desteklemiyor) — komut bazlı renk bu yüzden eklenmedi |
 
 Yeniden kurulum imzasına `text`/renk eklenmedi: bunlar `build()` yerine döngüde uygulandığı için

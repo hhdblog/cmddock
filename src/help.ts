@@ -34,7 +34,7 @@ them.
 
 You can use \`//\` line comments in the file — it is JSONC, so \`/* */\` block
 comments work too. Since you are editing it by hand, comments are natural; they
-come in handy for noting why a colour like \`#4B8BBE\` is there.
+come in handy for noting why a colour like \`#F14E32\` is there.
 
 Only \`//\` outside quotes counts as a comment: in \`"command": "curl
 https://x/y"\` the \`//\` is part of the command and is left alone.

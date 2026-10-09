@@ -230,7 +230,7 @@ by side in that file, so a default group you removed can be brought back with
 
 | Group    | Icon                    | Colour     | Commands |
 | -------- | ----------------------- | ---------- | -------- |
-| Python   | `$(snake)`              | `#4B8BBE` | 12       |
+| Python   | `$(snake)`              | `#FFD43B` | 12       |
 | Flutter  | `$(device-mobile)`      | `#47C5FB` | 15       |
 | Node.js  | `$(server-environment)` | `#83CD29` | 12       |
 | Git      | `$(source-control)`     | `#F14E32` | 20       |

@@ -102,7 +102,7 @@
         {
           "name": "Python",
           "icon": "$(snake)",
-          "color": "#4B8BBE",
+          "color": "#FFD43B",
           "commands": [
             {
               "name": "create venv",
