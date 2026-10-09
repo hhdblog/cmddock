@@ -1,6 +1,6 @@
 {
   "name": "cmdkit-bar",
-  "displayName": "CmdKit",
+  "displayName": "CmdKit Bar",
   "description": "Group frequently used terminal commands and run them from the status bar. Ships with a library of 167 commands in 16 groups.",
   "version": "0.2.5",
   "publisher": "hhdblog",
