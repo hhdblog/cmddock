@@ -1,33 +1,43 @@
 # Changelog
 
-## 0.2.2
+## 0.2.5
 
-- **Release notes are now in English**, matching the description, the README and the
-  extension UI.
+Run 167 ready-made terminal commands from the VS Code status bar. Five groups are
+installed with the extension (69 commands); the other eleven are one command away.
 
-## 0.2.1
+### Groups
 
-First fix release after the Marketplace debut. The command library is unchanged —
-this release covers visibility and packaging.
+Python, Flutter, Node.js, Git and Firebase ship enabled. Docker, GitHub CLI,
+PostgreSQL, Go, Rust, Kubernetes, Java (Maven/Gradle), Redis, Android, Vercel and
+Surge are added with **Cmdkit: Add Built-in Group**.
 
-### Visibility
+Every command runs in the shared terminal with its working directory set to the
+workspace root. Long-running commands (`flutter run`, `npm run dev`,
+`git init` and the rest) keep the terminal open — Ctrl+C stops them.
 
-- **Keywords 4 → 9.** Added `productivity`, `cli`, `shell`, `command palette`
-  and `workflow`, so the extension surfaces in more searches.
-- **Marketplace page fields.** Added `repository`, `homepage`, `bugs` and
-  `galleryBanner`, which makes the "View Repository" and "Report Issue" buttons
-  work. Source code is visible, which strengthens the trust story for an
-  extension that runs shell commands.
+### Editing
 
-### Packaging
+Commands live in the `cmdkit.groups` setting, but editing it by hand is tedious, so
+the extension uses a separate file: `cmdkit-groups.json`. Open it from the command
+palette, edit it, then apply. The file is JSONC — `//` and `/* */` comments work,
+and it is validated against a JSON schema as you type.
 
-- **Package 61 KB → 41 KB.** `PLAN.md` (a 900-line design log) and the source map
-  (214 KB) are no longer packaged. The source map is still generated locally, so
-  debugging is unaffected.
-- Added `.vscodeignore`: sources, tests and configuration files are not packaged.
+Applying offers two modes. **Merge groups** updates same-named commands and adds new
+ones; anything missing from the file is kept. **Replace list** swaps the whole list
+for the file's contents.
 
-### Fixes
+### Safety
 
-- **Python group colour** `#4B8BBE` → `#FFD43B`, Python's official yellow. Contrast
-  on dark themes goes from 4.85 to 12.46, and it no longer resembles Flutter's tone.
-- **Cmd button** now defaults to teal (`#4EC9B0`), matching the extension icon.
+Commands that delete, publish or overwrite ask for confirmation first and say in
+plain words what will be lost. Platform tokens (`{python}`, `{venv}`, `{venvpy}`,
+`{rm}`) resolve to the right paths on macOS, Linux and Windows, so one command list
+works on all three.
+
+### Details
+
+- Group and command buttons use different icons and colours; the Cmd button
+  lists every group flat for searching.
+- Commands you run most float to the top of the list.
+- Usage counters are stored per project and never touch `settings.json`.
+- `Cmdkit: Check Platform Compatibility` lists commands that will not run on your
+  platform and copies the Windows equivalent to the clipboard.
