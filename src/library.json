@@ -764,8 +764,7 @@
           "name": "bağımlılık ekle",
           "command": "cargo add",
           "icon": "$(cloud-download)",
-          "argsPrompt": "crate (örn. serde --features derive)",
-          "argsSingle": true,
+          "argsPrompt": "crate ve isteğe bağlı bayraklar (örn. serde --features derive)",
           "description": "bağımlılık ekler"
         },
         {
@@ -832,8 +831,7 @@
           "name": "port yönlendir",
           "command": "kubectl port-forward",
           "icon": "$(link)",
-          "argsPrompt": "pod/servis ve port (örn. svc/api 8080:80)",
-          "argsSingle": true,
+          "argsPrompt": "kaynak ve port (örn. svc/api 8080:80)",
           "description": "yerel port yönlendirmesi"
         },
         {
@@ -996,8 +994,7 @@
           "name": "port yönlendir",
           "command": "adb reverse",
           "icon": "$(link)",
-          "argsPrompt": "port (örn. tcp:8080 tcp:8080)",
-          "argsSingle": true,
+          "argsPrompt": "uzak ve yerel port (örn. tcp:8080 tcp:8080)",
           "description": "cihazdan makineye port yönlendirmesi"
         },
         {
