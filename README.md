@@ -338,7 +338,7 @@ Bilinmeyen belirteçler (`{herhangi}`) olduğu gibi bırakılır.
 
 ```bash
 npm run typecheck      # tsc --noEmit
-npm test               # 332 birim testi (vitest)
+npm test               # 384 birim testi (vitest)
 npm run test:integration   # gerçek VSCode içinde smoke test
 npm run sync-defaults  # src/library.json → package.json (defaults)
 npm run icon           # media/icon.png üret

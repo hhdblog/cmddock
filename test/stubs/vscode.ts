@@ -62,6 +62,23 @@ export class TaskPanelKind {
   static readonly Shared = 1;
 }
 
+export enum TaskRevealKind {
+  Always = 1,
+  Silent = 2,
+  Never = 3,
+}
+
+export class TaskScope {
+  static readonly Global = 1;
+  static readonly Workspace = 2;
+}
+
+/** VSCode'da Separator = -1, diğerleri 0. Değer farkı ayraç ayrımında önemli. */
+export enum QuickPickItemKind {
+  Separator = -1,
+  Default = 0,
+}
+
 export interface CommandLike {
   readonly command: string;
   readonly title: string;
@@ -122,6 +139,10 @@ export function resetConfiguration(): void {
   quickPickCalls.length = 0;
   workspaceFolders = [];
   openDocuments.length = 0;
+  executedTasks.length = 0;
+  taskFailure.message = '';
+  inputBoxQueue.length = 0;
+  inputBoxCalls.length = 0;
 }
 
 /** getConfiguration().update() çağrıları — ne yazıldı, nereye. */
@@ -274,6 +295,15 @@ export const window = {
     return Promise.resolve(quickPickQueue.length > 0 ? quickPickQueue.shift() : undefined);
   },
 
+  showInputBox(options?: {
+    prompt?: string;
+    placeHolder?: string;
+    ignoreFocusOut?: boolean;
+  }): Promise<string | undefined> {
+    inputBoxCalls.push({ options });
+    return Promise.resolve(inputBoxQueue.length > 0 ? inputBoxQueue.shift() : undefined);
+  },
+
   showOpenDialog(_options?: unknown): Promise<(UriLike | undefined)[] | undefined> {
     const next = fileDialogQueue.length > 0 ? fileDialogQueue.shift() : undefined;
     return Promise.resolve(next ? [next] : undefined);
@@ -301,4 +331,70 @@ export const window = {
   },
 };
 
-export const tasks = {};
+/* ------------------------------------------------------------------ *
+ * Görev çalıştırma (runner.ts)
+ *
+ * VSCode 1.141'de ShellExecution(command, args) overload'ı komutun kendisini
+ * tırnaklıyor. Takma yalnızca tek dize overload'ını tutuyor ve çağrılan
+ * satırı kaydediyor — hangi biçimin geçtiğini görebilmek için.
+ * ------------------------------------------------------------------ */
+
+export interface ShellExecutionOptions {
+  cwd?: string;
+}
+
+export class ShellExecution {
+  constructor(
+    readonly commandLine: string,
+    readonly options?: ShellExecutionOptions
+  ) {}
+}
+
+export interface TaskPresentationOptions {
+  reveal: TaskRevealKind;
+  focus: boolean;
+  panel: number;
+  clear?: boolean;
+}
+
+export class Task {
+  presentationOptions: TaskPresentationOptions | undefined = undefined;
+
+  constructor(
+    readonly definition: unknown,
+    readonly scope: unknown,
+    readonly name: string,
+    readonly source: string,
+    readonly execution: ShellExecution
+  ) {}
+}
+
+/** executeTask'e giden görevler, sırayla. */
+export const executedTasks: Task[] = [];
+
+/** true ise executeTask hata fırlatır — runner'ın hata yolunu sınamak için. */
+export const taskFailure = { message: '' };
+
+export function failNextTask(message: string): void {
+  taskFailure.message = message;
+}
+
+export const tasks = {
+  async executeTask(task: Task): Promise<Task> {
+    if (taskFailure.message) {
+      const message = taskFailure.message;
+      taskFailure.message = '';
+      throw new Error(message);
+    }
+    executedTasks.push(task);
+    return task;
+  },
+};
+
+/** showInputBox'in sırayla döndüreceği yanıtlar (undefined = kullanıcı Esc). */
+export const inputBoxQueue: (string | undefined)[] = [];
+export const inputBoxCalls: { options?: { prompt?: string; placeHolder?: string } }[] = [];
+
+export function queueInputBox(...responses: (string | undefined)[]): void {
+  inputBoxQueue.push(...responses);
+}

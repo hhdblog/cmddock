@@ -854,15 +854,18 @@ Yardımcı menü dört bölüme ayrıldı, sıra **kullanım sıklığına** gö
 - [x] Çalıştırılan komut sonraki açılışta üste çıkar (birim testleri)
 - [x] Workspace yokken (klasör açılmamış pencere) çökmez (entegrasyon testi pencere açmadan koşuyor)
 - [x] Klasör yokken komut da çalışır — `cwd` ana dizine düşüyor (entegrasyon testi)
-- [ ] Esc ile her iki kademede de çıkış elle denenmedi (kod yolu test edildi, arayüzde denenmedi)
+- [x] Esc ile her iki kademede de çıkış — kod yolu `picker.test.ts`'te (Esc → undefined,
+      ikinci menü açılmıyor, ayraç seçilince de çıkıyor)
 - [ ] Ayar değişikliğinde menünün yeniden yükleme olmadan güncellenmesi elle denenmedi
-- [ ] Terminal görevi reddedilirse `showErrorMessage` görünümü elle denenmedi
+- [x] Terminal görevi reddedilirse `showErrorMessage` görünümü — kod yolu
+      `runner.test.ts`'te (hata fırlatıldığında mesaj gösteriliyor, komut adı ve
+      `cmd-deck:` öneki geçiyor, sonraki çalıştırma etkilenmiyor); **görünümü
+      VS Code'da elle doğrulanmadı**
 
 ## 9. Sonraki adımlar
 
 **Bilinen borç (2026-10-09 itibarıyla)**
 
-- `picker.ts` ve `runner.ts` hâlâ test dışı — hata barındıran katman
 - Son silinen grubu geri al: kütüphane kütüphane gruplarını kapsıyor ama kullanıcının
   kendi yazdığı grubu silmişse kurtarmanın yolu yok
 - JSONC yorum desteği: editör yoruma izin veriyor, `parseGroups` reddediyor.
