@@ -2,7 +2,7 @@
   "name": "cmd-deck",
   "displayName": "Cmd Deck",
   "description": "Sık kullanılan terminal komutlarını gruplayan durum çubuğu paneli.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "cmd-deck",
   "license": "MIT",
   "engines": {
