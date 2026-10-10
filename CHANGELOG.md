@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.2.6
+
+### Fixed
+
+- **51 user-facing strings were still Turkish** and are now English: the group
+  counts in the menu (`Python 12 commands`), the icon catalog hints and section
+  titles, the settings warning messages, and the group summary line. The rule is
+  that everything the extension shows is English; the earlier translation pass
+  had skipped these.
+
+### Docs
+
+- Eight screenshots added to the README, captured from a real VS Code window:
+  the Cmd menu, a group with its shell lines, a command running in the terminal,
+  turning status bar groups on and off, adding and removing a group from the
+  menu, editing the command file by hand, and the icon catalog.
+
 ## 0.2.5
 
 Run 167 ready-made terminal commands from the VS Code status bar. Five groups are
