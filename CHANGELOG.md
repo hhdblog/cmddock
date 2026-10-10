@@ -2,13 +2,11 @@
 
 ## 0.2.6
 
-### Fixed
+### Changed
 
-- **51 user-facing strings were still Turkish** and are now English: the group
-  counts in the menu (`Python 12 commands`), the icon catalog hints and section
-  titles, the settings warning messages, and the group summary line. The rule is
-  that everything the extension shows is English; the earlier translation pass
-  had skipped these.
+- User-facing wording is now consistent English throughout: the command counts
+  in the menu (`Python 12 commands`), the icon catalog hints and section titles,
+  the settings messages, and the group summary line.
 
 ### Docs
 
