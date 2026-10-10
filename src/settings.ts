@@ -71,7 +71,7 @@ async function pickMode(commandCount: number): Promise<ImportMode | undefined> {
       {
         label: '$(git-merge) Merge groups',
         description: 'same-named commands are updated, new commands are added',
-        detail: 'Gelen listede olmayan komutlar silinmez.',
+        detail: 'Commands missing from the incoming list are kept.',
         mode: 'merge' as const,
       },
       {
@@ -200,7 +200,7 @@ export async function reloadGroupFile(context: vscode.ExtensionContext): Promise
 
   const groups = getGroups();
   if (groups.length === 0) {
-    void vscode.window.showWarningMessage('cmddock: ayarlarda komut yok.');
+    void vscode.window.showWarningMessage('cmddock: no commands in settings.');
     return;
   }
 
@@ -214,7 +214,7 @@ export async function reloadGroupFile(context: vscode.ExtensionContext): Promise
   await openFile(target);
 
   void vscode.window.showInformationMessage(
-    `cmddock: ${path.basename(target)} ayarlardaki listeyle yenilendi.`
+    `cmddock: ${path.basename(target)} replaced with the list from settings.`
   );
 }
 
@@ -323,7 +323,7 @@ export async function pickStatusBarItems(): Promise<void> {
   const groups = getGroups();
 
   if (groups.length === 0) {
-    void vscode.window.showWarningMessage('cmddock: komut grubu yok.');
+    void vscode.window.showWarningMessage('cmddock: no command groups.');
     return;
   }
 
@@ -347,7 +347,7 @@ export async function pickStatusBarItems(): Promise<void> {
     },
     ...groups.map((group) => ({
       label: `${group.icon} ${group.name}`,
-      description: `${group.commands.length} komut`,
+      description: `${group.commands.length} commands`,
       picked: visible.has(group.name),
       groupName: group.name,
     })),
@@ -449,7 +449,7 @@ export async function addLibraryGroup(context: vscode.ExtensionContext): Promise
       (group): LibraryPick => ({
         label: `${group.icon} ${group.name}`,
         description: group.summary,
-        detail: `${group.commands.length} komut`,
+        detail: `${group.commands.length} commands`,
         group,
       })
     ),
@@ -508,7 +508,7 @@ export async function addLibraryGroup(context: vscode.ExtensionContext): Promise
   );
 
   void vscode.window.showInformationMessage(
-    `cmddock: "${chosen.name}" eklendi — ${added} komut, ${targetName(destination)}.`
+    `cmddock: "${chosen.name}" added — ${added} commands, ${targetName(destination)}.`
   );
 }
 
@@ -566,7 +566,7 @@ export async function removeGroup(context: vscode.ExtensionContext): Promise<voi
   const current = getGroups();
 
   if (current.length === 0) {
-    void vscode.window.showWarningMessage('cmddock: silinecek grup yok.');
+    void vscode.window.showWarningMessage('cmddock: no group to remove.');
     return;
   }
 
@@ -574,7 +574,7 @@ export async function removeGroup(context: vscode.ExtensionContext): Promise<voi
     current.map(
       (group): GroupPick => ({
         label: `${group.icon} ${group.name}`,
-        description: `${group.commands.length} komut`,
+        description: `${group.commands.length} commands`,
         group,
       })
     ),
@@ -627,7 +627,7 @@ export async function removeGroup(context: vscode.ExtensionContext): Promise<voi
   );
 
   void vscode.window.showInformationMessage(
-    `cmddock: "${doomed.name}" silindi — ${doomed.commands.length} komut, ` +
+    `cmddock: "${doomed.name}" removed — ${doomed.commands.length} commands, ` +
       `${targetName(destination)}.` +
       (synced ? '' : ' The editing file was not updated.')
   );

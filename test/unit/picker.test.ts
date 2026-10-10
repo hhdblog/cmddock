@@ -91,7 +91,7 @@ describe('pickCommand — grup listesi', () => {
     ]);
 
     expect(labels()[0]).toBe('$(source-control) Git');
-    expect(shownItems()[0]?.description).toBe('2 komut');
+    expect(shownItems()[0]?.description).toBe('2 commands');
     expect(labels()[1]).toBe('$(server) Node');
   });
 

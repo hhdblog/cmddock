@@ -86,7 +86,7 @@ function masterItem(
     name: `${ENTRY_NAME_PREFIX}: All Groups`,
     statusBarId: `${MASTER_STATUS_BAR_ID_PREFIX}.cmd`,
     tooltipLines: [
-      `**CmdDock** — ${groups.length} grup, ${countCommands(groups)} komut`,
+      `**CmdDock** — ${groups.length} groups, ${countCommands(groups)} commands`,
       'Click: pick a group → run a command',
     ],
     priority: basePriority,

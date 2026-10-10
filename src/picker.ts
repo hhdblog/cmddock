@@ -48,7 +48,7 @@ export async function pickCommand(
   const groupItems: MasterItem[] = [
     ...groups.map((group): GroupItem => ({
       label: `${group.icon} ${group.name}`,
-      description: `${group.commands.length} komut`,
+      description: `${group.commands.length} commands`,
       group,
     })),
     { kind: vscode.QuickPickItemKind.Separator, label: MENU_SEPARATOR } as const,
