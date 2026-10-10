@@ -6,6 +6,8 @@ Reach your most used terminal commands in two clicks, from a single item in the 
 `cmddock-groups.json`, applied into `.vscode/settings.json`, and you can commit that
 file to share it with your team.
 
+![The CmdDock menu, listing every command group and the utility menus](https://raw.githubusercontent.com/hhdblog/cmddock/main/docs/screenshots/01-menu.png)
+
 ## Install
 
 ```bash
@@ -36,6 +38,42 @@ Extension Development Host.
 
 The commands you use most float to the top; on a tie the `settings.json` order
 wins. The order of the groups themselves always follows your settings.
+
+## Walkthrough
+
+**Pick a group and you see the real shell command before it runs.**
+
+![The Python group, each entry showing the shell line it will execute](https://raw.githubusercontent.com/hhdblog/cmddock/main/docs/screenshots/02-group-commands.png)
+
+**It runs in the terminal. Nothing to type, nothing to switch to.**
+
+![git status executed from the status bar, output shown in the terminal](https://raw.githubusercontent.com/hhdblog/cmddock/main/docs/screenshots/03-running.png)
+
+## Managing your groups
+
+**Turn individual groups on and off in the status bar.** The ticked ones are shown.
+
+![Status bar items to show, with four groups ticked and two not](https://raw.githubusercontent.com/hhdblog/cmddock/main/docs/screenshots/04-status-bar-items.png)
+
+**Add a group from the built-in library.**
+
+![Picking a built-in group to add, with the command count of each](https://raw.githubusercontent.com/hhdblog/cmddock/main/docs/screenshots/05-add-group.png)
+
+**Remove a group and all of its commands.**
+
+![Picking the group to remove](https://raw.githubusercontent.com/hhdblog/cmddock/main/docs/screenshots/06-remove-group.png)
+
+**Or write one by hand.** `Edit Command List` opens the command file; every field
+is documented further down in this README.
+
+![The command file open in the editor, showing name, command, icon, description and confirm](https://raw.githubusercontent.com/hhdblog/cmddock/main/docs/screenshots/07-edit-command-list.png)
+
+## Extras
+
+`Icon Catalog` lists every codicon the command file accepts — pick one and its
+name lands on the clipboard, ready to paste into `"icon"`.
+
+![The icon catalog, grouped by topic, with a short hint per icon](https://raw.githubusercontent.com/hhdblog/cmddock/main/docs/screenshots/08-icon-catalog.png)
 
 ## The status bar
 
